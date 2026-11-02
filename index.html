@@ -12,27 +12,8 @@
 html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
 .hero{position:relative;min-height:100vh;overflow:hidden}
-.hero::before{
-  content:'';
-  position:absolute;
-  inset:-30px;
-  background:url('/hero-bg.jpg') center/cover no-repeat;
-  filter:blur(4px);
-  -webkit-filter:blur(4px);
-  z-index:0;
-}
-.hero::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,
-    rgba(7,11,20,.95) 0%,
-    rgba(7,11,20,.88) 15%,
-    rgba(11,18,32,.70) 40%,
-    rgba(11,18,32,.75) 60%,
-    rgba(7,11,20,.92) 100%);
-  z-index:1;
-}
+.hero::before{content:'';position:absolute;inset:-30px;background:url('hero-bg.jpg') center/cover no-repeat;filter:blur(6px);-webkit-filter:blur(6px);z-index:0}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.95) 0%,rgba(7,11,20,.88) 15%,rgba(11,18,32,.70) 40%,rgba(11,18,32,.75) 60%,rgba(7,11,20,.92) 100%);z-index:1}
 .hero>*{position:relative;z-index:2}
 .glass{background:rgba(15,23,42,.55);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 20px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
 .glass-soft{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
@@ -110,8 +91,8 @@ select.field option{background:#0b1220;color:#fff}
         </div>
       </div>
       <label class="block text-sm font-semibold mb-1.5">💰 Цена авто в Китае (юани) — введите вашу цену</label>
-      <input id="customPrice" type="number" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" placeholder="Например, 180000">
-      <p class="text-xs mb-4" style="color:#64748b">Если не знаете точную цену — оставьте пустым, используем ориентир из базы</p>
+      <input id="customPrice" type="number" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" placeholder="Например, 139800">
+      <p class="text-xs mb-4" style="color:#64748b">Если не знаете точную цену — оставьте как есть, используем ориентир из базы</p>
       <label class="block text-sm font-semibold mb-1.5">Возраст автомобиля</label>
       <select id="ageSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option></select>
       <label class="block text-sm font-semibold mb-1.5">Планируемый год ввоза</label>
@@ -168,7 +149,7 @@ const CFG={
   BOT_USERNAME:"Avto_Calc_bot",
   WA_NUMBER:"79266173662",
   TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
-  CARS_SHEET_URL:"",
+  CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzdMqIlhVCw0D21B6U10D5x2C5xFWW1VVVhTAYvzzRyq8AHmr_9H851RhD0pKv2Enad/exec", // <-- ВСТАВЬТЕ СЮДА URL из Google Apps Script, если настраивали
   FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.20,
   LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
 };
@@ -176,14 +157,25 @@ const RF_LOGISTICS={"Владивосток":30000,"Хабаровск":45000,"�
 
 /* ================= БАЗА АВТО ================= */
 const carDatabase=[
- {brand:"Zeekr",model:"001",trim:"Long Range",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2300,base_price_cny:300000},
- {brand:"Zeekr",model:"X",trim:"YOU",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2400,base_price_cny:380000},
- {brand:"Li Auto",model:"L7",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2450,base_price_cny:300000},
- {brand:"Li Auto",model:"L9",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:449,k30_kw:100,weight_kg:2510,base_price_cny:430000},
- {brand:"BYD",model:"Seal",trim:"Long Range AWD",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:390,k30_kw:120,weight_kg:2100,base_price_cny:280000},
- {brand:"BYD",model:"Seagull",trim:"Freedom",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:55,k30_kw:30,weight_kg:1100,base_price_cny:70000},
- {brand:"AITO",model:"M7",trim:"Plus",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:200,k30_kw:80,weight_kg:2300,base_price_cny:250000},
- {brand:"Voyah",model:"Free",trim:"Standard",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:360,k30_kw:100,weight_kg:2400,base_price_cny:280000}
+ {brand:"Zeekr",model:"001",trim:"ME (RWD)",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:310,k30_kw:115,weight_kg:2250,base_price_cny:269000},
+ {brand:"Zeekr",model:"001",trim:"YOU (AWD)",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2350,base_price_cny:329000},
+ {brand:"Zeekr",model:"007",trim:"Pro (RWD)",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:310,k30_kw:115,weight_kg:2100,base_price_cny:209900},
+ {brand:"Zeekr",model:"007",trim:"AWD",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:475,k30_kw:175,weight_kg:2200,base_price_cny:259900},
+ {brand:"Zeekr",model:"X",trim:"RWD",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:200,k30_kw:80,weight_kg:1950,base_price_cny:189000},
+ {brand:"Zeekr",model:"X",trim:"AWD",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:315,k30_kw:115,weight_kg:2100,base_price_cny:229000},
+ {brand:"Zeekr",model:"7X",trim:"RWD",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:310,k30_kw:115,weight_kg:2250,base_price_cny:229900},
+ {brand:"Zeekr",model:"7X",trim:"AWD",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:475,k30_kw:175,weight_kg:2350,base_price_cny:269900},
+ {brand:"Zeekr",model:"009",trim:"RWD",body:"MPV",type:"Электромобиль",engine_cc:0,pole_kw:310,k30_kw:115,weight_kg:2850,base_price_cny:439000},
+ {brand:"Zeekr",model:"009",trim:"AWD",body:"MPV",type:"Электромобиль",engine_cc:0,pole_kw:580,k30_kw:210,weight_kg:2950,base_price_cny:588000},
+ {brand:"Toyota",model:"bZ3X",trim:"Long Range",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:150,k30_kw:55,weight_kg:1900,base_price_cny:160000},
+ {brand:"Li Auto",model:"L6",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:300,k30_kw:100,weight_kg:2400,base_price_cny:249800},
+ {brand:"Li Auto",model:"L6",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:300,k30_kw:100,weight_kg:2450,base_price_cny:279800},
+ {brand:"Li Auto",model:"L7",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2450,base_price_cny:301800},
+ {brand:"Li Auto",model:"L7",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2500,base_price_cny:329800},
+ {brand:"Li Auto",model:"L8",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2500,base_price_cny:321800},
+ {brand:"Li Auto",model:"L8",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2550,base_price_cny:349800},
+ {brand:"Li Auto",model:"L9",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2510,base_price_cny:409800},
+ {brand:"Li Auto",model:"L9",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2560,base_price_cny:439800}
 ];
 
 /* ================= СТАВКИ УТИЛЯ ================= */
@@ -205,9 +197,7 @@ function utilFee(type,year,age,hp,k30,cc){
   if(cc<=3000)return scan(R.C3,hp); if(cc<=3500)return scan(R.C4,hp); return scan(R.C5,hp);
 }
 
-/* Пошлина + Акциз + НДС для электромобилей и последовательных гибридов.
-   Для ДВС и параллельных гибридов — единая ставка (НДС и акциз уже внутри).
-   Ставки акциза 2026 по 30-мин мощности (л.с.), НДС 20% (настраивается в CFG). */
+/* Пошлина + Акциз + НДС для электромобилей и последовательных гибридов. */
 function customsDuty(age,cc,priceRub,type,k30_kw){
   const e=state.eurRub||98, vol=cc>0?cc:999;
   const tMid=[[1000,1.5],[1500,1.7],[1800,2.5],[2300,2.7],[3000,3.0],[Infinity,3.6]];
@@ -216,19 +206,16 @@ function customsDuty(age,cc,priceRub,type,k30_kw){
   const minNew=[[1000,1.5],[1500,1.7],[1800,2.5],[2300,2.75],[3000,3.0],[3500,3.6],[Infinity,5.7]];
   const rate=(tbl,v)=>{for(const[k,r]of tbl){if(v<=k)return r;}return tbl[tbl.length-1][1];};
   
-  // Для ЭВ и последовательных гибридов — раздельный расчет
   if(type==="Электромобиль"||type==="Последовательный гибрид"){
-    const duty=priceRub*0.15; // пошлина 15%
-    const hp30=k30_kw*1.35962; // 30-мин мощность в л.с.
-    // Таблица акциза 2026 (ставка за 1 л.с.)
+    const duty=priceRub*0.15;
+    const hp30=k30_kw*1.35962;
     const exciseTable=[[90,0],[150,64],[200,613],[300,1004],[400,1711],[500,1771],[Infinity,1829]];
     const exciseRate=rate(exciseTable,hp30);
     const excise=hp30*exciseRate;
-    const vat=(priceRub+duty+excise)*CFG.VAT_RATE; // НДС 20%
+    const vat=(priceRub+duty+excise)*CFG.VAT_RATE;
     return {duty:duty,excise:excise,vat:vat,total:duty+excise+vat};
   }
   
-  // Для ДВС и параллельных гибридов — единая ставка (возвращаем объект для единообразия)
   let totalDuty;
   if(age==="new"){totalDuty=Math.max(priceRub*rate(pctNew,vol),vol*rate(minNew,vol)*e);}
   else if(age==="mid"){totalDuty=vol*rate(tMid,vol)*e;}
@@ -263,10 +250,7 @@ function fillModels(){const brand=document.getElementById("brandSel").value,m=do
 function fillTrims(model){const brand=document.getElementById("brandSel").value,t=document.getElementById("trimSel");t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=!model;hideSpec();if(!model)return;carDatabase.filter(c=>c.brand===brand&&c.model===model).forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=c.trim;t.appendChild(o);});t.onchange=()=>showSpec(carDatabase.filter(c=>c.brand===brand&&c.model===model)[+t.value]);}
 function hideSpec(){document.getElementById("specCard").classList.add("hidden");selected=null;}
 function showSpec(c){if(!c){hideSpec();return;}selected=c;document.getElementById("specCard").classList.remove("hidden");document.getElementById("specIcon").innerHTML=BODY_ICON[c.body]||BODY_ICON.SUV;document.getElementById("specType").textContent=c.type;document.getElementById("specPeak").textContent=c.pole_kw+" кВт";document.getElementById("specK30").textContent=c.k30_kw>0?c.k30_kw+" кВт":"— (льгота по л.с.)";document.getElementById("specCcRow").style.display=c.engine_cc>0?"":"none";document.getElementById("specCc").textContent=c.engine_cc+" см³";document.getElementById("specPrice").textContent=c.base_price_cny.toLocaleString("ru")+" ¥";
-  // Подставляем цену из базы в поле ввода, если оно пустое
-  const priceInput=document.getElementById("customPrice");
-  if(!priceInput.value)priceInput.value=c.base_price_cny;
-}
+  const priceInput=document.getElementById("customPrice");if(!priceInput.value)priceInput.value=c.base_price_cny;}
 function gotoStep(n){document.querySelectorAll(".wizard-step").forEach(s=>s.classList.toggle("hidden",+s.dataset.step!==n));document.querySelectorAll("#stepDots .step-dot").forEach(d=>{const i=+d.dataset.i;d.classList.toggle("active",i===n);d.classList.toggle("done",i<n);});window.scrollTo({top:0,behavior:"smooth"});}
 function buildCities(){const s=document.getElementById("citySel");Object.keys(RF_LOGISTICS).forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;s.appendChild(o);});}
 
@@ -276,19 +260,20 @@ const row=(l,v,cls="")=>'<div class="flex justify-between items-center py-2 '+cl
 function calculatePrice(){
   if(!selected){alert("Выберите модель и комплектацию на шаге 2.");gotoStep(2);return;}
   const c=selected,age=document.getElementById("ageSel").value,year=document.getElementById("yearSel").value,city=document.getElementById("citySel").value;
-  // Берем цену из поля ввода или из базы
   const customPriceVal=parseFloat(document.getElementById("customPrice").value);
   const priceCNY=customPriceVal>0?customPriceVal:c.base_price_cny;
-  const baseRub=priceCNY*state.cnyRub,logChina=CFG.LOGISTICS_CHINA,dutyObj=customsDuty(age,c.engine_cc,baseRub,c.type,c.k30_kw),duty=dutyObj.total,
+  const baseRub=priceCNY*state.cnyRub,logChina=CFG.LOGISTICS_CHINA;
+  const dutyObj=customsDuty(age,c.engine_cc,baseRub,c.type,c.k30_kw),duty=dutyObj.total;
   const hp=Math.round(c.pole_kw*1.35962),util=utilFee(c.type,year,age,hp,c.k30_kw,c.engine_cc);
   const certs=CFG.CERT_SBKTS+CFG.CERT_EPTS+CFG.CERT_GTO,logRF=RF_LOGISTICS[city]||RF_LOGISTICS["Другой город"],margin=CFG.MARGIN;
   const total=baseRub+logChina+duty+util+certs+logRF+margin;
   lastCalc={c,age,year,city,total,util,priceCNY};
   const box=document.getElementById("resultBox");box.classList.remove("hidden");
+  const evBreakdown=(dutyObj.excise>0)?row("Пошлина 15%",money(dutyObj.duty),"anim anim-d2")+row("Акциз (30-мин "+Math.round(c.k30_kw*1.35962)+" л.с.)",money(dutyObj.excise),"anim anim-d2")+row("НДС "+Math.round(CFG.VAT_RATE*100)+"%",money(dutyObj.vat),"anim anim-d2"):row("Таможенная пошлина (физлицо)",money(duty),"anim anim-d2");
   box.innerHTML='<div class="glass-soft rounded-2xl p-5 anim"><div class="text-sm mb-3" style="color:#94a3b8">Детализация · '+c.brand+' '+c.model+' '+c.trim+' · '+city+'</div>'
     +row("Авто в Китае (¥→₽)",money(baseRub)+(customPriceVal>0?' <span style="color:#00F0FF;font-size:11px">(ваша цена)</span>':' <span style="color:#64748b;font-size:11px">(из базы)</span>'),"anim anim-d1")
     +row("Логистика по Китаю + граница",money(logChina),"anim anim-d1")
-    +(dutyObj.excise>0?row("Пошлина 15%",money(dutyObj.duty),"anim anim-d2")+row("Акциз (30-мин "+Math.round(c.k30_kw*1.35962)+" л.с.)",money(dutyObj.excise),"anim anim-d2")+row("НДС "+Math.round(CFG.VAT_RATE*100)+"%",money(dutyObj.vat),"anim anim-d2"):row("Таможенная пошлина (физлицо)",money(duty),"anim anim-d2"))
+    +evBreakdown
     +row("Утилизационный сбор",money(util),"anim anim-d2")
     +row("СБКТС + ЭПТС + ГТО",money(certs),"anim anim-d3")
     +row("Доставка по РФ до города",money(logRF),"anim anim-d3")
@@ -311,12 +296,13 @@ function tick(){const diff=new Date("2027-01-01T00:00:00")-new Date(),el=documen
 
 /* ================= МАСКА ТЕЛЕФОНА ================= */
 function maskPhone(v){let d=v.replace(/\D/g,"");if(d.startsWith("8"))d="7"+d.slice(1);if(!d.startsWith("7"))d="7"+d;d=d.slice(0,11);let r="+7";if(d.length>1)r+=" ("+d.slice(1,4);if(d.length>=5)r+=") "+d.slice(4,7);if(d.length>=8)r+="-"+d.slice(7,9);if(d.length>=10)r+="-"+d.slice(9,11);return r;}
-const validPhone=v=>v.replace(/\D/g,"").length===11;
+const validPhone=v=>{const d=v.replace(/\D/g,"");return d.length===11&&d.startsWith('7')&&!/^70000000000$/.test(d);};
 
 /* ================= ОТПРАВКА ЛИДА ================= */
 async function submitLead(e){
   e.preventDefault();const form=e.target,msg=document.getElementById("formMsg"),btn=document.getElementById("submitBtn");
   if(form.bot_check.value){msg.textContent="";return;}
+  if(CFG.TURNSTILE_SITE_KEY&&!window.__cfToken){msg.innerHTML='<span style="color:#fbbf24">Пройдите проверку "Я не робот"</span>';return;}
   const name=document.getElementById("fName").value.trim(),phone=document.getElementById("fPhone").value.trim();
   if(!name){msg.innerHTML='<span style="color:#fbbf24">Введите имя</span>';return;}
   if(!validPhone(phone)){msg.innerHTML='<span style="color:#fbbf24">Введите корректный телефон</span>';return;}
