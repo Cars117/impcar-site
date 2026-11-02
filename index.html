@@ -45,7 +45,7 @@ body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
 select.field option{background:#0b1220;color:#fff}
 .ring-focus:focus{outline:none;border-color:#00F0FF;box-shadow:0 0 0 3px rgba(0,240,255,.25)}
 .step-dot{width:10px;height:10px;border-radius:9999px;background:rgba(255,255,255,.2);transition:.3s}
-.step-dot.active{background:#61a803;width:28px}.step-dot.done{background:#00F0FF}
+.step-dot.active{background:#0a9e33;width:28px}.step-dot.done{background:#00F0FF}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .anim{animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both}
 .anim-d1{animation-delay:.08s}.anim-d2{animation-delay:.16s}.anim-d3{animation-delay:.24s}.anim-d4{animation-delay:.32s}.anim-d5{animation-delay:.40s}
@@ -91,7 +91,7 @@ select.field option{background:#0b1220;color:#fff}
 
     <!-- ШАГ 2 -->
     <div class="wizard-step hidden" data-step="2">
-      <h2 class="text-xl font-bold mb-1">Шаг 2. Модель и комплектация</h2>
+      <h2 class="text-xl font-bold mb-1">Шаг 2. Модель, комплектация и цена</h2>
       <p class="text-sm mb-5" style="color:#94a3b8">Показываем пиковую и 30‑минутную мощность — чтобы вы видели, по какой ставке считается утиль.</p>
       <label class="block text-sm font-semibold mb-1.5">Модель</label>
       <select id="modelSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" disabled><option value="">— Сначала бренд —</option></select>
@@ -105,10 +105,13 @@ select.field option{background:#0b1220;color:#fff}
             <div><span style="color:#94a3b8">Пиковая мощность:</span> <b id="specPeak" style="color:#FFD700"></b></div>
             <div><span style="color:#94a3b8">30‑мин мощность:</span> <b id="specK30" style="color:#00F0FF"></b> <span class="text-xs" style="color:#64748b">(по ней — льгота утиля для EV/гибридов)</span></div>
             <div id="specCcRow"><span style="color:#94a3b8">Объём ДВС:</span> <b id="specCc" style="color:#fff"></b></div>
-            <div><span style="color:#94a3b8">Цена в Китае:</span> <b id="specPrice" style="color:#fff"></b></div>
+            <div><span style="color:#94a3b8">Цена в базе:</span> <b id="specPrice" style="color:#fff"></b></div>
           </div>
         </div>
       </div>
+      <label class="block text-sm font-semibold mb-1.5">💰 Цена авто в Китае (юани) — введите вашу цену</label>
+      <input id="customPrice" type="number" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" placeholder="Например, 180000">
+      <p class="text-xs mb-4" style="color:#64748b">Если не знаете точную цену — оставьте пустым, используем ориентир из базы</p>
       <label class="block text-sm font-semibold mb-1.5">Возраст автомобиля</label>
       <select id="ageSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option></select>
       <label class="block text-sm font-semibold mb-1.5">Планируемый год ввоза</label>
@@ -149,7 +152,7 @@ select.field option{background:#0b1220;color:#fff}
     <h3 class="text-lg font-bold mb-4">Мы на связи</h3>
     <div class="flex flex-wrap gap-3">
       <a id="waLink" href="https://wa.me/79266173662" class="btn-neon rounded-xl px-5 py-3 text-sm">💬 WhatsApp</a>
-      <a id="tgLink" href="https://t.me/username" class="btn-neon rounded-xl px-5 py-3 text-sm">✈️ Telegram</a>
+      <a id="tgLink" href="https://t.me/Avto_Calc_bot" class="btn-neon rounded-xl px-5 py-3 text-sm">✈️ Telegram</a>
       <a href="https://vk.com/" class="btn-neon rounded-xl px-5 py-3 text-sm">VK</a>
       <a href="https://youtube.com/" class="btn-neon rounded-xl px-5 py-3 text-sm">▶️ YouTube</a>
     </div>
@@ -161,17 +164,17 @@ select.field option{background:#0b1220;color:#fff}
 <script>
 /* ================= CFG — ЕДИНСТВЕННОЕ МЕСТО ПРАВОК ================= */
 const CFG={
-  LEAD_ENDPOINT:"",                 // пусто = заявка уходит через WhatsApp/бота (без сервера). Serverless-функция = Фаза 2 (Git-деплой).
-  BOT_USERNAME:"Avto_Calc_bot",                  // логин бота без @. Пусто -> fallback в WhatsApp.
-  WA_NUMBER:"79266173662",CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzdMqIlhVCw0D21B6U10D5x2C5xFWW1VVVhTAYvzzRyq8AHmr_9H851RhD0pKv2Enad/exec",          // твой WhatsApp для приёма заявок
-  TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95", // рабочий ключ; пусто = выкл. виджет
-  FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0,
-  LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, MARGIN:200000
+  LEAD_ENDPOINT:"",
+  BOT_USERNAME:"Avto_Calc_bot",
+  WA_NUMBER:"79266173662",
+  TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
+  CARS_SHEET_URL:"",
+  FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.20,
+  LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
 };
 const RF_LOGISTICS={"Владивосток":30000,"Хабаровск":45000,"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000,"Калининград":140000,"Другой город":100000};
 
-/* ================= БАЗА АВТО (pole_kw=пиковая, k30_kw=30-мин) =================
-   Для ДВС k30_kw=0 (льгота по л.с./объёму). ЦЕНЫ/МОЩНОСТИ сверь по шильдику/ПТС! */
+/* ================= БАЗА АВТО ================= */
 const carDatabase=[
  {brand:"Zeekr",model:"001",trim:"Long Range",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2300,base_price_cny:300000},
  {brand:"Zeekr",model:"X",trim:"YOU",body:"SUV",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2400,base_price_cny:380000},
@@ -183,17 +186,16 @@ const carDatabase=[
  {brand:"Voyah",model:"Free",trim:"Standard",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:360,k30_kw:100,weight_kg:2400,base_price_cny:280000}
 ];
 
-/* ================= СТАВКИ УТИЛЯ (проверенная математика, без изменений) =================
-   строка=[порог,new2026,old2026,new2027,old2027]; new=до3лет, old=старше3лет.
-   EV/посл.гибриды: льгота только если 30-мин кВт <= 58.84. */
+/* ================= СТАВКИ УТИЛЯ ================= */
 const R={
 EV:[[58.84,3400,5200,3400,5200],[73.55,991200,1641600,1090400,1805800],[95.61,1317600,1912800,1449400,2104000],[117.68,1560000,2227200,1716000,2450000],[139.75,1848000,2594400,2032800,2853800],[161.81,2193600,3024000,2413000,3326400],[183.88,2599200,3523200,2859200,3875600],[205.94,3079200,4104000,3387200,4514400],[Infinity,3648000,4780800,4012800,5258800]],
 C1:[[160,3400,5200,3400,5200],[190.06,307200,568800,338000,625600],[220.06,316800,585600,348400,644200],[250.08,324000,602400,356400,662600],[Infinity,345600,602400,380200,662600]],
 C2:[[160,3400,5200,3400,5200],[190.06,900000,1492800,990000,1642000],[220.06,952800,1584000,1048000,1742400],[250.08,1010400,1677600,1111400,1845400],[280.08,1142400,1838400,1256600,2022200],[310.08,1291200,2011200,1420400,2212400],[340.1,1459200,2203200,1605200,2423600],[370.1,1663200,2412000,1829600,2653200],[400.11,1896000,2640000,2085600,2904000],[430.11,2160000,2892000,2376000,3181200],[460.13,2464800,3168000,2711200,3484800],[500.14,2808000,3468000,3088800,3814800],[Infinity,3201600,3796800,3521800,4176400]],
 C3:[[160,3400,5200,3400,5200],[190.06,2306800,3456000,2537400,3801600],[220.06,2364000,3501600,2600400,3851800],[250.08,2402400,3552000,2642600,3907200],[280.08,2520000,3660000,2772000,4026000],[310.08,2620800,3770400,2882800,4147400],[340.1,2726400,3873600,2999000,4261000],[370.1,2834400,3981600,3117800,4379800],[400.11,2949600,4094400,3244600,4503800],[430.11,3067200,4209600,3374000,4630600],[460.13,3189600,4327200,3508600,4760000],[500.14,3316800,4447200,3648400,4892000],[Infinity,3448800,4572000,3793600,5029200]],
-C4:[[160,2584000,3956200,2842400,4351800],[190.06,2635200,4000800,2898800,4400800],[220.06,2688000,4044000,2956800,4448400],[250.08,2743200,4087200,3017600,4496000],[280.08,2810400,4144800,3091400,4559200],[310.08,2880000,4248000,3168000,4672800],[340.1,3038400,4356000,3342200,4791600],[370.1,3206400,4485600,3527000,4934200],[400.11,3384000,4620000,3722400,5082000],[430.11,3568800,4759200,3925600,5235200],[460.13,3765600,4900800,4142200,5390800],[500.14,3972000,5049600,4369200,5554600],[Infinity,4190400,5200800,4609400,5720800]],
+C4:[[160,2584000,3956200,2842400,4351800],[190.06,2635200,4000800,2898800,4400800],[220.06,2688000,4044000,2956800,4448400],[250.08,2743200,4087200,3017600,4496000],[280.08,2810400,4144800,3091400,4559200],[310.08,2880000,4248000,3168000,4672800],[340.1,3038400,4356000,3342200,4791600],[370.1,3206400,4485600,3527000,4934200],[400.11,3384000,4620000,3722400,5082000],[430.11,3568800,4759200,3925600,5235200],[460.13,3765600,4900800,4142200,5390800],[500.14,3970000,5049600,4369200,5554600],[Infinity,4190400,5200800,4609400,5720800]],
 C5:[[160,3290600,4325800,3619800,4758400],[190.06,3345600,4389600,3680200,4828600],[220.06,3403200,4456800,3743600,4902400],[250.08,3460800,4524000,3806800,4976400],[280.08,3530400,4627200,3883400,5090000],[310.08,3600000,4732800,3960000,5206000],[340.1,3727200,4992000,4100000,5491200],[370.1,3857600,5268000,4243200,5794800],[400.11,3993600,5558400,4393000,6114200],[430.11,4132800,5863200,4546000,6449600],[460.13,4276800,6187200,4704400,6806000],[500.14,4425600,6528000,4868200,7180800],[Infinity,4581600,6885600,5039800,7574200]]
 };
+
 function utilFee(type,year,age,hp,k30,cc){
   const y=(year==="2027")?"2027":"2026";
   const pick=(b)=>age==="new"?(y==="2027"?b[3]:b[1]):(y==="2027"?b[4]:b[2]);
@@ -202,21 +204,39 @@ function utilFee(type,year,age,hp,k30,cc){
   if(cc<=1000)return scan(R.C1,hp); if(cc<=2000)return scan(R.C2,hp);
   if(cc<=3000)return scan(R.C3,hp); if(cc<=3500)return scan(R.C4,hp); return scan(R.C5,hp);
 }
-/* Пошлина физлица (единая ставка, ориентировочно; точную подтверждает брокер по VIN).
-   Миф «EV=0% пошлины» НЕ используем: мощность влияет только на УТИЛЬ, не на пошлину. */
-function customsDuty(age,cc,priceRub){
+
+/* Пошлина + Акциз + НДС для электромобилей и последовательных гибридов.
+   Для ДВС и параллельных гибридов — единая ставка (НДС и акциз уже внутри).
+   Ставки акциза 2026 по 30-мин мощности (л.с.), НДС 20% (настраивается в CFG). */
+function customsDuty(age,cc,priceRub,type,k30_kw){
   const e=state.eurRub||98, vol=cc>0?cc:999;
   const tMid=[[1000,1.5],[1500,1.7],[1800,2.5],[2300,2.7],[3000,3.0],[Infinity,3.6]];
   const tOld=[[1000,3.0],[1500,3.2],[1800,3.5],[2300,4.8],[3000,5.0],[Infinity,5.7]];
   const pctNew=[[1000,.15],[1800,.15],[2300,.20],[3000,.20],[3500,.20],[Infinity,.20]];
   const minNew=[[1000,1.5],[1500,1.7],[1800,2.5],[2300,2.75],[3000,3.0],[3500,3.6],[Infinity,5.7]];
   const rate=(tbl,v)=>{for(const[k,r]of tbl){if(v<=k)return r;}return tbl[tbl.length-1][1];};
-  if(age==="new"){return Math.max(priceRub*rate(pctNew,vol),vol*rate(minNew,vol)*e);}
-  if(age==="mid")return vol*rate(tMid,vol)*e;
-  return vol*rate(tOld,vol)*e;
+  
+  // Для ЭВ и последовательных гибридов — раздельный расчет
+  if(type==="Электромобиль"||type==="Последовательный гибрид"){
+    const duty=priceRub*0.15; // пошлина 15%
+    const hp30=k30_kw*1.35962; // 30-мин мощность в л.с.
+    // Таблица акциза 2026 (ставка за 1 л.с.)
+    const exciseTable=[[90,0],[150,64],[200,613],[300,1004],[400,1711],[500,1771],[Infinity,1829]];
+    const exciseRate=rate(exciseTable,hp30);
+    const excise=hp30*exciseRate;
+    const vat=(priceRub+duty+excise)*CFG.VAT_RATE; // НДС 20%
+    return {duty:duty,excise:excise,vat:vat,total:duty+excise+vat};
+  }
+  
+  // Для ДВС и параллельных гибридов — единая ставка (возвращаем объект для единообразия)
+  let totalDuty;
+  if(age==="new"){totalDuty=Math.max(priceRub*rate(pctNew,vol),vol*rate(minNew,vol)*e);}
+  else if(age==="mid"){totalDuty=vol*rate(tMid,vol)*e;}
+  else{totalDuty=vol*rate(tOld,vol)*e;}
+  return {duty:totalDuty,excise:0,vat:0,total:totalDuty};
 }
 
-/* ================= КУРСЫ (real-time + таймаут + fallback) ================= */
+/* ================= КУРСЫ ================= */
 const state={cnyRub:CFG.FALLBACK_CNY_RUB,usdRub:CFG.FALLBACK_USD_RUB,eurRub:98,ratesLive:false};
 async function fetchJson(url,ms){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch(url,{signal:c.signal});clearTimeout(t);return await r.json();}catch(e){clearTimeout(t);return null;}}
 async function loadRates(){
@@ -231,11 +251,96 @@ function renderRates(){const b=document.getElementById("rateBox"),f=n=>n.toFixed
   if(state.ratesLive){b.textContent="Курс (live): $"+f(state.usdRub)+" · ¥"+f(state.cnyRub)+" · €"+f(state.eurRub);b.style.color="#cbd5e1";}
   else{b.textContent="⚠️ Курс ориентировочный: $"+f(state.usdRub)+" · ¥"+f(state.cnyRub);b.style.color="#fbbf24";}}
 
-/* ================= ИКОНКИ КУЗОВА (SVG, 0 трафика) ================= */
+/* ================= ИКОНКИ КУЗОВА ================= */
 const BODY_ICON={SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 28h52M10 28l4-12h22l8 12M14 16l3-6h14l4 6"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>',Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 28h52M12 28l3-9h20l9 9M18 19l3-5h12l3 5"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>',MPV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 28h48M12 28V14h30l8 14M16 14v-3h10v3M30 14v-3h8v3"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>'};
 
 /* ================= WIZARD ================= */
-/* ---------- Загрузка авто из Google-таблицы (Apps Script) ---------- */
+let selected=null,lastCalc=null;
+const uniq=a=>[...new Set(a)];
+function buildStep1(){const b=document.getElementById("brandSel");b.innerHTML='<option value="">— Выберите бренд —</option>';uniq(carDatabase.map(c=>c.brand)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o);});b.onchange=fillModels;
+  const bp=document.getElementById("bodyPick");bp.innerHTML="";["SUV","Sedan","MPV"].forEach(t=>{const d=document.createElement("button");d.type="button";d.className="glass-soft rounded-xl p-3 flex flex-col items-center gap-1";d.innerHTML='<div style="width:48px;height:32px;color:#00F0FF">'+(BODY_ICON[t]||BODY_ICON.SUV)+'</div><span class="text-xs">'+t+'</span>';d.onclick=()=>{bp.querySelectorAll("button").forEach(x=>x.style.borderColor="");d.style.borderColor="#00F0FF";};bp.appendChild(d);});}
+function fillModels(){const brand=document.getElementById("brandSel").value,m=document.getElementById("modelSel"),t=document.getElementById("trimSel");m.innerHTML='<option value="">— Модель —</option>';t.innerHTML='<option value="">— Комплектация —</option>';m.disabled=!brand;t.disabled=true;hideSpec();if(!brand)return;uniq(carDatabase.filter(c=>c.brand===brand).map(c=>c.model)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o);});m.onchange=()=>fillTrims(m.value);}
+function fillTrims(model){const brand=document.getElementById("brandSel").value,t=document.getElementById("trimSel");t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=!model;hideSpec();if(!model)return;carDatabase.filter(c=>c.brand===brand&&c.model===model).forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=c.trim;t.appendChild(o);});t.onchange=()=>showSpec(carDatabase.filter(c=>c.brand===brand&&c.model===model)[+t.value]);}
+function hideSpec(){document.getElementById("specCard").classList.add("hidden");selected=null;}
+function showSpec(c){if(!c){hideSpec();return;}selected=c;document.getElementById("specCard").classList.remove("hidden");document.getElementById("specIcon").innerHTML=BODY_ICON[c.body]||BODY_ICON.SUV;document.getElementById("specType").textContent=c.type;document.getElementById("specPeak").textContent=c.pole_kw+" кВт";document.getElementById("specK30").textContent=c.k30_kw>0?c.k30_kw+" кВт":"— (льгота по л.с.)";document.getElementById("specCcRow").style.display=c.engine_cc>0?"":"none";document.getElementById("specCc").textContent=c.engine_cc+" см³";document.getElementById("specPrice").textContent=c.base_price_cny.toLocaleString("ru")+" ¥";
+  // Подставляем цену из базы в поле ввода, если оно пустое
+  const priceInput=document.getElementById("customPrice");
+  if(!priceInput.value)priceInput.value=c.base_price_cny;
+}
+function gotoStep(n){document.querySelectorAll(".wizard-step").forEach(s=>s.classList.toggle("hidden",+s.dataset.step!==n));document.querySelectorAll("#stepDots .step-dot").forEach(d=>{const i=+d.dataset.i;d.classList.toggle("active",i===n);d.classList.toggle("done",i<n);});window.scrollTo({top:0,behavior:"smooth"});}
+function buildCities(){const s=document.getElementById("citySel");Object.keys(RF_LOGISTICS).forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;s.appendChild(o);});}
+
+/* ================= РАСЧЁТ ================= */
+const money=n=>Math.round(n).toLocaleString("ru")+" ₽";
+const row=(l,v,cls="")=>'<div class="flex justify-between items-center py-2 '+cls+'" style="border-bottom:1px solid rgba(255,255,255,.05)"><span class="text-sm" style="color:#cbd5e1">'+l+'</span><b style="color:#fff">'+v+'</b></div>';
+function calculatePrice(){
+  if(!selected){alert("Выберите модель и комплектацию на шаге 2.");gotoStep(2);return;}
+  const c=selected,age=document.getElementById("ageSel").value,year=document.getElementById("yearSel").value,city=document.getElementById("citySel").value;
+  // Берем цену из поля ввода или из базы
+  const customPriceVal=parseFloat(document.getElementById("customPrice").value);
+  const priceCNY=customPriceVal>0?customPriceVal:c.base_price_cny;
+  const baseRub=priceCNY*state.cnyRub,logChina=CFG.LOGISTICS_CHINA,dutyObj=customsDuty(age,c.engine_cc,baseRub,c.type,c.k30_kw),duty=dutyObj.total,
+  const hp=Math.round(c.pole_kw*1.35962),util=utilFee(c.type,year,age,hp,c.k30_kw,c.engine_cc);
+  const certs=CFG.CERT_SBKTS+CFG.CERT_EPTS+CFG.CERT_GTO,logRF=RF_LOGISTICS[city]||RF_LOGISTICS["Другой город"],margin=CFG.MARGIN;
+  const total=baseRub+logChina+duty+util+certs+logRF+margin;
+  lastCalc={c,age,year,city,total,util,priceCNY};
+  const box=document.getElementById("resultBox");box.classList.remove("hidden");
+  box.innerHTML='<div class="glass-soft rounded-2xl p-5 anim"><div class="text-sm mb-3" style="color:#94a3b8">Детализация · '+c.brand+' '+c.model+' '+c.trim+' · '+city+'</div>'
+    +row("Авто в Китае (¥→₽)",money(baseRub)+(customPriceVal>0?' <span style="color:#00F0FF;font-size:11px">(ваша цена)</span>':' <span style="color:#64748b;font-size:11px">(из базы)</span>'),"anim anim-d1")
+    +row("Логистика по Китаю + граница",money(logChina),"anim anim-d1")
+    +(dutyObj.excise>0?row("Пошлина 15%",money(dutyObj.duty),"anim anim-d2")+row("Акциз (30-мин "+Math.round(c.k30_kw*1.35962)+" л.с.)",money(dutyObj.excise),"anim anim-d2")+row("НДС "+Math.round(CFG.VAT_RATE*100)+"%",money(dutyObj.vat),"anim anim-d2"):row("Таможенная пошлина (физлицо)",money(duty),"anim anim-d2"))
+    +row("Утилизационный сбор",money(util),"anim anim-d2")
+    +row("СБКТС + ЭПТС + ГТО",money(certs),"anim anim-d3")
+    +row("Доставка по РФ до города",money(logRF),"anim anim-d3")
+    +row("Услуги компании",money(margin),"anim anim-d4")
+    +'<div class="flex justify-between items-center pt-4 anim anim-d5"><span class="text-lg font-bold" style="color:#fff">ИТОГО ПОД КЛЮЧ</span><span class="text-2xl sm:text-3xl font-black" style="color:#FFD700">'+money(total)+'</span></div>'
+    +'<p class="text-[11px] mt-3" style="color:#64748b">*Пошлина — ориентировочно по единой ставке физлица. Для юрлица/коммерции расчёт иной. Сумма предварительная, фиксируется в договоре по VIN.</p></div>';
+  renderSavingsHint();
+  document.getElementById("leadWrap").classList.remove("hidden");
+  document.getElementById("leadWrap").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function renderSavingsHint(){if(!lastCalc)return;const{c,age}=lastCalc,hp=Math.round(c.pole_kw*1.35962);
+  const u26=utilFee(c.type,"2026",age,hp,c.k30_kw,c.engine_cc),u27=utilFee(c.type,"2027",age,hp,c.k30_kw,c.engine_cc),save=u27-u26;
+  const el=document.getElementById("resultBox");let h=document.getElementById("saveHint");
+  if(save>0){if(!h){h=document.createElement("div");h.id="saveHint";el.appendChild(h);}h.className="glass-soft rounded-2xl p-4 mt-3 text-center anim";h.innerHTML='💰 Ввоз в <b style="color:#FFD700">2026</b> сэкономит <b style="color:#00F0FF;font-size:1.1rem">'+money(save)+'</b> по утилю vs 2027';}
+  else if(h){h.remove();}}
+
+/* ================= ТАЙМЕР 2027 ================= */
+function tick(){const diff=new Date("2027-01-01T00:00:00")-new Date(),el=document.getElementById("countdown");
+  if(diff>0){const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=d+"д "+h+"ч "+m+"м";}else el.textContent="Ставки 2027 активны";}
+
+/* ================= МАСКА ТЕЛЕФОНА ================= */
+function maskPhone(v){let d=v.replace(/\D/g,"");if(d.startsWith("8"))d="7"+d.slice(1);if(!d.startsWith("7"))d="7"+d;d=d.slice(0,11);let r="+7";if(d.length>1)r+=" ("+d.slice(1,4);if(d.length>=5)r+=") "+d.slice(4,7);if(d.length>=8)r+="-"+d.slice(7,9);if(d.length>=10)r+="-"+d.slice(9,11);return r;}
+const validPhone=v=>v.replace(/\D/g,"").length===11;
+
+/* ================= ОТПРАВКА ЛИДА ================= */
+async function submitLead(e){
+  e.preventDefault();const form=e.target,msg=document.getElementById("formMsg"),btn=document.getElementById("submitBtn");
+  if(form.bot_check.value){msg.textContent="";return;}
+  const name=document.getElementById("fName").value.trim(),phone=document.getElementById("fPhone").value.trim();
+  if(!name){msg.innerHTML='<span style="color:#fbbf24">Введите имя</span>';return;}
+  if(!validPhone(phone)){msg.innerHTML='<span style="color:#fbbf24">Введите корректный телефон</span>';return;}
+  const utm=new URLSearchParams(location.search);
+  const payload={name,phone,model:lastCalc?lastCalc.c.brand+" "+lastCalc.c.model+" "+lastCalc.c.trim:"—",total:lastCalc?money(lastCalc.total):"—",city:lastCalc?lastCalc.city:"—",year:lastCalc?lastCalc.year:"—",source:(utm.get("utm_source")||"site")+"/"+(utm.get("utm_medium")||"organic"),turnstile:window.__cfToken||""};
+  btn.disabled=true;btn.textContent="Отправляем…";msg.textContent="";
+  if(CFG.LEAD_ENDPOINT){
+    try{const res=await fetch(CFG.LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await res.json().catch(()=>({}));if(res.ok&&j.ok){msg.innerHTML='<span style="color:#34d399">✅ Заявка отправлена! Менеджер свяжется.</span>';form.reset();}else throw new Error(j.error||"server");}
+    catch(err){msg.innerHTML='<span style="color:#fbbf24">Не удалось напрямую. Открываю мессенджер…</span>';openChannel(payload);}
+  }else{openChannel(payload);}
+  btn.disabled=false;btn.textContent="Отправить заявку";
+}
+function openChannel(p){
+  const txt="Заявка с калькулятора\nИмя: "+p.name+"\nТел: "+p.phone+"\nАвто: "+p.model+"\nГород: "+p.city+"\nРасчёт: "+p.total+"\nГод ввоза: "+p.year+"\nИсточник: "+p.source;
+  const enc=encodeURIComponent(txt);
+  if(CFG.BOT_USERNAME){window.open("https://t.me/"+CFG.BOT_USERNAME+"?text="+enc,"_blank");document.getElementById("formMsg").innerHTML='<span style="color:#34d399">✈️ Открываю Telegram — нажмите «Отправить» в чате.</span>';}
+  else{window.open("https://wa.me/"+CFG.WA_NUMBER+"?text="+enc,"_blank");document.getElementById("formMsg").innerHTML='<span style="color:#34d399">💬 Открываю WhatsApp — нажмите «Отправить».</span>';}
+}
+
+/* ================= TURNSTILE ================= */
+window.onTurnstileSuccess=function(t){window.__cfToken=t;};
+function initTurnstile(){if(!CFG.TURNSTILE_SITE_KEY)return;const slot=document.getElementById("turnstileSlot");const d=document.createElement("div");d.className="cf-turnstile";d.dataset.sitekey=CFG.TURNSTILE_SITE_KEY;d.dataset.callback="onTurnstileSuccess";slot.replaceWith(d);}
+
+/* ================= ЗАГРУЗКА ИЗ ТАБЛИЦЫ ================= */
 function cleanNum(v){return Number(String(v==null?"":v).replace(/[\s\u00A0]/g,"").replace(",","."))||0;}
 function normType(t){t=String(t||"").toLowerCase().trim();
  if(/элект|ev|elec/.test(t)&&!/гибр|hybrid|посл|парал/.test(t))return "Электромобиль";
@@ -263,87 +368,13 @@ function applyCars(cars){carDatabase.length=0;Array.prototype.push.apply(carData
  buildStep1();
  var m=document.getElementById("modelSel"),t=document.getElementById("trimSel");
  m.innerHTML='<option value="">— Модель —</option>';m.disabled=true;
- t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=true;hideSpec();}let selected=null,lastCalc=null;
-const uniq=a=>[...new Set(a)];
-function buildStep1(){const b=document.getElementById("brandSel");b.innerHTML='<option value="">— Выберите бренд —</option>';uniq(carDatabase.map(c=>c.brand)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o);});b.onchange=fillModels;
-  const bp=document.getElementById("bodyPick");bp.innerHTML="";["SUV","Sedan","MPV"].forEach(t=>{const d=document.createElement("button");d.type="button";d.className="glass-soft rounded-xl p-3 flex flex-col items-center gap-1";d.innerHTML='<div style="width:48px;height:32px;color:#00F0FF">'+(BODY_ICON[t]||BODY_ICON.SUV)+'</div><span class="text-xs">'+t+'</span>';d.onclick=()=>{bp.querySelectorAll("button").forEach(x=>x.style.borderColor="");d.style.borderColor="#00F0FF";};bp.appendChild(d);});}
-function fillModels(){const brand=document.getElementById("brandSel").value,m=document.getElementById("modelSel"),t=document.getElementById("trimSel");m.innerHTML='<option value="">— Модель —</option>';t.innerHTML='<option value="">— Комплектация —</option>';m.disabled=!brand;t.disabled=true;hideSpec();if(!brand)return;uniq(carDatabase.filter(c=>c.brand===brand).map(c=>c.model)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o);});m.onchange=()=>fillTrims(m.value);}
-function fillTrims(model){const brand=document.getElementById("brandSel").value,t=document.getElementById("trimSel");t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=!model;hideSpec();if(!model)return;carDatabase.filter(c=>c.brand===brand&&c.model===model).forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=c.trim;t.appendChild(o);});t.onchange=()=>showSpec(carDatabase.filter(c=>c.brand===brand&&c.model===model)[+t.value]);}
-function hideSpec(){document.getElementById("specCard").classList.add("hidden");selected=null;}
-function showSpec(c){if(!c){hideSpec();return;}selected=c;document.getElementById("specCard").classList.remove("hidden");document.getElementById("specIcon").innerHTML=BODY_ICON[c.body]||BODY_ICON.SUV;document.getElementById("specType").textContent=c.type;document.getElementById("specPeak").textContent=c.pole_kw+" кВт";document.getElementById("specK30").textContent=c.k30_kw>0?c.k30_kw+" кВт":"— (льгота по л.с.)";document.getElementById("specCcRow").style.display=c.engine_cc>0?"":"none";document.getElementById("specCc").textContent=c.engine_cc+" см³";document.getElementById("specPrice").textContent=c.base_price_cny.toLocaleString("ru")+" ¥";}
-function gotoStep(n){document.querySelectorAll(".wizard-step").forEach(s=>s.classList.toggle("hidden",+s.dataset.step!==n));document.querySelectorAll("#stepDots .step-dot").forEach(d=>{const i=+d.dataset.i;d.classList.toggle("active",i===n);d.classList.toggle("done",i<n);});window.scrollTo({top:0,behavior:"smooth"});}
-function buildCities(){const s=document.getElementById("citySel");Object.keys(RF_LOGISTICS).forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;s.appendChild(o);});}
-
-/* ================= РАСЧЁТ ================= */
-const money=n=>Math.round(n).toLocaleString("ru")+" ₽";
-const row=(l,v,cls="")=>'<div class="flex justify-between items-center py-2 '+cls+'" style="border-bottom:1px solid rgba(255,255,255,.05)"><span class="text-sm" style="color:#cbd5e1">'+l+'</span><b style="color:#fff">'+v+'</b></div>';
-function calculatePrice(){
-  if(!selected){alert("Выберите модель и комплектацию на шаге 2.");gotoStep(2);return;}
-  const c=selected,age=document.getElementById("ageSel").value,year=document.getElementById("yearSel").value,city=document.getElementById("citySel").value;
-  const baseRub=c.base_price_cny*state.cnyRub,logChina=CFG.LOGISTICS_CHINA,duty=customsDuty(age,c.engine_cc,baseRub);
-  const hp=Math.round(c.pole_kw*1.35962),util=utilFee(c.type,year,age,hp,c.k30_kw,c.engine_cc);
-  const certs=CFG.CERT_SBKTS+CFG.CERT_EPTS+CFG.CERT_GTO,logRF=RF_LOGISTICS[city]||RF_LOGISTICS["Другой город"],margin=CFG.MARGIN;
-  const total=baseRub+logChina+duty+util+certs+logRF+margin;
-  lastCalc={c,age,year,city,total,util};
-  const box=document.getElementById("resultBox");box.classList.remove("hidden");
-  box.innerHTML='<div class="glass-soft rounded-2xl p-5 anim"><div class="text-sm mb-3" style="color:#94a3b8">Детализация · '+c.brand+' '+c.model+' '+c.trim+' · '+city+'</div>'
-    +row("Авто в Китае (¥→₽)",money(baseRub),"anim anim-d1")+row("Логистика по Китаю + граница",money(logChina),"anim anim-d1")
-    +row("Таможенная пошлина (физлицо)",money(duty),"anim anim-d2")+row("Утилизационный сбор",money(util),"anim anim-d2")
-    +row("СБКТС + ЭПТС + ГТО",money(certs),"anim anim-d3")+row("Доставка по РФ до города",money(logRF),"anim anim-d3")
-    +row("Услуги компании",money(margin),"anim anim-d4")
-    +'<div class="flex justify-between items-center pt-4 anim anim-d5"><span class="text-lg font-bold" style="color:#fff">ИТОГО ПОД КЛЮЧ</span><span class="text-2xl sm:text-3xl font-black" style="color:#FFD700">'+money(total)+'</span></div>'
-    +'<p class="text-[11px] mt-3" style="color:#64748b">*Пошлина — ориентировочно по единой ставке физлица. Для юрлица/коммерции расчёт иной. Сумма предварительная, фиксируется в договоре по VIN.</p></div>';
-  renderSavingsHint();
-  document.getElementById("leadWrap").classList.remove("hidden");
-  document.getElementById("leadWrap").scrollIntoView({behavior:"smooth",block:"center"});
-}
-function renderSavingsHint(){if(!lastCalc)return;const{c,age}=lastCalc,hp=Math.round(c.pole_kw*1.35962);
-  const u26=utilFee(c.type,"2026",age,hp,c.k30_kw,c.engine_cc),u27=utilFee(c.type,"2027",age,hp,c.k30_kw,c.engine_cc),save=u27-u26;
-  const el=document.getElementById("resultBox");let h=document.getElementById("saveHint");
-  if(save>0){if(!h){h=document.createElement("div");h.id="saveHint";el.appendChild(h);}h.className="glass-soft rounded-2xl p-4 mt-3 text-center anim";h.innerHTML='💰 Ввоз в <b style="color:#FFD700">2026</b> сэкономит <b style="color:#00F0FF;font-size:1.1rem">'+money(save)+'</b> по утилю vs 2027';}
-  else if(h){h.remove();}}
-
-/* ================= ТАЙМЕР 2027 ================= */
-function tick(){const diff=new Date("2027-01-01T00:00:00")-new Date(),el=document.getElementById("countdown");
-  if(diff>0){const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=d+"д "+h+"ч "+m+"м";}else el.textContent="Ставки 2027 активны";}
-
-/* ================= МАСКА ТЕЛЕФОНА ================= */
-function maskPhone(v){let d=v.replace(/\D/g,"");if(d.startsWith("8"))d="7"+d.slice(1);if(!d.startsWith("7"))d="7"+d;d=d.slice(0,11);let r="+7";if(d.length>1)r+=" ("+d.slice(1,4);if(d.length>=5)r+=") "+d.slice(4,7);if(d.length>=8)r+="-"+d.slice(7,9);if(d.length>=10)r+="-"+d.slice(9,11);return r;}
-const validPhone=v=>v.replace(/\D/g,"").length===11;
-
-/* ================= ОТПРАВКА ЛИДА (fallback без сервера) ================= */
-async function submitLead(e){
-  e.preventDefault();const form=e.target,msg=document.getElementById("formMsg"),btn=document.getElementById("submitBtn");
-  if(form.bot_check.value){msg.textContent="";return;} // honeypot: бот -> тихо сливаем
-  const name=document.getElementById("fName").value.trim(),phone=document.getElementById("fPhone").value.trim();
-  if(!name){msg.innerHTML='<span style="color:#fbbf24">Введите имя</span>';return;}
-  if(!validPhone(phone)){msg.innerHTML='<span style="color:#fbbf24">Введите корректный телефон</span>';return;}
-  const utm=new URLSearchParams(location.search);
-  const payload={name,phone,model:lastCalc?lastCalc.c.brand+" "+lastCalc.c.model+" "+lastCalc.c.trim:"—",total:lastCalc?money(lastCalc.total):"—",city:lastCalc?lastCalc.city:"—",year:lastCalc?lastCalc.year:"—",source:(utm.get("utm_source")||"site")+"/"+(utm.get("utm_medium")||"organic"),turnstile:window.__cfToken||""};
-  btn.disabled=true;btn.textContent="Отправляем…";msg.textContent="";
-  if(CFG.LEAD_ENDPOINT){ // Фаза 2: serverless (токен в env)
-    try{const res=await fetch(CFG.LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await res.json().catch(()=>({}));if(res.ok&&j.ok){msg.innerHTML='<span style="color:#34d399">✅ Заявка отправлена! Менеджер свяжется.</span>';form.reset();}else throw new Error(j.error||"server");}
-    catch(err){msg.innerHTML='<span style="color:#fbbf24">Не удалось напрямую. Открываю мессенджер…</span>';openChannel(payload);}
-  }else{openChannel(payload);} // Фаза 1: WhatsApp/бот без сервера
-  btn.disabled=false;btn.textContent="Отправить заявку";
-}
-function openChannel(p){
-  const txt="Заявка с калькулятора\nИмя: "+p.name+"\nТел: "+p.phone+"\nАвто: "+p.model+"\nГород: "+p.city+"\nРасчёт: "+p.total+"\nГод ввоза: "+p.year+"\nИсточник: "+p.source;
-  const enc=encodeURIComponent(txt);
-  if(CFG.BOT_USERNAME){window.open("https://t.me/"+CFG.BOT_USERNAME+"?text="+enc,"_blank");document.getElementById("formMsg").innerHTML='<span style="color:#34d399">✈️ Открываю Telegram — нажмите «Отправить» в чате.</span>';}
-  else{window.open("https://wa.me/"+CFG.WA_NUMBER+"?text="+enc,"_blank");document.getElementById("formMsg").innerHTML='<span style="color:#34d399">💬 Открываю WhatsApp — нажмите «Отправить».</span>';}
-}
-
-/* ================= TURNSTILE (корректный глобальный колбэк) ================= */
-window.onTurnstileSuccess=function(t){window.__cfToken=t;};
-function initTurnstile(){if(!CFG.TURNSTILE_SITE_KEY)return;const slot=document.getElementById("turnstileSlot");const d=document.createElement("div");d.className="cf-turnstile";d.dataset.sitekey=CFG.TURNSTILE_SITE_KEY;d.dataset.callback="onTurnstileSuccess";slot.replaceWith(d);}
+ t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=true;hideSpec();}
 
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded",()=>{
   buildStep1();buildCities();initTurnstile();loadRates();tick();setInterval(tick,60000);loadCars();
   document.getElementById("leadForm").addEventListener("submit",submitLead);
   const ph=document.getElementById("fPhone");ph.addEventListener("input",()=>ph.value=maskPhone(ph.value));ph.addEventListener("focus",()=>{if(!ph.value)ph.value="+7 (";});
-  // ссылка TG в футере: если бот не задан -> ведёт в WhatsApp, чтобы не было мёртвой кнопки
   if(CFG.BOT_USERNAME){document.getElementById("tgLink").href="https://t.me/"+CFG.BOT_USERNAME;}else{document.getElementById("tgLink").href="https://wa.me/"+CFG.WA_NUMBER;document.getElementById("tgLink").textContent="💬 WhatsApp (бот ещё не подключён)";}
 });
 </script>
