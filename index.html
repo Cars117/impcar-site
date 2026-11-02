@@ -12,7 +12,7 @@
 html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
 .hero{position:relative;min-height:100vh;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:-30px;background:url('hero-bg.jpg') center/cover no-repeat;filter:blur(3px);-webkit-filter:blur(3px);z-index:0}
+.hero::before{content:'';position:absolute;inset:-30px;background:url('hero-bg.jpg') center/cover no-repeat;filter:blur(4px);-webkit-filter:blur(4px);z-index:0}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.95) 0%,rgba(7,11,20,.88) 15%,rgba(11,18,32,.70) 40%,rgba(11,18,32,.75) 60%,rgba(7,11,20,.92) 100%);z-index:1}
 .hero>*{position:relative;z-index:2}
 .glass{background:rgba(15,23,42,.55);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 20px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
@@ -90,9 +90,17 @@ select.field option{background:#0b1220;color:#fff}
           </div>
         </div>
       </div>
-      <label class="block text-sm font-semibold mb-1.5">💰 Цена авто в Китае (юани) — введите вашу цену</label>
-      <input id="customPrice" type="number" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" placeholder="Например, 139800">
+      
+      <label class="block text-sm font-semibold mb-1.5">💰 Цена авто — введите вашу цену</label>
+      <div class="flex gap-3 mb-4">
+        <input id="customPrice" type="number" class="field ring-focus flex-1 rounded-xl px-4 py-3.5 text-base" placeholder="Например, 139800">
+        <select id="currencySel" class="field ring-focus rounded-xl px-4 py-3.5 text-base" style="min-width:110px">
+          <option value="CNY">¥ Юани</option>
+          <option value="USD">$ Доллары</option>
+        </select>
+      </div>
       <p class="text-xs mb-4" style="color:#64748b">Если не знаете точную цену — оставьте как есть, используем ориентир из базы</p>
+      
       <label class="block text-sm font-semibold mb-1.5">Возраст автомобиля</label>
       <select id="ageSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option></select>
       <label class="block text-sm font-semibold mb-1.5">Планируемый год ввоза</label>
@@ -149,7 +157,7 @@ const CFG={
   BOT_USERNAME:"Avto_Calc_bot",
   WA_NUMBER:"79266173662",
   TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
-  CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzdMqIlhVCw0D21B6U10D5x2C5xFWW1VVVhTAYvzzRyq8AHmr_9H851RhD0pKv2Enad/exec", 
+  CARS_SHEET_URL:"", 
   FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.22, /* 22% НДС с 2026 года */
   LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
 };
@@ -272,9 +280,14 @@ function calculatePrice(){
   if(!selected){alert("Выберите модель и комплектацию на шаге 2.");gotoStep(2);return;}
   const c=selected,age=document.getElementById("ageSel").value,year=document.getElementById("yearSel").value,city=document.getElementById("citySel").value;
   const customPriceVal=parseFloat(document.getElementById("customPrice").value);
-  const priceCNY=customPriceVal>0?customPriceVal:c.base_price_cny;
-  const baseRub=priceCNY*state.cnyRub,logChina=CFG.LOGISTICS_CHINA;
+  const currency=document.getElementById("currencySel").value;
   
+  let priceCNY=customPriceVal>0?customPriceVal:c.base_price_cny;
+  if(currency==="USD"&&customPriceVal>0){
+    priceCNY=customPriceVal/state.usdRub*state.cnyRub;
+  }
+  
+  const baseRub=priceCNY*state.cnyRub,logChina=CFG.LOGISTICS_CHINA;
   const dutyObj=customsDuty(age,c.engine_cc,baseRub,c.type,c.k30_kw);
   const duty=dutyObj.total;
   const customsFee = getCustomsFee(baseRub);
