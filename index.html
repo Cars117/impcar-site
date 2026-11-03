@@ -507,25 +507,27 @@ function normType(t){t=String(t||"").toLowerCase().trim();
 // Обновленная функция маппинга для поддержки новых колонок
 function mapRow(r){
   var type=normType(r.type);
-  if(!/^(ДВС|Параллельный гибрид|Последовательный гибрид|Электромобиль)$/.test(type))console.warn("Не распознан тип '"+r.type+"' -> считаем как ДВС");
   
-  // Автоматический расчет pole_kw из л.с., если в таблице указаны только л.с.
+  // Автоматический расчет kW из HP, если kW не указан
   let poleKw = cleanNum(r.pole_kw);
   if (!poleKw && r.pole_hp) {
     poleKw = Math.round(cleanNum(r.pole_hp) / 1.35962);
   }
-
-  return{
-    brand:String(r.brand||"").trim(),
-    model:String(r.model||"").trim(),
-    trim:String(r.trim||"").trim()||"Base",
-    body:["SUV","Sedan","MPV"].indexOf(r.body)>=0?r.body:"SUV",
-    type:type,
-    engine_cc:cleanNum(r.engine_cc),
+  
+  return {
+    brand: String(r.brand || "").trim(),
+    model: String(r.model || "").trim(),
+    trim: String(r.trim || "").trim() || "Base",
+    body: ["SUV","Sedan","MPV"].indexOf(r.body) >= 0 ? r.body : "SUV",
+    type: type,
+    engine_cc: cleanNum(r.engine_cc),
+    
+    // Используем рассчитанное значение
     pole_kw: poleKw,
-    k30_kw:cleanNum(r.k30_kw),
-    weight_kg:cleanNum(r.weight_kg),
-    base_price_cny:cleanNum(r.base_price_cny)
+    
+    k30_kw: cleanNum(r.k30_kw),
+    weight_kg: cleanNum(r.weight_kg),
+    base_price_cny: cleanNum(r.base_price_cny)
   };
 }
 
