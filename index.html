@@ -545,16 +545,27 @@ function mapRow(r){
 }
 function _bust(){return (CFG.CARS_SHEET_URL.indexOf('?')>=0?'&':'?')+'_'+Date.now();}
 async function loadCars(){
-  if(!CFG.CARS_SHEET_URL||CFG.CARS_SHEET_URL.indexOf('https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec')===0)return;
+  // 1. Исправлена проверка: теперь функция НЕ прерывается, если URL правильный
+  if(!CFG.CARS_SHEET_URL || CFG.CARS_SHEET_URL.includes('ВСТАВЬТЕ')) return;
+  
   try{
-    const res=await fetch(CARS_SHEET_URL+_bust(),{cache:'no-store'});
-    if(!res.ok)throw new Error('http '+res.status);
-    const data=await res.json();
-    const rows=Array.isArray(data)?data:(data&&data.rows)||[];
-    const cars=rows.map(mapRow).filter(c=>c.brand&&c.model&&c.base_price_cny>0);
-    if(cars.length){applyCars(cars);console.log('✅ Авто загружено из таблицы:',cars.length);}
-    else console.warn('Таблица пуста/не распознана — осталась встроенная база');
-  }catch(e){console.warn('Таблица не загрузилась, работаем на встроенной базе:',e.message);}
+    // 2. Исправлена опечатка: добавлено CFG. перед CARS_SHEET_URL
+    const res = await fetch(CFG.CARS_SHEET_URL + _bust(), {cache: 'no-store'});
+    if(!res.ok) throw new Error('http ' + res.status);
+    
+    const data = await res.json();
+    const rows = Array.isArray(data) ? data : (data && data.rows) || [];
+    const cars = rows.map(mapRow).filter(c => c.brand && c.model && c.base_price_cny > 0);
+    
+    if(cars.length){
+      applyCars(cars);
+      console.log('✅ Авто загружено из таблицы:', cars.length);
+    } else {
+      console.warn('Таблица пуста/не распознана — осталась встроенная база');
+    }
+  } catch(e) {
+    console.warn('Таблица не загрузилась, работаем на встроенной базе:', e.message);
+  }
 }
 function applyCars(cars){
   carDatabase.length=0;Array.prototype.push.apply(carDatabase,cars);
