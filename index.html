@@ -73,7 +73,7 @@ select.field option{background:#0b1220;color:#fff}
       <div id="engineTypePick" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="EV"><span class="text-3xl">⚡</span><span class="text-xs font-semibold text-center">Электро</span></button>
         <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="SEQ_HYBRID"><span class="text-3xl">🔋</span><span class="text-xs font-semibold text-center">Посл. гибрид</span></button>
-        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="PAR_HYBRID"><span class="text-3xl">🔌</span><span class="text-xs font-semibold text-center">Парал. гибрид</span></button>
+        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="PAR_HYBRID"><span class="text-3xl"></span><span class="text-xs font-semibold text-center">Парал. гибрид</span></button>
         <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="ICE"><span class="text-3xl">🛢️</span><span class="text-xs font-semibold text-center">ДВС</span></button>
       </div>
       <div id="engineTypeInfo" class="glass-soft rounded-xl p-4 mb-6 hidden text-sm" style="color:#94a3b8"><div id="engineTypeDesc"></div></div>
@@ -178,17 +178,17 @@ select.field option{background:#0b1220;color:#fff}
 <script>
 /* ================= CFG ================= */
 const CFG={
-  LEAD_ENDPOINT:"", // необязательно: URL Netlify Function для приёма лидов
+  LEAD_ENDPOINT:"",
   BOT_USERNAME:"Avto_Calc_bot",
   WA_NUMBER:"79266173662",
   TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
-  CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec", // ← шаг 3 Части 1
+  CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec",
   FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.22,
   LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
 };
-const RF_LOGISTICS={"Владивосток":30000,"Хабаровск":45000,"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":195000,"Санкт-Петербург":225000,"Казань":175000,"Краснодар":235000,"Сочи":240000,"Калининград":140000,"Другой город":100000};
+const RF_LOGISTICS={"Владивосток":30000,"Хабаровск":45000,"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000,"Калининград":140000,"Другой город":100000};
 
-/* ================= БАЗА-ФАЛБЭК (работает без таблицы) ================= */
+/* ================= БАЗА-ФАЛБЭК ================= */
 let carDatabase=[
  {brand:"Zeekr",model:"001",trim:"YOU (AWD)",body:"Sedan",type:"EV",engine_cc:0,pole_hp:544,pole_kw:400,k30_hp:204,k30_kw:150,weight_kg:2350,base_price_cny:329000},
  {brand:"Li Auto",model:"L9",trim:"Max",body:"SUV",type:"SEQ_HYBRID",engine_cc:1496,pole_hp:449,pole_kw:330,k30_hp:136,k30_kw:100,weight_kg:2560,base_price_cny:439800},
@@ -205,12 +205,26 @@ C4:[[160,2584000,3956200,2842400,4351800],[190.06,2635200,4000800,2898800,440080
 C5:[[160,3290600,4325800,3619800,4758400],[190.06,3345600,4389600,3680200,4828600],[220.06,3403200,4456800,3743600,4902400],[250.08,3460800,4524000,3806800,4976400],[280.08,3530400,4627200,3883400,5090000],[310.08,3600000,4732800,3960000,5206000],[340.1,3727200,4992000,4100000,5491200],[370.1,3857600,5268000,4243200,5794800],[400.11,3993600,5558400,4393000,6114200],[430.11,4132800,5863200,4546000,6449600],[460.13,4276800,6187200,4704400,6806000],[500.14,4425600,6528000,4868200,7180800],[Infinity,4581600,6885600,5039800,7574200]]
 };
 
-/* ================= РАСЧЁТ УТИЛЯ ================= */
-function utilFee(type,year,age,hp,k30,cc){
+/* ================= РАСЧЁТ УТИЛЯ (ИСПРАВЛЕНО для PAR_HYBRID) ================= */
+function utilFee(type, year, age, hp, k30, cc){
   const y=(year==="2027")?"2027":"2026";
   const pick=b=>age==="new"?(y==="2027"?b[3]:b[1]):(y==="2027"?b[4]:b[2]);
   const scan=(tbl,pw)=>{for(const b of tbl){if(pw<=b[0])return pick(b);}return pick(tbl[tbl.length-1]);};
+  
+  // Электро и последовательный гибрид - только по 30-мин мощности электромотора
   if(type==="EV"||type==="SEQ_HYBRID")return scan(R.EV,k30);
+  
+  // Параллельный гибрид - СУММА мощностей ДВС и электромотора
+  if(type==="PAR_HYBRID"){
+    const totalHp = hp + (k30 * 1.35962); // ДВС (л.с.) + электромотор (кВт → л.с.)
+    if(cc<=1000)return scan(R.C1,totalHp);
+    if(cc<=2000)return scan(R.C2,totalHp);
+    if(cc<=3000)return scan(R.C3,totalHp);
+    if(cc<=3500)return scan(R.C4,totalHp);
+    return scan(R.C5,totalHp);
+  }
+  
+  // Чистый ДВС - только по мощности ДВС
   if(cc<=1000)return scan(R.C1,hp);
   if(cc<=2000)return scan(R.C2,hp);
   if(cc<=3000)return scan(R.C3,hp);
@@ -218,7 +232,7 @@ function utilFee(type,year,age,hp,k30,cc){
   return scan(R.C5,hp);
 }
 
-/* ================= РАСЧЁТ ПОШЛИНЫ (ЕТС физлицо, как TKS/Wersum) ================= */
+/* ================= РАСЧЁТ ПОШЛИНЫ ================= */
 function getRate(tbl,v){for(const[k,r]of tbl){if(v<=k)return r;}return tbl[tbl.length-1][1];}
 function customsDuty(age,cc,priceRub,type,k30kw){
   const eur=state.eurRub||98, vol=cc>0?cc:0;
@@ -232,7 +246,6 @@ function customsDuty(age,cc,priceRub,type,k30kw){
   }
   let total;
   if(age==="new"){
-    // до 3 лет: 48% от стоимости, но не менее X евро/см³
     const minEur=getRate([[1000,3.5],[1500,3.5],[1800,3.5],[2300,5.5],[3000,7.5],[Infinity,15]],vol);
     total=Math.max(priceRub*0.48, vol*minEur*eur);
   }else if(age==="mid"){
@@ -243,7 +256,7 @@ function customsDuty(age,cc,priceRub,type,k30kw){
   return {duty:total,excise:0,vat:0,total:total};
 }
 
-/* ================= ТАМОЖЕННЫЙ СБОР (оформление) ================= */
+/* ================= ТАМОЖЕННЫЙ СБОР ================= */
 function getCustomsFee(p){
   if(p<=200000)return 1231;
   if(p<=450000)return 2462;
@@ -282,7 +295,7 @@ const uniq=a=>[...new Set(a)];
 const ENGINE_TYPE_INFO={
  EV:{title:'Чистый электромобиль',desc:'Пошлина 15% + акциз и НДС по 30‑мин мощности. Утильсбор по 30‑мин кВт. Примеры: Zeekr 001, BYD Seal, Toyota bZ3X.'},
  SEQ_HYBRID:{title:'Последовательный гибрид (EREV)',desc:'Считается как электромобиль: ДВС только заряжает батарею. Примеры: Li Auto L6–L9, Voyah Free.'},
- PAR_HYBRID:{title:'Параллельный гибрид',desc:'Считается как ДВС: пошлина и утильсбор по объёму и мощности ДВС. Примеры: Toyota RAV4 Hybrid, Geely Monjaro HEV.'},
+ PAR_HYBRID:{title:'Параллельный гибрид',desc:'Считается как ДВС: пошлина по объёму, утильсбор по СУММЕ мощностей ДВС и электромотора. Примеры: Geely Monjaro, Toyota RAV4 Hybrid, Zeekr 8X/9X.'},
  ICE:{title:'ДВС (бензин / дизель)',desc:'Пошлина по возрасту и объёму (ЕТС), утильсбор по мощности в л.с. Примеры: Mazda CX-5, Changan UNI-V.'}
 };
 
@@ -428,7 +441,7 @@ function renderSavingsHint(){
   const{c,age}=lastCalc,hp=Math.round(c.pole_kw*1.35962);
   const u26=utilFee(c.type,'2026',age,hp,c.k30_kw,c.engine_cc),u27=utilFee(c.type,'2027',age,hp,c.k30_kw,c.engine_cc),save=u27-u26;
   const el=document.getElementById('resultBox');let h=document.getElementById('saveHint');
-  if(save>0){if(!h){h=document.createElement('div');h.id='saveHint';el.appendChild(h);}h.className='glass-soft rounded-2xl p-4 mt-3 text-center anim';h.innerHTML='💰 Ввоз в <b style="color:#FFD700">2026</b> сэкономит <b style="color:#00F0FF;font-size:1.1rem">'+money(save)+'</b> по утилю vs 2027';}
+  if(save>0){if(!h){h=document.createElement('div');h.id='saveHint';el.appendChild(h);}h.className='glass-soft rounded-2xl p-4 mt-3 text-center anim';h.innerHTML=' Ввоз в <b style="color:#FFD700">2026</b> сэкономит <b style="color:#00F0FF;font-size:1.1rem">'+money(save)+'</b> по утилю vs 2027';}
   else if(h){h.remove();}
 }
 
@@ -452,8 +465,8 @@ function initTurnstile(){
 async function submitLead(e){
   e.preventDefault();
   const form=e.target,msg=document.getElementById('formMsg'),btn=document.getElementById('submitBtn');
-  if(form.bot_check.value){msg.textContent='';return;} // honeypot: бот попался
-  if(CFG.TURNSTILE_SITE_KEY&&!window.__cfToken){msg.innerHTML='<span style="color:#fbbf24">⚠️ Пройдите проверку «Я не робот»</span>';return;}
+  if(form.bot_check.value){msg.textContent='';return;}
+  if(CFG.TURNSTILE_SITE_KEY&&!window.__cfToken){msg.innerHTML='<span style="color:#fbbf24">️ Пройдите проверку «Я не робот»</span>';return;}
   const name=document.getElementById('fName').value.trim(),phone=document.getElementById('fPhone').value.trim();
   if(!name){msg.innerHTML='<span style="color:#fbbf24">Введите имя</span>';return;}
   if(!validPhone(phone)){msg.innerHTML='<span style="color:#fbbf24">Введите корректный телефон</span>';return;}
@@ -504,11 +517,9 @@ function mapRow(r){
 }
 function _bust(){return (CFG.CARS_SHEET_URL.indexOf('?')>=0?'&':'?')+'_'+Date.now();}
 async function loadCars(){
-  // Просто проверяем, что URL существует и не является заглушкой
-  if(!CFG.CARS_SHEET_URL || CFG.CARS_SHEET_URL.includes('ВСТАВЬТЕ')) return;
-  
+  if(!CFG.CARS_SHEET_URL||CFG.CARS_SHEET_URL.indexOf('https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec')===0)return;
   try{
-    const res=await fetch(CFG.CARS_SHEET_URL+_bust(),{cache:'no-store'});
+    const res=await fetch(CARS_SHEET_URL+_bust(),{cache:'no-store'});
     if(!res.ok)throw new Error('http '+res.status);
     const data=await res.json();
     const rows=Array.isArray(data)?data:(data&&data.rows)||[];
