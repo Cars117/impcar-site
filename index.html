@@ -504,7 +504,9 @@ function mapRow(r){
 }
 function _bust(){return (CFG.CARS_SHEET_URL.indexOf('?')>=0?'&':'?')+'_'+Date.now();}
 async function loadCars(){
-  if(!CFG.CARS_SHEET_URL||CFG.CARS_SHEET_URL.indexOf('https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec')===0)return;
+  // Просто проверяем, что URL существует и не является заглушкой
+  if(!CFG.CARS_SHEET_URL || CFG.CARS_SHEET_URL.includes('ВСТАВЬТЕ')) return;
+  
   try{
     const res=await fetch(CFG.CARS_SHEET_URL+_bust(),{cache:'no-store'});
     if(!res.ok)throw new Error('http '+res.status);
