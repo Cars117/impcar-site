@@ -7,6 +7,7 @@
 <meta name="description" content="Калькулятор стоимости авто из Китая и Кореи под ключ: таможня, утильсбор по 30-минутной мощности, логистика до вашего города.">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{ink:'#070b14',navy:'#0b1220',gold:'#FFD700',neon:'#00F0FF'},fontFamily:{sans:['Inter','-apple-system','Segoe UI','Roboto','sans-serif']}}}}</script>
+<!-- Cloudflare Turnstile -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -32,6 +33,10 @@ select.field option{background:#0b1220;color:#fff}
 .anim-d1{animation-delay:.08s}.anim-d2{animation-delay:.16s}.anim-d3{animation-delay:.24s}.anim-d4{animation-delay:.32s}.anim-d5{animation-delay:.40s}
 .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
 ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#1e293b;border-radius:8px}
+/* Стили для переключателя единиц */
+.unit-toggle { display: inline-flex; background: rgba(255,255,255,0.1); border-radius: 6px; padding: 2px; margin-left: 8px; }
+.unit-btn { padding: 2px 8px; font-size: 0.75rem; cursor: pointer; border-radius: 4px; color: #94a3b8; transition: all 0.2s; }
+.unit-btn.active { background: #00F0FF; color: #070b14; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -78,13 +83,38 @@ select.field option{background:#0b1220;color:#fff}
       <select id="modelSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" disabled><option value="">— Сначала бренд —</option></select>
       <label class="block text-sm font-semibold mb-1.5">Комплектация</label>
       <select id="trimSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" disabled><option value="">— Сначала модель —</option></select>
+      
+      <!-- Карточка характеристик с выбором единиц -->
       <div id="specCard" class="glass-soft rounded-2xl p-4 mb-4 hidden">
         <div class="flex items-start gap-4">
           <div id="specIcon" class="shrink-0" style="width:64px;height:48px;color:#00F0FF"></div>
-          <div class="text-sm space-y-1">
+          <div class="text-sm space-y-1 w-full">
             <div><span style="color:#94a3b8">Тип:</span> <b id="specType" style="color:#fff"></b></div>
-            <div><span style="color:#94a3b8">Пиковая мощность:</span> <b id="specPeak" style="color:#FFD700"></b></div>
-            <div><span style="color:#94a3b8">30‑мин мощность:</span> <b id="specK30" style="color:#00F0FF"></b> <span class="text-xs" style="color:#64748b">(по ней — льгота утиля и акциз для EV/гибридов)</span></div>
+            
+            <!-- Блок мощности с переключателем -->
+            <div class="flex items-center justify-between">
+              <div>
+                <span style="color:#94a3b8">Пиковая мощность:</span> 
+                <b id="specPeak" style="color:#FFD700"></b>
+              </div>
+              <div class="unit-toggle" id="peakUnitToggle">
+                <div class="unit-btn active" data-unit="kw">кВт</div>
+                <div class="unit-btn" data-unit="hp">л.с.</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <span style="color:#94a3b8">30‑мин мощность:</span> 
+                <b id="specK30" style="color:#00F0FF"></b>
+              </div>
+              <div class="unit-toggle" id="k30UnitToggle">
+                <div class="unit-btn active" data-unit="kw">кВт</div>
+                <div class="unit-btn" data-unit="hp">л.с.</div>
+              </div>
+            </div>
+            <div class="text-xs" style="color:#64748b">(по 30-мин мощности — льгота утиля и акциз для EV/гибридов)</div>
+
             <div id="specCcRow"><span style="color:#94a3b8">Объём ДВС:</span> <b id="specCc" style="color:#fff"></b></div>
             <div><span style="color:#94a3b8">Цена в базе:</span> <b id="specPrice" style="color:#fff"></b></div>
           </div>
@@ -130,7 +160,10 @@ select.field option{background:#0b1220;color:#fff}
       <input id="fName" type="text" required placeholder="Например, Алексей" class="field ring-focus w-full rounded-xl px-4 py-3.5 mb-4">
       <label class="block text-sm font-semibold mb-1.5">Телефон (WhatsApp/Telegram)</label>
       <input id="fPhone" type="tel" required inputmode="tel" placeholder="+7 (___) ___-__-__" class="field ring-focus w-full rounded-xl px-4 py-3.5 mb-4">
-      <div id="turnstileSlot" class="mb-4"></div>
+      
+      <!-- Слот для капчи -->
+      <div id="turnstileSlot" class="mb-4 min-h-[65px]"></div>
+      
       <button type="submit" id="submitBtn" class="btn-gold w-full rounded-xl py-4 text-base">Отправить заявку</button>
       <div id="formMsg" class="text-sm mt-3 text-center"></div>
       <p class="text-[11px] mt-3 text-center" style="color:#64748b">Нажимая кнопку, вы соглашаетесь на обработку персональных данных. Расчёт предварительный, финальная сумма — по договору.</p>
@@ -153,10 +186,10 @@ select.field option{background:#0b1220;color:#fff}
 <script>
 /* ================= CFG ================= */
 const CFG={
-  LEAD_ENDPOINT:"",
+  LEAD_ENDPOINT:"", // Укажите URL вашей Netlify Function здесь
   BOT_USERNAME:"Avto_Calc_bot",
   WA_NUMBER:"79266173662",
-  TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
+  TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95", // Ваш Site Key
   CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzdMqIlhVCw0D21B6U10D5x2C5xFWW1VVVhTAYvzzRyq8AHmr_9H851RhD0pKv2Enad/exec", 
   FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.22,
   LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
@@ -164,6 +197,7 @@ const CFG={
 const RF_LOGISTICS={"Владивосток":30000,"Хабаровск":45000,"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000,"Калининград":140000,"Другой город":100000};
 
 /* ================= БАЗА АВТО ================= */
+// Mazda CX-5 добавлена с правильной мощностью (114 кВт = 155 л.с.)
 const carDatabase=[
  {brand:"Zeekr",model:"001",trim:"ME (RWD)",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:310,k30_kw:115,weight_kg:2250,base_price_cny:269000},
  {brand:"Zeekr",model:"001",trim:"YOU (AWD)",body:"Sedan",type:"Электромобиль",engine_cc:0,pole_kw:400,k30_kw:150,weight_kg:2350,base_price_cny:329000},
@@ -183,7 +217,9 @@ const carDatabase=[
  {brand:"Li Auto",model:"L8",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2500,base_price_cny:321800},
  {brand:"Li Auto",model:"L8",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2550,base_price_cny:349800},
  {brand:"Li Auto",model:"L9",trim:"Pro",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2510,base_price_cny:409800},
- {brand:"Li Auto",model:"L9",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2560,base_price_cny:439800}
+ {brand:"Li Auto",model:"L9",trim:"Max",body:"SUV",type:"Последовательный гибрид",engine_cc:1496,pole_kw:330,k30_kw:100,weight_kg:2560,base_price_cny:439800},
+ // Добавлена Mazda CX-5 с корректными данными
+ {brand:"Mazda",model:"CX-5",trim:"2WD Zhiya Pro",body:"SUV",type:"ДВС",engine_cc:1998,pole_kw:114,k30_kw:0,weight_kg:1635,base_price_cny:142200}
 ];
 
 /* ================= СТАВКИ УТИЛЯ ================= */
@@ -262,13 +298,68 @@ const BODY_ICON={SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor"
 /* ================= WIZARD ================= */
 let selected=null,lastCalc=null;
 const uniq=a=>[...new Set(a)];
+
+// Глобальные настройки отображения единиц
+let powerUnits = { peak: 'kw', k30: 'kw' };
+
 function buildStep1(){const b=document.getElementById("brandSel");b.innerHTML='<option value="">— Выберите бренд —</option>';uniq(carDatabase.map(c=>c.brand)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o);});b.onchange=fillModels;
   const bp=document.getElementById("bodyPick");bp.innerHTML="";["SUV","Sedan","MPV"].forEach(t=>{const d=document.createElement("button");d.type="button";d.className="glass-soft rounded-xl p-3 flex flex-col items-center gap-1";d.innerHTML='<div style="width:48px;height:32px;color:#00F0FF">'+(BODY_ICON[t]||BODY_ICON.SUV)+'</div><span class="text-xs">'+t+'</span>';d.onclick=()=>{bp.querySelectorAll("button").forEach(x=>x.style.borderColor="");d.style.borderColor="#00F0FF";};bp.appendChild(d);});}
 function fillModels(){const brand=document.getElementById("brandSel").value,m=document.getElementById("modelSel"),t=document.getElementById("trimSel");m.innerHTML='<option value="">— Модель —</option>';t.innerHTML='<option value="">— Комплектация —</option>';m.disabled=!brand;t.disabled=true;hideSpec();if(!brand)return;uniq(carDatabase.filter(c=>c.brand===brand).map(c=>c.model)).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o);});m.onchange=()=>fillTrims(m.value);}
 function fillTrims(model){const brand=document.getElementById("brandSel").value,t=document.getElementById("trimSel");t.innerHTML='<option value="">— Комплектация —</option>';t.disabled=!model;hideSpec();if(!model)return;carDatabase.filter(c=>c.brand===brand&&c.model===model).forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=c.trim;t.appendChild(o);});t.onchange=()=>showSpec(carDatabase.filter(c=>c.brand===brand&&c.model===model)[+t.value]);}
 function hideSpec(){document.getElementById("specCard").classList.add("hidden");selected=null;}
-function showSpec(c){if(!c){hideSpec();return;}selected=c;document.getElementById("specCard").classList.remove("hidden");document.getElementById("specIcon").innerHTML=BODY_ICON[c.body]||BODY_ICON.SUV;document.getElementById("specType").textContent=c.type;document.getElementById("specPeak").textContent=c.pole_kw+" кВт";document.getElementById("specK30").textContent=c.k30_kw>0?c.k30_kw+" кВт":"— (льгота по л.с.)";document.getElementById("specCcRow").style.display=c.engine_cc>0?"":"none";document.getElementById("specCc").textContent=c.engine_cc+" см³";document.getElementById("specPrice").textContent=c.base_price_cny.toLocaleString("ru")+" ¥";
-  const priceInput=document.getElementById("customPrice");if(!priceInput.value)priceInput.value=c.base_price_cny;}
+
+// Обновленная функция показа спецификаций с поддержкой переключения единиц
+function showSpec(c){if(!c){hideSpec();return;}selected=c;document.getElementById("specCard").classList.remove("hidden");document.getElementById("specIcon").innerHTML=BODY_ICON[c.body]||BODY_ICON.SUV;document.getElementById("specType").textContent=c.type;
+  
+  // Отображение пиковой мощности
+  updatePowerDisplay('specPeak', c.pole_kw, 'peak');
+  
+  // Отображение 30-мин мощности
+  if(c.k30_kw > 0) {
+    document.getElementById("specK30").parentElement.style.display = 'flex';
+    updatePowerDisplay('specK30', c.k30_kw, 'k30');
+  } else {
+    document.getElementById("specK30").parentElement.style.display = 'none';
+  }
+
+  document.getElementById("specCcRow").style.display=c.engine_cc>0?"":"none";document.getElementById("specCc").textContent=c.engine_cc+" см³";document.getElementById("specPrice").textContent=c.base_price_cny.toLocaleString("ru")+" ¥";
+  const priceInput=document.getElementById("customPrice");if(!priceInput.value)priceInput.value=c.base_price_cny;
+  
+  // Инициализация обработчиков переключателей
+  initUnitToggles(c);
+}
+
+function updatePowerDisplay(elementId, kwValue, type) {
+  const el = document.getElementById(elementId);
+  const unit = powerUnits[type];
+  if (unit === 'kw') {
+    el.textContent = kwValue + " кВт";
+  } else {
+    el.textContent = Math.round(kwValue * 1.35962) + " л.с.";
+  }
+}
+
+function initUnitToggles(car) {
+  ['peak', 'k30'].forEach(type => {
+    const toggleId = type === 'peak' ? 'peakUnitToggle' : 'k30UnitToggle';
+    const container = document.getElementById(toggleId);
+    if (!container) return;
+    
+    const btns = container.querySelectorAll('.unit-btn');
+    btns.forEach(btn => {
+      btn.onclick = () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        powerUnits[type] = btn.dataset.unit;
+        
+        // Перерисовка значений
+        if (type === 'peak') updatePowerDisplay('specPeak', car.pole_kw, 'peak');
+        if (type === 'k30') updatePowerDisplay('specK30', car.k30_kw, 'k30');
+      };
+    });
+  });
+}
+
 function gotoStep(n){document.querySelectorAll(".wizard-step").forEach(s=>s.classList.toggle("hidden",+s.dataset.step!==n));document.querySelectorAll("#stepDots .step-dot").forEach(d=>{const i=+d.dataset.i;d.classList.toggle("active",i===n);d.classList.toggle("done",i<n);});window.scrollTo({top:0,behavior:"smooth"});}
 function buildCities(){const s=document.getElementById("citySel");Object.keys(RF_LOGISTICS).forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;s.appendChild(o);});}
 
@@ -348,19 +439,39 @@ const validPhone=v=>{const d=v.replace(/\D/g,"");return d.length===11&&d.startsW
 async function submitLead(e){
   e.preventDefault();const form=e.target,msg=document.getElementById("formMsg"),btn=document.getElementById("submitBtn");
   if(form.bot_check.value){msg.textContent="";return;}
-  if(CFG.TURNSTILE_SITE_KEY&&!window.__cfToken){msg.innerHTML='<span style="color:#fbbf24">Пройдите проверку "Я не робот"</span>';return;}
+  
+  // Проверка Turnstile
+  if(CFG.TURNSTILE_SITE_KEY && !window.__cfToken){
+    msg.innerHTML='<span style="color:#fbbf24">⚠️ Пожалуйста, пройдите проверку "Я не робот"</span>';
+    return;
+  }
+  
   const name=document.getElementById("fName").value.trim(),phone=document.getElementById("fPhone").value.trim();
   if(!name){msg.innerHTML='<span style="color:#fbbf24">Введите имя</span>';return;}
   if(!validPhone(phone)){msg.innerHTML='<span style="color:#fbbf24">Введите корректный телефон</span>';return;}
   const utm=new URLSearchParams(location.search);
   const payload={name,phone,model:lastCalc?lastCalc.c.brand+" "+lastCalc.c.model+" "+lastCalc.c.trim:"—",total:lastCalc?money(lastCalc.total):"—",city:lastCalc?lastCalc.city:"—",year:lastCalc?lastCalc.year:"—",source:(utm.get("utm_source")||"site")+"/"+(utm.get("utm_medium")||"organic"),turnstile:window.__cfToken||""};
   btn.disabled=true;btn.textContent="Отправляем…";msg.textContent="";
+  
   if(CFG.LEAD_ENDPOINT){
-    try{const res=await fetch(CFG.LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const j=await res.json().catch(()=>({}));if(res.ok&&j.ok){msg.innerHTML='<span style="color:#34d399">✅ Заявка отправлена! Менеджер свяжется.</span>';form.reset();}else throw new Error(j.error||"server");}
-    catch(err){msg.innerHTML='<span style="color:#fbbf24">Не удалось напрямую. Открываю мессенджер…</span>';openChannel(payload);}
-  }else{openChannel(payload);}
+    try{
+      const res=await fetch(CFG.LEAD_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      const j=await res.json().catch(()=>({}));
+      if(res.ok&&j.ok){
+        msg.innerHTML='<span style="color:#34d399">✅ Заявка отправлена! Менеджер свяжется.</span>';
+        form.reset();
+        if(window.turnstile) window.turnstile.reset(); // Сброс капчи после успешной отправки
+      }else throw new Error(j.error||"server");
+    } catch(err){
+      msg.innerHTML='<span style="color:#fbbf24">Не удалось отправить напрямую. Открываю мессенджер…</span>';
+      openChannel(payload);
+    }
+  }else{
+    openChannel(payload);
+  }
   btn.disabled=false;btn.textContent="Отправить заявку";
 }
+
 function openChannel(p){
   const txt="Заявка с калькулятора\nИмя: "+p.name+"\nТел: "+p.phone+"\nАвто: "+p.model+"\nГород: "+p.city+"\nРасчёт: "+p.total+"\nГод ввоза: "+p.year+"\nИсточник: "+p.source;
   const enc=encodeURIComponent(txt);
@@ -370,7 +481,18 @@ function openChannel(p){
 
 /* ================= TURNSTILE ================= */
 window.onTurnstileSuccess=function(t){window.__cfToken=t;};
-function initTurnstile(){if(!CFG.TURNSTILE_SITE_KEY)return;const slot=document.getElementById("turnstileSlot");const d=document.createElement("div");d.className="cf-turnstile";d.dataset.sitekey=CFG.TURNSTILE_SITE_KEY;d.dataset.callback="onTurnstileSuccess";slot.replaceWith(d);}
+function initTurnstile(){
+  if(!CFG.TURNSTILE_SITE_KEY)return;
+  const slot=document.getElementById("turnstileSlot");
+  // Очищаем слот перед рендером
+  slot.innerHTML = ''; 
+  const d=document.createElement("div");
+  d.className="cf-turnstile";
+  d.dataset.sitekey=CFG.TURNSTILE_SITE_KEY;
+  d.dataset.callback="onTurnstileSuccess";
+  d.dataset.theme="dark"; // Темная тема под дизайн сайта
+  slot.appendChild(d);
+}
 
 /* ================= ЗАГРУЗКА ИЗ ТАБЛИЦЫ ================= */
 function cleanNum(v){return Number(String(v==null?"":v).replace(/[\s\u00A0]/g,"").replace(",","."))||0;}
@@ -381,12 +503,32 @@ function normType(t){t=String(t||"").toLowerCase().trim();
  if(/элект.*гибр|гибр.*элект/.test(t))return "Последовательный гибрид";
  if(/двс|ice|бензин|дизель|petrol|diesel/.test(t))return "ДВС";
  return "ДВС";}
-function mapRow(r){var type=normType(r.type);
- if(!/^(ДВС|Параллельный гибрид|Последовательный гибрид|Электромобиль)$/.test(type))console.warn("Не распознан тип '"+r.type+"' -> считаем как ДВС");
- return{brand:String(r.brand||"").trim(),model:String(r.model||"").trim(),trim:String(r.trim||"").trim()||"Base",
-  body:["SUV","Sedan","MPV"].indexOf(r.body)>=0?r.body:"SUV",type:type,
-  engine_cc:cleanNum(r.engine_cc),pole_kw:cleanNum(r.pole_kw),k30_kw:cleanNum(r.k30_kw),
-  weight_kg:cleanNum(r.weight_kg),base_price_cny:cleanNum(r.base_price_cny)};}
+
+// Обновленная функция маппинга для поддержки новых колонок
+function mapRow(r){
+  var type=normType(r.type);
+  if(!/^(ДВС|Параллельный гибрид|Последовательный гибрид|Электромобиль)$/.test(type))console.warn("Не распознан тип '"+r.type+"' -> считаем как ДВС");
+  
+  // Автоматический расчет pole_kw из л.с., если в таблице указаны только л.с.
+  let poleKw = cleanNum(r.pole_kw);
+  if (!poleKw && r.pole_hp) {
+    poleKw = Math.round(cleanNum(r.pole_hp) / 1.35962);
+  }
+
+  return{
+    brand:String(r.brand||"").trim(),
+    model:String(r.model||"").trim(),
+    trim:String(r.trim||"").trim()||"Base",
+    body:["SUV","Sedan","MPV"].indexOf(r.body)>=0?r.body:"SUV",
+    type:type,
+    engine_cc:cleanNum(r.engine_cc),
+    pole_kw: poleKw,
+    k30_kw:cleanNum(r.k30_kw),
+    weight_kg:cleanNum(r.weight_kg),
+    base_price_cny:cleanNum(r.base_price_cny)
+  };
+}
+
 function _bust(){return (CFG.CARS_SHEET_URL.indexOf("?")>=0?"&":"?")+"_="+Date.now();}
 async function loadCars(){if(!CFG.CARS_SHEET_URL)return;try{
  var res=await fetch(CFG.CARS_SHEET_URL+_bust(),{cache:"no-store"});
