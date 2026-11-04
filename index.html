@@ -2,15 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Авто из Китая под ключ | Прозрачный расчёт 2026–2027</title>
-<meta name="description" content="Калькулятор стоимости авто из Китая и Кореи под ключ: таможня, утильсбор по 30-минутной мощности, логистика до вашего города.">
+<meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика до вашего города.">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>tailwind.config={theme:{extend:{colors:{ink:'#070b14',navy:'#0b1220',gold:'#FFD700',neon:'#00F0FF'},fontFamily:{sans:['Inter','-apple-system','Segoe UI','Roboto','sans-serif']}}}}</script>
 <style>
-html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
 body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+*{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input,select,textarea{-webkit-user-select:auto;user-select:auto}
 .hero{position:relative;min-height:100vh;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:-30px;background:url('hero-bg.jpg') center/cover no-repeat;filter:blur(2px);-webkit-filter:blur(2px);z-index:0}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.95) 0%,rgba(7,11,20,.88) 15%,rgba(11,18,32,.70) 40%,rgba(11,18,32,.75) 60%,rgba(7,11,20,.92) 100%);z-index:1}
@@ -25,6 +27,9 @@ body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
 .field::placeholder{color:#7c8aa5}
 select.field option{background:#0b1220;color:#fff}
 .ring-focus:focus{outline:none;border-color:#00F0FF;box-shadow:0 0 0 3px rgba(0,240,255,.25)}
+/* Подсветка ошибки */
+.field.error{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.3)!important;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .step-dot{width:10px;height:10px;border-radius:9999px;background:rgba(255,255,255,.2);transition:.3s}
 .step-dot.active{background:#0a9e33;width:28px}.step-dot.done{background:#00F0FF}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
@@ -35,14 +40,24 @@ select.field option{background:#0b1220;color:#fff}
 .unit-toggle{display:inline-flex;background:rgba(255,255,255,0.1);border-radius:6px;padding:2px;margin-left:8px}
 .unit-btn{padding:2px 8px;font-size:.75rem;cursor:pointer;border-radius:4px;color:#94a3b8;transition:all .2s}
 .unit-btn.active{background:#00F0FF;color:#070b14;font-weight:bold}
-.engine-type-btn{cursor:pointer;border:2px solid transparent;transition:all .25s}
+.engine-type-btn{cursor:pointer;border:2px solid transparent;transition:all .25s;-webkit-tap-highlight-color:transparent}
 .engine-type-btn:hover{border-color:rgba(0,240,255,.3);transform:translateY(-2px)}
 .engine-type-btn.selected{border-color:#00F0FF;background:rgba(0,240,255,.1);box-shadow:0 4px 20px rgba(0,240,255,.2)}
-/* Спиннер загрузки */
 .spinner{border:3px solid rgba(255,255,255,.1);border-top:3px solid #00F0FF;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;display:none;margin-left:10px;vertical-align:middle}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-/* Липкая кнопка для мобильных */
-@media (max-width:768px){.sticky-calc-btn{position:fixed;bottom:0;left:0;width:100%;z-index:9999;margin:0;border-radius:0;box-shadow:0 -4px 10px rgba(0,0,0,.15);padding:16px;font-size:18px;font-weight:bold;text-align:center}}
+
+/* Мобильная адаптация */
+@media (max-width:768px){
+  .hero::before{inset:-10px}
+  .sticky-calc-btn{position:fixed;bottom:0;left:0;width:100%;z-index:9999;margin:0;border-radius:0;box-shadow:0 -4px 10px rgba(0,0,0,.15);padding:16px!important;font-size:16px!important;font-weight:bold;text-align:center}
+  main{padding-bottom:80px!important}
+  .engine-type-btn{padding:12px 8px}
+  .engine-type-btn .text-3xl{font-size:1.5rem}
+  .engine-type-btn .text-xs{font-size:.65rem}
+}
+@media (max-width:380px){
+  .engine-type-btn .text-xs{font-size:.6rem}
+}
 </style>
 </head>
 <body>
@@ -55,7 +70,7 @@ select.field option{background:#0b1220;color:#fff}
 
 <section class="max-w-5xl mx-auto px-4 pt-10 pb-6 text-center">
   <div class="inline-flex items-center gap-2 glass-soft rounded-full px-4 py-1.5 text-xs sm:text-sm mb-5 anim" style="color:#00F0FF"><span style="width:8px;height:8px;border-radius:9999px;background:#00F0FF;display:inline-block"></span> Параллельный импорт · Zeekr · Li Auto · AITO · BYD · Voyah</div>
-  <h1 class="text-3xl sm:text-5xl font-black leading-tight anim anim-d1">Стоимость авто из Китая <span style="color:#098305">под ключ</span> — честно и до копейки</h1>
+  <h1 class="text-3xl sm:text-5xl font-black leading-tight anim anim-d1">Стоимость авто из Китая <span style="color:#098305">под ключ</span></h1>
   <p class="mt-4 max-w-2xl mx-auto anim anim-d2" style="color:#cbd5e1">Таможня, утильсбор по <b style="color:#fff">30‑минутной мощности</b>, логистика до вашего города. Без скрытых наценок — вы видите каждую строку.</p>
 </section>
 
@@ -69,7 +84,7 @@ select.field option{background:#0b1220;color:#fff}
 </section>
 
 <main class="max-w-3xl mx-auto px-4 pb-16">
-  <div class="glass rounded-3xl p-5 sm:p-8 anim anim-d4">
+  <div class="glass rounded-3xl p-5 sm:p-8 anim anim-d4" id="calcCard">
     <div class="flex items-center justify-center gap-2 mb-6" id="stepDots"><span class="step-dot active" data-i="1"></span><span class="step-dot" data-i="2"></span><span class="step-dot" data-i="3"></span></div>
 
     <!-- ШАГ 1 -->
@@ -78,24 +93,30 @@ select.field option{background:#0b1220;color:#fff}
       <p class="text-sm mb-5" style="color:#94a3b8">Тип двигателя влияет на пошлину, акциз и утильсбор.</p>
 
       <div id="engineTypePick" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="EV"><span class="text-3xl">⚡</span><span class="text-xs font-semibold text-center">Электро</span></button>
-        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="SEQ_HYBRID"><span class="text-3xl">🔋</span><span class="text-xs font-semibold text-center">Посл. гибрид</span></button>
+        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="EV">
+          <span class="text-3xl">⚡</span>
+          <span class="text-xs font-semibold text-center">Электро</span>
+        </button>
+        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="SEQ_HYBRID">
+          <span class="text-3xl">🔋</span>
+          <span class="text-xs font-semibold text-center">Посл. гибрид</span>
+        </button>
         <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="PAR_HYBRID">
-          <div style="width:64px;height:40px">
-            <svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="8" y="2" width="6" height="8" rx="1" fill="#00F0FF" stroke="#00F0FF"/>
-              <line x1="10" y1="2" x2="10" y2="0"/><line x1="12" y1="2" x2="12" y2="0"/><line x1="11" y1="10" x2="11" y2="16"/>
-              <rect x="48" y="2" width="8" height="8" rx="1" fill="#FFD700" stroke="#FFD700"/>
-              <line x1="52" y1="10" x2="52" y2="16"/><line x1="54" y1="6" x2="58" y2="6"/>
-              <path d="M16 24 L20 18 L44 18 L48 24 Z" fill="#00F0FF" stroke="#00F0FF" opacity="0.5"/>
-              <path d="M32 18 L44 18 L48 24 L32 24 Z" fill="#FFD700" stroke="#FFD700" opacity="0.5"/>
-              <circle cx="22" cy="28" r="3" fill="#00F0FF" stroke="#00F0FF"/><circle cx="42" cy="28" r="3" fill="#FFD700" stroke="#FFD700"/>
-              <path d="M11 16 Q11 20, 16 22" stroke="#00F0FF" stroke-width="1.5" fill="none"/><path d="M52 16 Q52 20, 48 22" stroke="#FFD700" stroke-width="1.5" fill="none"/>
-            </svg>
-          </div>
+          <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="24" r="8" stroke="#00F0FF"/>
+            <circle cx="16" cy="24" r="3" fill="#00F0FF" stroke="none"/>
+            <circle cx="32" cy="24" r="8" stroke="#FFD700"/>
+            <circle cx="32" cy="24" r="3" fill="#FFD700" stroke="none"/>
+            <path d="M24 16 L24 32" stroke="#00F0FF" stroke-dasharray="2 2"/>
+            <path d="M24 16 L24 32" stroke="#FFD700" stroke-dasharray="2 2" stroke-dashoffset="2"/>
+            <path d="M8 8 L12 12 M40 8 L36 12 M8 40 L12 36 M40 40 L36 36" stroke="#00F0FF" stroke-width="1.5" opacity="0.6"/>
+          </svg>
           <span class="text-xs font-semibold text-center">Парал. гибрид</span>
         </button>
-        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="ICE"><span class="text-3xl">🛢️</span><span class="text-xs font-semibold text-center">ДВС</span></button>
+        <button type="button" class="engine-type-btn glass-soft rounded-xl p-4 flex flex-col items-center gap-2" data-type="ICE">
+          <span class="text-3xl">🛢️</span>
+          <span class="text-xs font-semibold text-center">ДВС</span>
+        </button>
       </div>
       <div id="engineTypeInfo" class="glass-soft rounded-xl p-4 mb-6 hidden text-sm" style="color:#94a3b8"><div id="engineTypeDesc"></div></div>
 
@@ -162,7 +183,7 @@ select.field option{background:#0b1220;color:#fff}
       <p class="text-sm mb-5" style="color:#94a3b8">Логистика от границы зависит от региона — выберите город.</p>
       <label class="block text-sm font-semibold mb-1.5">Город получения</label>
       <select id="citySel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-6"></select>
-      <button class="btn-gold sticky-calc-btn" onclick="calculatePrice()">⚡ Рассчитать стоимость под ключ</button>
+      <button class="btn-gold sticky-calc-btn w-full rounded-xl py-4 text-base" onclick="calculatePrice()">Рассчитать стоимость под ключ</button>
       <button class="btn-neon w-full rounded-xl py-3 mt-3 text-sm" onclick="gotoStep(2)">← Изменить авто</button>
       <div id="resultBox" class="hidden mt-7 space-y-3"></div>
     </div>
@@ -260,8 +281,12 @@ function renderRates(){const b=document.getElementById("rateBox"),f=n=>n.toFixed
   if(state.ratesLive){b.textContent="Курс (live): $"+f(state.usdRub)+" · ¥"+f(state.cnyRub)+" · €"+f(state.eurRub);b.style.color="#cbd5e1";}
   else{b.textContent="⚠️ Курс ориентировочный: $"+f(state.usdRub)+" · ¥"+f(state.cnyRub);b.style.color="#fbbf24";}}
 
-/* ================= ИКОНКИ КУЗОВА ================= */
-const BODY_ICON={SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 28h52M10 28l4-12h22l8 12M14 16l3-6h14l4 6"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>',Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 28h52M12 28l3-9h20l9 9M18 19l3-5h12l3 5"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>',MPV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 28h48M12 28V14h30l8 14M16 14v-3h10v3M30 14v-3h8v3"/><circle cx="18" cy="30" r="4"/><circle cx="46" cy="30" r="4"/></svg>'};
+/* ================= ИКОНКИ КУЗОВА (НОВЫЕ) ================= */
+const BODY_ICON={
+  SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="56" height="16" rx="3"/><path d="M10 14 L16 6 L48 6 L54 14"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/><path d="M18 22 L22 22 M26 22 L30 22 M34 22 L38 22 M42 22 L46 22" opacity="0.5"/></svg>',
+  Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="18" width="56" height="12" rx="2"/><path d="M14 18 L22 10 L42 10 L50 18"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/><path d="M22 22 L28 22 M36 22 L42 22" opacity="0.5"/></svg>',
+  MPV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="56" height="20" rx="3"/><path d="M10 10 L10 6 L54 6 L54 10"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/><path d="M14 18 L20 18 M24 18 L30 18 M34 18 L40 18 M44 18 L50 18" opacity="0.5"/></svg>'
+};
 const TYPE_LABEL={EV:"Электромобиль",SEQ_HYBRID:"Последовательный гибрид",PAR_HYBRID:"Параллельный гибрид",ICE:"ДВС (бензин/дизель)"};
 
 /* ================= WIZARD + ТИП ДВИГАТЕЛЯ ================= */
@@ -271,10 +296,13 @@ const uniq=a=>[...new Set(a)];
 
 const ENGINE_TYPE_INFO={EV:{title:'Чистый электромобиль',desc:'Пошлина 15% + акциз и НДС по 30‑мин мощности. Утильсбор по 30‑мин кВт. Примеры: Zeekr 001, BYD Seal, Toyota bZ3X.'},SEQ_HYBRID:{title:'Последовательный гибрид (EREV)',desc:'Считается как электромобиль: ДВС только заряжает батарею. Примеры: Li Auto L6–L9, Voyah Free.'},PAR_HYBRID:{title:'Параллельный гибрид',desc:'Считается как ДВС: пошлина по объёму, утильсбор по СУММЕ мощностей ДВС и электромотора. Примеры: Geely Monjaro, Toyota RAV4 Hybrid, Zeekr 8X/9X.'},ICE:{title:'ДВС (бензин / дизель)',desc:'Пошлина по возрасту и объёму (ЕТС), утильсбор по мощности в л.с. Примеры: Mazda CX-5, Changan UNI-V.'}};
 
+function clearErrors(){document.querySelectorAll('.field.error').forEach(el=>el.classList.remove('error'));}
+
 function initEngineTypePicker(){
   const buttons=document.querySelectorAll('.engine-type-btn');
   buttons.forEach(btn=>{
     btn.addEventListener('click',function(){
+      clearErrors();
       buttons.forEach(b=>b.classList.remove('selected'));
       this.classList.add('selected');
       selectedEngineType=this.dataset.type;
@@ -287,6 +315,7 @@ function initEngineTypePicker(){
 }
 
 function fillBrandsByType(type){
+  clearErrors();
   const b=document.getElementById('brandSel');
   b.disabled=false;
   b.innerHTML='<option value="">— Выберите бренд —</option>';
@@ -307,6 +336,7 @@ function buildBodyPick(){
     d.className='glass-soft rounded-xl p-3 flex flex-col items-center gap-1';
     d.innerHTML='<div style="width:48px;height:32px;color:#00F0FF">'+(BODY_ICON[t]||BODY_ICON.SUV)+'</div><span class="text-xs">'+t+'</span>';
     d.onclick=function(){
+      clearErrors();
       bp.querySelectorAll('button').forEach(x=>x.style.borderColor='');
       d.style.borderColor='#00F0FF';
     };
@@ -315,6 +345,7 @@ function buildBodyPick(){
 }
 
 function fillModels(){
+  clearErrors();
   const brand=document.getElementById('brandSel').value;
   const m=document.getElementById('modelSel');
   const t=document.getElementById('trimSel');
@@ -334,6 +365,7 @@ function fillModels(){
 }
 
 function fillTrims(model){
+  clearErrors();
   const brand=document.getElementById('brandSel').value;
   const t=document.getElementById('trimSel');
   t.innerHTML='<option value="">— Комплектация —</option>';
@@ -350,12 +382,10 @@ function fillTrims(model){
   t.onchange=function(){showSpec(list[+t.value]);};
 }
 
-function hideSpec(){
-  document.getElementById('specCard').classList.add('hidden');
-  selected=null;
-}
+function hideSpec(){document.getElementById('specCard').classList.add('hidden');selected=null;}
 
 function showSpec(c){
+  clearErrors();
   if(!c){hideSpec();return;}
   selected=c;
   document.getElementById('specCard').classList.remove('hidden');
@@ -395,22 +425,60 @@ function initUnitToggles(car){
 }
 
 function gotoStep(n){
+  clearErrors();
   document.querySelectorAll('.wizard-step').forEach(s=>s.classList.toggle('hidden',+s.dataset.step!==n));
   document.querySelectorAll('#stepDots .step-dot').forEach(d=>{
     const i=+d.dataset.i;
     d.classList.toggle('active',i===n);
     d.classList.toggle('done',i<n);
   });
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Плавный скролл к карточке калькулятора, а не наверх страницы
+  const card=document.getElementById('calcCard');
+  if(card){
+    const rect=card.getBoundingClientRect();
+    const offset=rect.top+window.scrollY-20;
+    window.scrollTo({top:offset,behavior:'smooth'});
+  }
 }
 
 function nextFrom1(){
-  if(!selectedEngineType){alert('Выберите тип двигателя');return;}
-  if(!document.getElementById('brandSel').value){alert('Выберите бренд');return;}
+  clearErrors();
+  if(!selectedEngineType){
+    // Подсветка кнопок типа двигателя
+    document.querySelectorAll('.engine-type-btn').forEach(btn=>{
+      btn.style.borderColor='#ef4444';
+      setTimeout(()=>{btn.style.borderColor='';},2000);
+    });
+    return;
+  }
+  const brandSel=document.getElementById('brandSel');
+  if(!brandSel.value){
+    brandSel.classList.add('error');
+    brandSel.focus();
+    setTimeout(()=>{brandSel.classList.remove('error');},2000);
+    return;
+  }
   gotoStep(2);
 }
 
 function nextFrom2(){
+  clearErrors();
+  const modelSel=document.getElementById('modelSel');
+  const trimSel=document.getElementById('trimSel');
+  let hasError=false;
+  if(!modelSel.value){
+    modelSel.classList.add('error');
+    modelSel.focus();
+    hasError=true;
+    setTimeout(()=>{modelSel.classList.remove('error');},2000);
+  }
+  if(!trimSel.value){
+    trimSel.classList.add('error');
+    if(!hasError)trimSel.focus();
+    hasError=true;
+    setTimeout(()=>{trimSel.classList.remove('error');},2000);
+  }
+  if(hasError)return;
   if(!selected){alert('Выберите модель и комплектацию');return;}
   gotoStep(3);
 }
@@ -620,7 +688,6 @@ function applyCars(cars){
 document.addEventListener('DOMContentLoaded',function(){
   console.log('DOM loaded, initializing...');
   
-  // Инициализация всех компонентов
   buildBodyPick();
   buildCities();
   loadRates();
@@ -629,14 +696,12 @@ document.addEventListener('DOMContentLoaded',function(){
   initEngineTypePicker();
   loadCars();
   
-  // Маска телефона
   const ph=document.getElementById('fPhone');
   if(ph){
     ph.addEventListener('input',function(){ph.value=maskPhone(ph.value);});
     ph.addEventListener('focus',function(){if(!ph.value)ph.value='+7 (';});
   }
   
-  // Ссылка на Telegram
   if(CFG.BOT_USERNAME){
     const tgLink=document.getElementById('tgLink');
     if(tgLink)tgLink.href='https://t.me/'+CFG.BOT_USERNAME;
