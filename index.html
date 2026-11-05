@@ -27,7 +27,6 @@ input,select,textarea{-webkit-user-select:auto;user-select:auto}
 .field::placeholder{color:#7c8aa5}
 select.field option{background:#0b1220;color:#fff}
 .ring-focus:focus{outline:none;border-color:#00F0FF;box-shadow:0 0 0 3px rgba(0,240,255,.25)}
-/* Подсветка ошибки */
 .field.error{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.3)!important;animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .step-dot{width:10px;height:10px;border-radius:9999px;background:rgba(255,255,255,.2);transition:.3s}
@@ -45,8 +44,6 @@ select.field option{background:#0b1220;color:#fff}
 .engine-type-btn.selected{border-color:#00F0FF;background:rgba(0,240,255,.1);box-shadow:0 4px 20px rgba(0,240,255,.2)}
 .spinner{border:3px solid rgba(255,255,255,.1);border-top:3px solid #00F0FF;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;display:none;margin-left:10px;vertical-align:middle}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-
-/* Мобильная адаптация */
 @media (max-width:768px){
   .hero::before{inset:-10px}
   .sticky-calc-btn{position:fixed;bottom:0;left:0;width:100%;z-index:9999;margin:0;border-radius:0;box-shadow:0 -4px 10px rgba(0,0,0,.15);padding:16px!important;font-size:16px!important;font-weight:bold;text-align:center}
@@ -189,7 +186,6 @@ select.field option{background:#0b1220;color:#fff}
     </div>
   </div>
 
-  <!-- ЗАМЕНА ФОРМЫ НА КНОПКИ МЕССЕНДЖЕРОВ (152-ФЗ) -->
   <div id="leadWrap" class="glass rounded-3xl p-5 sm:p-8 mt-6 hidden anim">
     <h3 class="text-lg font-bold mb-1">📞 Получить персональное предложение</h3>
     <p class="text-sm mb-5" style="color:#94a3b8">Менеджер подтвердит сумму по VIN и зафиксирует цену. Выберите удобный способ связи:</p>
@@ -221,20 +217,18 @@ const CFG={
   BOT_USERNAME:"Avto_Calc_bot",
   WA_NUMBER:"79266173662",
   TURNSTILE_SITE_KEY:"0x4AAAAAAFvZaBJtsRTvvl95",
-  CARS_SHEET_URL:"https://script.google.com/macros/s/AKfycbzDT9JKQ0aXQDOCuP9unEtm9HZN_vBhKXH6K8mrLpT0k5vSvKtiWRnKJH9zEdFYJ53P/exec",
   FALLBACK_CNY_RUB:12.5, FALLBACK_USD_RUB:90.0, VAT_RATE:0.22,
   LOGISTICS_CHINA:125000, CERT_SBKTS:45000, CERT_EPTS:15000, CERT_GTO:20000, MARGIN:200000
 };
-const RF_LOGISTICS={
-  "Иркутск":55000,
-  "Новосибирск":110000,
-  "Екатеринбург":125000,
-  "Москва":205000,
-  "Санкт-Петербург":225000,
-  "Казань":85000,
-  "Краснодар":215000,
-  "Сочи":225000
+// Удалены: Владивосток, Хабаровск, Калининград, Другой город
+const RF_LOGISTICS={"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000};
+
+/* ================= ЗАЩИЩЁННЫЙ ПРОКСИ (ВСТАВЬТЕ ВАШИ ДАННЫЕ) ================= */
+const PROXY_CONFIG = {
+  URL: "https://script.google.com/macros/s/AKfycbzZUra_W0oml9ZDUlLavCStvr48uc6gQ9P_f6zR0koE3vgXHe45dJij1g9rhE7L-5zb/exec",
+  API_KEY: 'MySuperSecretKey_2026_Xy9#mP2!'
 };
+
 /* ================= БАЗА-ФАЛБЭК ================= */
 let carDatabase=[
  {brand:"Zeekr",model:"001",trim:"YOU (AWD)",body:"Sedan",type:"EV",engine_cc:0,pole_hp:544,pole_kw:400,k30_hp:204,k30_kw:150,weight_kg:2350,base_price_cny:329000},
@@ -289,7 +283,7 @@ function renderRates(){const b=document.getElementById("rateBox"),f=n=>n.toFixed
   if(state.ratesLive){b.textContent="Курс (live): $"+f(state.usdRub)+" · ¥"+f(state.cnyRub)+" · €"+f(state.eurRub);b.style.color="#cbd5e1";}
   else{b.textContent="⚠️ Курс ориентировочный: $"+f(state.usdRub)+" · ¥"+f(state.cnyRub);b.style.color="#fbbf24";}}
 
-/* ================= ИКОНКИ КУЗОВА (НОВЫЕ) ================= */
+/* ================= ИКОНКИ КУЗОВА ================= */
 const BODY_ICON={
   SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="56" height="16" rx="3"/><path d="M10 14 L16 6 L48 6 L54 14"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/><path d="M18 22 L22 22 M26 22 L30 22 M34 22 L38 22 M42 22 L46 22" opacity="0.5"/></svg>',
   Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="18" width="56" height="12" rx="2"/><path d="M14 18 L22 10 L42 10 L50 18"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/><path d="M22 22 L28 22 M36 22 L42 22" opacity="0.5"/></svg>',
@@ -297,7 +291,7 @@ const BODY_ICON={
 };
 const TYPE_LABEL={EV:"Электромобиль",SEQ_HYBRID:"Последовательный гибрид",PAR_HYBRID:"Параллельный гибрид",ICE:"ДВС (бензин/дизель)"};
 
-/* ================= WIZARD + ТИП ДВИГАТЕЛЯ ================= */
+/* ================= WIZARD ================= */
 let selected=null,lastCalc=null,selectedEngineType=null;
 let powerUnits={peak:'kw',k30:'kw'};
 const uniq=a=>[...new Set(a)];
@@ -364,10 +358,7 @@ function fillModels(){
   hideSpec();
   if(!brand)return;
   uniq(carDatabase.filter(c=>c.brand===brand&&c.type===selectedEngineType).map(c=>c.model)).forEach(x=>{
-    const o=document.createElement('option');
-    o.value=x;
-    o.textContent=x;
-    m.appendChild(o);
+    const o=document.createElement('option');o.value=x;o.textContent=x;m.appendChild(o);
   });
   m.onchange=function(){fillTrims(m.value);};
 }
@@ -381,12 +372,7 @@ function fillTrims(model){
   hideSpec();
   if(!model)return;
   const list=carDatabase.filter(c=>c.brand===brand&&c.model===model&&c.type===selectedEngineType);
-  list.forEach((c,i)=>{
-    const o=document.createElement('option');
-    o.value=i;
-    o.textContent=c.trim;
-    t.appendChild(o);
-  });
+  list.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c.trim;t.appendChild(o);});
   t.onchange=function(){showSpec(list[+t.value]);};
 }
 
@@ -440,7 +426,6 @@ function gotoStep(n){
     d.classList.toggle('active',i===n);
     d.classList.toggle('done',i<n);
   });
-  // Плавный скролл к карточке калькулятора, а не наверх страницы
   const card=document.getElementById('calcCard');
   if(card){
     const rect=card.getBoundingClientRect();
@@ -452,7 +437,6 @@ function gotoStep(n){
 function nextFrom1(){
   clearErrors();
   if(!selectedEngineType){
-    // Подсветка кнопок типа двигателя
     document.querySelectorAll('.engine-type-btn').forEach(btn=>{
       btn.style.borderColor='#ef4444';
       setTimeout(()=>{btn.style.borderColor='';},2000);
@@ -581,39 +565,29 @@ function renderSavingsHint(){
   const el=document.getElementById('resultBox');
   let h=document.getElementById('saveHint');
   if(save>0){
-    if(!h){
-      h=document.createElement('div');
-      h.id='saveHint';
-      el.appendChild(h);
-    }
+    if(!h){h=document.createElement('div');h.id='saveHint';el.appendChild(h);}
     h.className='glass-soft rounded-2xl p-4 mt-3 text-center anim';
     h.innerHTML='💰 Ввоз в <b style="color:#FFD700">2026</b> сэкономит <b style="color:#00F0FF;font-size:1.1rem">'+money(save)+'</b> по утилю vs 2027';
-  }else if(h){
-    h.remove();
-  }
+  }else if(h){h.remove();}
 }
 
-/* ================= ТАЙМЕР 2027 ================= */
+/* ================= ТАЙМЕР ================= */
 function updateTimer(){
   const targetDate=new Date('2027-01-01T00:00:00+03:00').getTime();
   const now=new Date().getTime();
   const distance=targetDate-now;
-  
   if(distance<0){
     document.getElementById("countdown").innerHTML="Ставки 2027 года уже действуют";
     return;
   }
-
   const days=Math.floor(distance/(1000*60*60*24));
   const hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
   const minutes=Math.floor((distance%(1000*60*60))/(1000*60));
   const seconds=Math.floor((distance%(1000*60))/1000);
-  
   const daysEl=document.getElementById("days");
   const hoursEl=document.getElementById("hours");
   const minutesEl=document.getElementById("minutes");
   const secondsEl=document.getElementById("seconds");
-  
   if(daysEl)daysEl.textContent=String(days).padStart(2,'0');
   if(hoursEl)hoursEl.textContent=String(hours).padStart(2,'0');
   if(minutesEl)minutesEl.textContent=String(minutes).padStart(2,'0');
@@ -633,9 +607,8 @@ function maskPhone(v){
   if(d.length>=10)r+='-'+d.slice(9,11);
   return r;
 }
-const validPhone=v=>{const d=v.replace(/\D/g,'');return d.length===11&&d.startsWith('7')&&!/^70000000000$/.test(d);};
 
-/* ================= ЗАГРУЗКА ИЗ GOOGLE ТАБЛИЦЫ ================= */
+/* ================= ЗАЩИЩЁННАЯ ЗАГРУЗКА ДАННЫХ ================= */
 function cleanNum(v){return Number(String(v==null?'':v).replace(/[\s\u00A0]/g,'').replace(',','.'))||0;}
 function normType(t){
   t=String(t||'').toLowerCase().trim();
@@ -649,6 +622,7 @@ function mapRow(r){
   const type=normType(r.type);
   const hp2kw=v=>Math.round(cleanNum(v)/1.35962*10)/10;
   const poleKw=cleanNum(r.pole_kw)||hp2kw(r.pole_hp);
+  // Берём k30_kw напрямую (столбец переименован в таблице)
   const k30Kw=cleanNum(r.k30_kw)||hp2kw(r.k30_hp);
   return{
     brand:String(r.brand||'').trim(),
@@ -667,13 +641,45 @@ function mapRow(r){
     notes:String(r.notes||'').trim()
   };
 }
-function _bust(){return(CFG.CARS_SHEET_URL.indexOf('?')>=0?'&':'?')+'_'+Date.now();}
-async function loadCars()
+
+async function loadCars(){
+  if(!PROXY_CONFIG.URL || PROXY_CONFIG.URL.includes('ВАШ_URL')) {
+    console.warn('⚠️ Прокси URL не настроен. Используется резервная база.');
+    return;
+  }
+  try{
+    const url = new URL(PROXY_CONFIG.URL);
+    url.searchParams.append('origin', window.location.origin);
+    url.searchParams.append('apikey', PROXY_CONFIG.API_KEY);
+    url.searchParams.append('t', Date.now());
+
+    const res = await fetch(url.toString(), {cache: 'no-store'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    
+    const data = await res.json();
+    
+    if(data.success && data.rows && data.rows.length > 0){
+      const cars = data.rows.map(mapRow).filter(c => c.brand && c.model && c.base_price_cny > 0);
+      applyCars(cars);
+      console.log(`✅ Авто загружено успешно (источник: ${data.source}). Всего: ${cars.length}`);
+    } else {
+      console.warn('⚠️ Таблица вернула пустые данные:', data.error);
+    }
+  } catch(e) {
+    console.error('❌ Ошибка загрузки через прокси:', e.message);
+    console.log('Используем встроенную резервную базу.');
+  }
+}
+
+function applyCars(cars){
+  carDatabase.length = 0;
+  Array.prototype.push.apply(carDatabase, cars);
+  if(selectedEngineType) fillBrandsByType(selectedEngineType);
+}
 
 /* ================= INIT ================= */
 document.addEventListener('DOMContentLoaded',function(){
   console.log('DOM loaded, initializing...');
-  
   buildBodyPick();
   buildCities();
   loadRates();
@@ -681,18 +687,10 @@ document.addEventListener('DOMContentLoaded',function(){
   setInterval(updateTimer,1000);
   initEngineTypePicker();
   loadCars();
-  
-  const ph=document.getElementById('fPhone');
-  if(ph){
-    ph.addEventListener('input',function(){ph.value=maskPhone(ph.value);});
-    ph.addEventListener('focus',function(){if(!ph.value)ph.value='+7 (';});
-  }
-  
   if(CFG.BOT_USERNAME){
     const tgLink=document.getElementById('tgLink');
     if(tgLink)tgLink.href='https://t.me/'+CFG.BOT_USERNAME;
   }
-  
   console.log('Initialization complete');
 });
 </script>
