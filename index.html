@@ -44,9 +44,26 @@ select.field option{background:#0b1220;color:#fff}
 .engine-type-btn.selected{border-color:#00F0FF;background:rgba(0,240,255,.1);box-shadow:0 4px 20px rgba(0,240,255,.2)}
 .spinner{border:3px solid rgba(255,255,255,.1);border-top:3px solid #00F0FF;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;display:none;margin-left:10px;vertical-align:middle}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-/* ПРЕДУПРЕЖДЕНИЯ (ТЗ v7.0) */
-.urgent-warning{background:rgba(239,68,68,.14);border:1px solid #ef4444;color:#fca5a5;border-radius:12px;padding:10px 14px;font-size:.8rem;font-weight:700;margin-top:8px;animation:fadeUp .4s both}
-.estimate-warning{background:rgba(250,204,21,.10);border:1px solid #eab308;color:#fde047;border-radius:12px;padding:10px 14px;font-size:.72rem;line-height:1.45;margin-top:8px}
+
+/* ======= ТУМБЛЕР РУЧНОГО РЕЖИМА (ТЗ v8.0, Раздел 2) ======= */
+.manual-switch{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 16px;cursor:pointer;transition:.25s;margin-bottom:14px;user-select:none}
+.manual-switch:hover{border-color:rgba(0,240,255,.35)}
+.manual-switch.on{border-color:#00F0FF;background:rgba(0,240,255,.08);box-shadow:0 0 0 1px rgba(0,240,255,.25)}
+.switch-track{position:relative;width:48px;height:26px;background:rgba(255,255,255,.15);border-radius:9999px;transition:.25s;flex-shrink:0}
+.switch-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.25s;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent}
+.manual-switch.on .switch-track{background:#00F0FF;box-shadow:0 0 12px rgba(0,240,255,.5)}
+.manual-switch.on .switch-thumb{left:25px;color:#070b14;font-weight:900}
+.switch-label{font-size:.9rem;font-weight:600;color:#cbd5e1;transition:.2s;flex:1}
+.manual-switch.on .switch-label{color:#00F0FF;font-weight:800}
+.switch-hint{font-size:.7rem;color:#64748b;margin-top:2px}
+
+/* ======= УВЕДОМЛЕНИЯ (ТЗ v8.0, Раздел 1) ======= */
+.urgent-warning{background:rgba(239,68,68,.14);border:1px solid #ef4444;color:#fca5a5;border-radius:10px;padding:8px 10px;font-size:.72rem;font-weight:700;margin-top:6px;line-height:1.35}
+.estimate-warning{background:rgba(250,204,21,.10);border:1px solid #eab308;color:#fde047;border-radius:10px;padding:8px 10px;font-size:.7rem;line-height:1.4;margin-top:8px}
+
+/* ======= КАТЕГОРИЯ (ТЗ v8.0, Раздел 3) ======= */
+.manual-age-cat{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 12px;background:rgba(0,240,255,.10);border:1px solid rgba(0,240,255,.3);border-radius:10px;font-size:.82rem;color:#00F0FF;font-weight:700}
+
 @media (max-width:768px){
   .hero::before{inset:-10px}
   .sticky-calc-btn{position:fixed;bottom:0;left:0;width:100%;z-index:9999;margin:0;border-radius:0;box-shadow:0 -4px 10px rgba(0,0,0,.15);padding:16px!important;font-size:16px!important;font-weight:bold;text-align:center}
@@ -54,6 +71,8 @@ select.field option{background:#0b1220;color:#fff}
   .engine-type-btn{padding:12px 8px}
   .engine-type-btn .text-3xl{font-size:1.5rem}
   .engine-type-btn .text-xs{font-size:.65rem}
+  .manual-switch{padding:10px 14px}
+  .switch-label{font-size:.82rem}
 }
 @media (max-width:380px){.engine-type-btn .text-xs{font-size:.6rem}}
 </style>
@@ -113,20 +132,33 @@ select.field option{background:#0b1220;color:#fff}
 
     <!-- ШАГ 2 -->
     <div class="wizard-step hidden" data-step="2">
-      <h2 class="text-xl font-bold mb-1">Шаг 2. Модель, комплектация и цена</h2>
-      <p class="text-sm mb-5" style="color:#94a3b8">Показываем пиковую и 30‑минутную мощность — чтобы вы видели, по какой ставке считается утиль и акциз.</p>
+      <h2 class="text-xl font-bold mb-1">Шаг 2. Модель и характеристики</h2>
+      <p class="text-sm mb-5" style="color:#94a3b8">Выберите модель из каталога или введите данные из ПТС вручную.</p>
 
-      <button type="button" id="manualToggle" class="btn-neon w-full rounded-xl py-3 text-sm mb-4" onclick="toggleManual()"> Не нашли модель? Ввести данные из ПТС вручную</button>
+      <!-- ТУМБЛЕР РУЧНОГО РЕЖИМА (ТЗ v8.0, Раздел 2) -->
+      <div id="manualSwitch" class="manual-switch" onclick="toggleManualMode()">
+        <div class="switch-track"><div class="switch-thumb">✓</div></div>
+        <div>
+          <div class="switch-label" id="switchLabel">Считать вручную по данным ПТС</div>
+          <div class="switch-hint" id="switchHint">Нажмите для ввода характеристик вручную</div>
+        </div>
+      </div>
 
-      <!-- ФОРМА РУЧНОГО ВВОДА (ТЗ v7.0) -->
+      <!-- ФОРМА РУЧНОГО ВВОДА (ТЗ v8.0, Раздел 4 — единый блок) -->
       <div id="manualPanel" class="glass-soft rounded-2xl p-4 mb-4 hidden">
-        <h3 class="font-bold mb-3 text-sm" style="color:#00F0FF">Ручной ввод по ПТС / ОТТС</h3>
+        <h3 class="font-bold mb-3 text-sm" style="color:#00F0FF">📝 Ручной ввод по ПТС / ОТТС</h3>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="block text-xs font-semibold mb-1">Год выпуска</label><select id="mYear" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm"></select></div>
           <div><label class="block text-xs font-semibold mb-1">Месяц выпуска</label><select id="mMonth" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm"></select></div>
         </div>
-        <div id="manualAgeInfo" class="text-xs mb-3" style="color:#94a3b8"></div>
-        <div id="mCcWrap" class="mb-3"><label class="block text-xs font-semibold mb-1">Объём ДВС (см³)</label><input id="mCc" type="number" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm" placeholder="Например, 1998"></div>
+
+        <!-- Категория (ТЗ v8.0, Раздел 3 — только категория, без месяцев) -->
+        <div id="manualAgeCat" class="manual-age-cat" style="display:none">Категория: <span id="ageCatText">—</span></div>
+
+        <!-- УВЕДОМЛЕНИЕ О ДЕДЛАЙНЕ (ТЗ v8.0, Раздел 1 — внутри ручной формы) -->
+        <div id="ageUrgentWarn" class="urgent-warning" style="display:none"></div>
+
+        <div id="mCcWrap" class="mb-3 mt-3"><label class="block text-xs font-semibold mb-1">Объём ДВС (см³)</label><input id="mCc" type="number" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm" placeholder="Например, 1998"></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="block text-xs font-semibold mb-1">Стоимость</label><input id="mPrice" type="number" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm" placeholder="Например, 139800"></div>
           <div><label class="block text-xs font-semibold mb-1">Валюта</label><select id="mCur" class="field ring-focus w-full rounded-xl px-3 py-2.5 text-sm"><option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option></select></div>
@@ -137,11 +169,12 @@ select.field option{background:#0b1220;color:#fff}
           <input id="mKnow" type="checkbox" class="mt-1" style="accent-color:#00F0FF">
           <label for="mKnow" class="text-xs" style="color:#cbd5e1">Я знаю точную 30‑минутную мощность электромотора (из ОТТС / ЭПТС)</label>
         </div>
-        <div id="mEstimateWarn" class="estimate-warning hidden">⚠️ Предварительная оценка: указанный расчёт является ориентировочным. Точное значение 30‑минутной мощности определяется аккредитованной испытательной лабораторией при оформлении СБКТС/ЭПТС. Итоговая сумма утильсбора и таможенных платежей фиксируется только на основании данных, указанных в оформленных документах.</div>
+        <div id="mEstimateWarn" class="estimate-warning" style="display:none">⚠️ Предварительная оценка: указанный расчёт является ориентировочным. Точное значение 30‑минутной мощности определяется аккредитованной испытательной лабораторией при оформлении СБКТС/ЭПТС. Итоговая сумма утильсбора и таможенных платежей фиксируется только на основании данных, указанных в оформленных документах.</div>
         <div id="mTotalKwInfo" class="text-xs mt-2" style="color:#00F0FF"></div>
         <button type="button" class="btn-gold w-full rounded-xl py-3 text-sm mt-3" onclick="applyManual()">Применить ручные данные</button>
       </div>
 
+      <!-- КАТАЛОГ (скрывается в ручном режиме — ТЗ v8.0, Раздел 4) -->
       <div id="catalogBlock">
         <label class="block text-sm font-semibold mb-1.5">Модель</label>
         <select id="modelSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4" disabled><option value="">— Сначала бренд —</option></select>
@@ -180,10 +213,13 @@ select.field option{background:#0b1220;color:#fff}
       </div>
       <p class="text-xs mb-4" style="color:#64748b">Если не знаете точную цену — оставьте как есть, используем ориентир из базы</p>
 
-      <label class="block text-sm font-semibold mb-1.5">Возраст автомобиля</label>
-      <select id="ageSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option></select>
-      <div id="ageUrgentWarn" class="urgent-warning hidden"></div>
-      <label class="block text-sm font-semibold mb-1.5 mt-4">Планируемый год ввоза</label>
+      <!-- В ручном режиме возраст НЕ показываем отдельно (управляется датой выпуска) -->
+      <div id="ageBlock">
+        <label class="block text-sm font-semibold mb-1.5">Возраст автомобиля</label>
+        <select id="ageSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option></select>
+      </div>
+
+      <label class="block text-sm font-semibold mb-1.5">Планируемый год ввоза</label>
       <select id="yearSel" class="field ring-focus w-full rounded-xl px-4 py-3.5 text-base mb-4"><option value="2026">2026 (текущие ставки)</option><option value="2027">2027 (повышенные ставки)</option></select>
       <div class="flex gap-3"><button class="btn-neon rounded-xl py-4 px-5" onclick="gotoStep(1)">← Назад</button><button class="btn-gold flex-1 rounded-xl py-4 text-base" onclick="nextFrom2()">Далее →</button></div>
     </div>
@@ -241,10 +277,10 @@ const PROXY_CONFIG = {
   API_KEY: 'MySuperSecretKey_2026_Xy9#mP2!'
 };
 
-/* ================= КОНСТАНТЫ КОНВЕРТАЦИИ (ТЗ v7.0) ================= */
+/* ================= КОНСТАНТЫ КОНВЕРТАЦИИ ================= */
 const HP_TO_KW = 0.73549875;
 const KW_TO_HP = 1.35962;
-const ESTIMATE_COEF = 0.45; // коэффициент оценки 30-мин мощности, если точная неизвестна
+const ESTIMATE_COEF = 0.45;
 
 /* ================= БАЗА-ФАЛБЭК ================= */
 let carDatabase=[
@@ -253,20 +289,14 @@ let carDatabase=[
  {brand:"Mazda",model:"CX-5",trim:"2WD Zhiya Pro",body:"SUV",type:"ICE",engine_cc:1998,pole_hp:155,pole_kw:114,k30_hp:0,k30_kw:0,weight_kg:1635,base_price_cny:142200}
 ];
 
-/* ========= ТАБЛИЦЫ УТИЛЯ 2026/2027 (границы СТРОГО В кВт) ========= */
-/* EV/SEQ: зависят только от totalKw */
+/* ========= ТАБЛИЦЫ УТИЛЯ 2026/2027 ========= */
 const RK_EV=[
- [58.84,3400,5200,3400,5200],
- [73.55,991200,1641600,1090400,1805800],
- [95.61,1317600,1912800,1449400,2104000],
- [117.68,1560000,2227200,1716000,2450000],
- [139.75,1848000,2594400,2032800,2853800],
- [161.81,2193600,3024000,2413000,3326400],
- [183.88,2599200,3523200,2859200,3875600],
- [205.94,3079200,4104000,3387200,4514400],
+ [58.84,3400,5200,3400,5200],[73.55,991200,1641600,1090400,1805800],
+ [95.61,1317600,1912800,1449400,2104000],[117.68,1560000,2227200,1716000,2450000],
+ [139.75,1848000,2594400,2032800,2853800],[161.81,2193600,3024000,2413000,3326400],
+ [183.88,2599200,3523200,2859200,3875600],[205.94,3079200,4104000,3387200,4514400],
  [Infinity,3648000,4780800,4012800,5258800]
 ];
-/* ДВС/PAR: границы диапазонов мощности конвертированы из л.с. в кВт (160 л.с.=117.68 кВт и т.д.) */
 const RK={
 C1:[[117.68,3400,5200,3400,5200],[139.79,307200,568800,338000,625600],[161.85,316800,585600,348400,644200],[183.93,324000,602400,356400,662600],[Infinity,345600,602400,380200,662600]],
 C2:[[117.68,3400,5200,3400,5200],[139.79,900000,1492800,990000,1642000],[161.85,952800,1584000,1048000,1742400],[183.93,1010400,1677600,1111400,1845400],[206.00,1142400,1838400,1256600,2022200],[228.06,1291200,2011200,1420400,2212400],[250.14,1459200,2203200,1605200,2423600],[272.21,1663200,2412000,1829600,2653200],[294.28,1896000,2640000,2085600,2904000],[316.35,2160000,2892000,2376000,3181200],[338.43,2464800,3168000,2711200,3484800],[367.85,2808000,3468000,3088800,3814800],[Infinity,3201600,3796800,3521800,4176400]],
@@ -275,14 +305,14 @@ C4:[[117.68,2584000,3956200,2842400,4351800],[139.79,2635200,4000800,2898800,440
 C5:[[117.68,3290600,4325800,3619800,4758400],[139.79,3345600,4389600,3680200,4828600],[161.85,3403200,4456800,3743600,4902400],[183.93,3460800,4524000,3806800,4976400],[206.00,3530400,4627200,3883400,5090000],[228.06,3600000,4732800,3960000,5206000],[250.14,3727200,4992000,4100000,5491200],[272.21,3857600,5268000,4243200,5794800],[294.28,3993600,5558400,4393000,6114200],[316.35,4132800,5863200,4546000,6449600],[338.43,4276800,6187200,4704400,6806000],[367.85,4425600,6528000,4868200,7180800],[Infinity,4581600,6885600,5039800,7574200]]
 };
 
-/* ================= СУММАРНАЯ МОЩНОСТЬ В кВт (ТЗ v7.0, Шаг 3) ================= */
+/* ================= СУММАРНАЯ МОЩНОСТЬ В кВт ================= */
 function totalPowerKw(c){
-  if(c.type==="EV"||c.type==="SEQ_HYBRID") return c.k30_kw;              // ДВС не прибавляется
-  if(c.type==="PAR_HYBRID") return (c.pole_hp*HP_TO_KW) + c.k30_kw;      // ДВС(л.с.→кВт) + электро 30-мин
-  return c.pole_hp*HP_TO_KW;                                             // чистый ДВС: л.с. → кВт
+  if(c.type==="EV"||c.type==="SEQ_HYBRID") return c.k30_kw;
+  if(c.type==="PAR_HYBRID") return (c.pole_hp*HP_TO_KW) + c.k30_kw;
+  return c.pole_hp*HP_TO_KW;
 }
 
-/* ================= ТАБЛИЦА УТИЛЬСБОРА (ТЗ v7.0, Шаг 4) ================= */
+/* ================= ТАБЛИЦА УТИЛЬСБОРА ================= */
 function lookupUtilFee(volumeCc, totalKw, ageCategory, year, type){
   const y=(year==="2027")?"2027":"2026";
   const pick=b=>ageCategory==="new"?(y==="2027"?b[3]:b[1]):(y==="2027"?b[4]:b[2]);
@@ -358,7 +388,7 @@ function initEngineTypePicker(){
       document.getElementById('engineTypeDesc').innerHTML='<b style="color:#fff">'+info.title+'</b><br><br>'+info.desc;
       document.getElementById('engineTypeInfo').classList.remove('hidden');
       fillBrandsByType(selectedEngineType);
-      syncManualFields(); // синхронизация видимости полей ручного ввода
+      syncManualFields();
     });
   });
 }
@@ -397,7 +427,6 @@ function fillModels(){
   m.innerHTML='<option value="">— Модель —</option>';
   t.innerHTML='<option value="">— Комплектация —</option>';
   m.disabled=!brand;t.disabled=true;hideSpec();
-  exitManualMode();
   if(!brand)return;
   uniq(carDatabase.filter(c=>c.brand===brand&&c.type===selectedEngineType).map(c=>c.model)).forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;m.appendChild(o);});
   m.onchange=function(){fillTrims(m.value);};
@@ -412,7 +441,7 @@ function fillTrims(model){
   if(!model)return;
   const list=carDatabase.filter(c=>c.brand===brand&&c.model===model&&c.type===selectedEngineType);
   list.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c.trim;t.appendChild(o);});
-  t.onchange=function(){exitManualMode();showSpec(list[+t.value]);};
+  t.onchange=function(){showSpec(list[+t.value]);};
 }
 
 function hideSpec(){document.getElementById('specCard').classList.add('hidden');selected=null;}
@@ -459,22 +488,47 @@ function initUnitToggles(car){
   });
 }
 
-/* ========== РУЧНОЙ ВВОД (ТЗ v7.0, Шаг 2) ========== */
-function toggleManual(){
-  const p=document.getElementById('manualPanel');
-  const open=p.classList.toggle('hidden')===false;
-  if(open){syncManualFields();renderManualAge();}
+/* ========== РУЧНОЙ РЕЖИМ (ТЗ v8.0) ========== */
+function toggleManualMode(){
+  isManualMode=!isManualMode;
+  const sw=document.getElementById('manualSwitch');
+  const panel=document.getElementById('manualPanel');
+  const catalog=document.getElementById('catalogBlock');
+  const ageBlock=document.getElementById('ageBlock');
+  const lbl=document.getElementById('switchLabel');
+  const hint=document.getElementById('switchHint');
+
+  if(isManualMode){
+    sw.classList.add('on');
+    panel.style.display='block';
+    catalog.style.display='none';
+    ageBlock.style.display='none';
+    lbl.textContent='Ручной режим: ВКЛЮЧЁН';
+    hint.textContent='Нажмите ещё раз, чтобы вернуться в каталог';
+    syncManualFields();
+    renderManualAge();
+  } else {
+    sw.classList.remove('on');
+    panel.style.display='none';
+    catalog.style.display='block';
+    ageBlock.style.display='block';
+    lbl.textContent='Считать вручную по данным ПТС';
+    hint.textContent='Нажмите для ввода характеристик вручную';
+    exitManualMode();
+  }
 }
+
 function syncManualFields(){
   const t=selectedEngineType;
   if(!t)return;
   const isElec=(t==="EV"||t==="SEQ_HYBRID");
-  document.getElementById('mCcWrap').style.display=isElec?'none':'';      // объём скрыт для Электро/EREV
+  document.getElementById('mCcWrap').style.display=isElec?'none':'';
   document.getElementById('mHpWrap').style.display=(t==="ICE"||t==="PAR_HYBRID")?'':'none';
   document.getElementById('mKwWrap').style.display=isElec||t==="PAR_HYBRID"?'':'none';
   document.getElementById('mKnowWrap').style.display=isElec||t==="PAR_HYBRID"?'':'none';
   document.getElementById('mKwLabel').textContent=(t==="PAR_HYBRID")?'Мощность электромотора (кВт)':'Мощность электромотора (кВт, пиковая)';
 }
+
 function buildManualSelects(){
   const yS=document.getElementById('mYear'),mS=document.getElementById('mMonth');
   yS.innerHTML='';mS.innerHTML='';
@@ -487,35 +541,43 @@ function buildManualSelects(){
   document.getElementById('mHpIce').oninput=renderManualAge;
   document.getElementById('mKwEl').oninput=renderManualAge;
 }
+
 function fullMonthsFrom(prodY,prodM,ref){
   let m=(ref.getFullYear()-prodY)*12+(ref.getMonth()-(prodM-1));
   if(ref.getDate()<1)m--;
   return Math.max(0,m);
 }
+
 function renderManualAge(){
-  const info=document.getElementById('manualAgeInfo');
+  const catEl=document.getElementById('manualAgeCat');
+  const catText=document.getElementById('ageCatText');
   const warn=document.getElementById('ageUrgentWarn');
   const y=+document.getElementById('mYear').value,m=+document.getElementById('mMonth').value;
-  if(!y||!m){info.textContent='';warn.classList.add('hidden');return;}
+  if(!y||!m){catEl.style.display='none';warn.style.display='none';return;}
   const now=new Date();
   const months=fullMonthsFrom(y,m,now);
   let cat,catName;
   if(months<=36){cat='new';catName='0–3 года';}
   else if(months<=60){cat='mid';catName='3–5 лет';}
   else{cat='old';catName='старше 5 лет';}
-  info.innerHTML='Возраст на сегодня: <b style="color:#fff">'+months+' полных месяцев</b> → категория «'+catName+'»';
-  // Триггер < 30 дней до смены категории
-  warn.classList.add('hidden');
+
+  // Раздел 3: ТОЛЬКО категория
+  catText.textContent=catName;
+  catEl.style.display='inline-flex';
+
+  // Раздел 1: уведомление под датой
+  warn.style.display='none';
   if(cat==='new'||cat==='mid'){
     const target=cat==='new'?36:60;
     const nextName=cat==='new'?'3–5 лет':'старше 5 лет';
     const anniv=new Date(y,m-1+target,1);
     const daysLeft=Math.ceil((anniv-now)/86400000);
     if(daysLeft>=0&&daysLeft<30){
-      warn.textContent='⚠️ Внимание! Осталось '+daysLeft+' дн. до перехода в категорию «'+nextName+'». Ставки утильсбора вырастут.';
-      warn.classList.remove('hidden');
+      warn.textContent='⚠️ Осталось '+daysLeft+' дн. до перехода в категорию «'+nextName+'». Ставки утильсбора вырастут.';
+      warn.style.display='block';
     }
   }
+
   // Оценка 30-мин мощности + итог кВт
   const t=selectedEngineType;
   const know=document.getElementById('mKnow').checked;
@@ -523,10 +585,12 @@ function renderManualAge(){
   const kwIn=parseFloat(document.getElementById('mKwEl').value)||0;
   const el30=(t==="ICE")?0:(know?kwIn:kwIn*ESTIMATE_COEF);
   const total=(t==="EV"||t==="SEQ_HYBRID")?el30:(iceHp*HP_TO_KW+el30);
-  document.getElementById('mEstimateWarn').classList.toggle('hidden',!( (t==="EV"||t==="SEQ_HYBRID"||t==="PAR_HYBRID") && !know && kwIn>0));
+  const estW=document.getElementById('mEstimateWarn');
+  estW.style.display=( (t==="EV"||t==="SEQ_HYBRID"||t==="PAR_HYBRID") && !know && kwIn>0)?'block':'none';
   document.getElementById('mTotalKwInfo').innerHTML='Итоговая мощность для утильсбора: <b>'+Math.round(total*10)/10+' кВт</b> ('+Math.round(total*KW_TO_HP)+' л.с.)';
   manualProd={y,m,cat};
 }
+
 function applyManual(){
   clearErrors();
   if(!selectedEngineType){alert('Сначала выберите тип двигателя на Шаге 1');gotoStep(1);return;}
@@ -556,7 +620,6 @@ function applyManual(){
     weight_kg:0,base_price_cny:Math.round(priceRub/state.cnyRub),
     year_from:y,notes:"Ручной ввод"+(know?" (точная 30-мин)":" (оценка 0.45)")
   };
-  isManualMode=true;
   renderManualAge();
   const ageSel=document.getElementById('ageSel');
   ageSel.value=manualProd.cat;
@@ -564,14 +627,14 @@ function applyManual(){
   document.getElementById('customPrice').value=price;
   document.getElementById('currencySel').value=cur;
   showSpec(manualCarData);
-  document.getElementById('catalogBlock').style.opacity='0.4';
+  document.getElementById('specCard').scrollIntoView({behavior:'smooth',block:'center'});
 }
+
 function exitManualMode(){
-  if(!isManualMode)return;
-  isManualMode=false;manualProd=null;
+  manualProd=null;
   document.getElementById('ageSel').disabled=false;
-  document.getElementById('ageUrgentWarn').classList.add('hidden');
-  document.getElementById('catalogBlock').style.opacity='1';
+  document.getElementById('ageUrgentWarn').style.display='none';
+  document.getElementById('manualAgeCat').style.display='none';
 }
 
 function gotoStep(n){
@@ -627,7 +690,7 @@ function buildCities(){
   Object.keys(RF_LOGISTICS).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;s.appendChild(o);});
 }
 
-/* ================= РАСЧЁТ ================= */
+/* ================= РАСЧЁТ (ТЗ v8.0, Раздел 5 — новый порядок строк) ================= */
 const money=n=>Math.round(n).toLocaleString('ru')+' ₽';
 const row=(l,v,cls='')=>'<div class="flex justify-between items-center py-2 '+cls+'" style="border-bottom:1px solid rgba(255,255,255,.05)"><span class="text-sm" style="color:#cbd5e1">'+l+'</span><b style="color:#fff">'+v+'</b></div>';
 
@@ -662,20 +725,27 @@ function calculatePrice(){
 
   const box=document.getElementById('resultBox');
   box.classList.remove('hidden');
-  const dutyRows=(dutyObj.excise>0)
-    ? row('Пошлина 15%',money(dutyObj.duty),'anim anim-d2')+row('Акциз (30‑мин '+Math.round(c.k30_kw*KW_TO_HP)+' л.с.)',money(dutyObj.excise),'anim anim-d2')+row('НДС '+Math.round(CFG.VAT_RATE*100)+'%',money(dutyObj.vat),'anim anim-d2')
-    : row('Единая таможенная ставка (физлицо)',money(dutyObj.total),'anim anim-d2');
   const priceLabel=' <span style="color:#64748b;font-size:11px">('+displayPrice+')</span>';
 
+  // Порядок строк по ТЗ v8.0, Раздел 5
+  let rows='';
+  rows += row('Авто в Китае',money(baseRub)+priceLabel,'anim anim-d1');
+  rows += row('Логистика по Китаю + граница',money(logChina),'anim anim-d1');
+  if(c.type==="EV"||c.type==="SEQ_HYBRID"){
+    rows += row('Пошлина 15%',money(dutyObj.duty),'anim anim-d2');
+    rows += row('Акциз (30‑мин '+Math.round(c.k30_kw*KW_TO_HP)+' л.с.)',money(dutyObj.excise),'anim anim-d2');
+    rows += row('НДС '+Math.round(CFG.VAT_RATE*100)+'%',money(dutyObj.vat),'anim anim-d2');
+  } else {
+    rows += row('Единая таможенная ставка (физлицо)',money(dutyObj.total),'anim anim-d2');
+  }
+  rows += row('Утилизационный сбор ('+Math.round(totalKw*10)/10+' кВт)',money(util),'anim anim-d3');
+  rows += row('Таможенный сбор (оформление)',money(customsFee),'anim anim-d3');
+  rows += row('СБКТС + ЭПТС',money(certs),'anim anim-d4');  // БЕЗ «+ ГТО» в названии
+  rows += row('Доставка по РФ до города',money(logRF),'anim anim-d4');
+  rows += row('Услуги компании',money(margin),'anim anim-d5');
+
   box.innerHTML='<div class="glass-soft rounded-2xl p-5 anim"><div class="text-sm mb-3" style="color:#94a3b8">Детализация · '+c.brand+' '+c.model+' '+c.trim+' · '+city+'</div>'
-    +row('Авто в Китае',money(baseRub)+priceLabel,'anim anim-d1')
-    +row('Логистика по Китаю + граница',money(logChina),'anim anim-d1')
-    +dutyRows
-    +row('Утилизационный сбор ('+Math.round(totalKw*10)/10+' кВт)',money(util),'anim anim-d2')
-    +row('Таможенный сбор (оформление)',money(customsFee),'anim anim-d3')
-    +row('СБКТС + ЭПТС + ГТО',money(certs),'anim anim-d3')
-    +row('Доставка по РФ до города',money(logRF),'anim anim-d3')
-    +row('Услуги компании',money(margin),'anim anim-d4')
+    +rows
     +'<div class="flex justify-between items-center pt-4 anim anim-d5"><span class="text-lg font-bold" style="color:#fff">ИТОГО ПОД КЛЮЧ</span><span class="text-2xl sm:text-3xl font-black" style="color:#FFD700">'+money(total)+'</span></div>'
     +'<p class="text-[11px] mt-3" style="color:#64748b">*Расчёт предварительный (физлицо, личное пользование). Для юрлиц/перепродажи — иные ставки. Финальная сумма фиксируется в договоре по VIN.</p></div>';
 
