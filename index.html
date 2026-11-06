@@ -13,10 +13,21 @@ html,body{background:#070b14;color:#e8edf7;-webkit-font-smoothing:antialiased;ov
 body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
 *{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 input,select,textarea{-webkit-user-select:auto;user-select:auto}
-.hero{position:relative;min-height:100vh;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:-30px;background:url('hero-bg.jpg') center/cover no-repeat;filter:blur(2px);-webkit-filter:blur(2px);z-index:0}
+/* Базовый слой: тёмный фон есть ВСЕГДА, картинки по умолчанию НЕТ */
+.hero{position:relative;min-height:100vh;overflow:hidden;background:#070b14}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;display:none} /* выключен на мобильных */
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.95) 0%,rgba(7,11,20,.88) 15%,rgba(11,18,32,.70) 40%,rgba(11,18,32,.75) 60%,rgba(7,11,20,.92) 100%);z-index:1}
 .hero>*{position:relative;z-index:2}
+
+/* Картинка + блюр — ТОЛЬКО на устройствах с мышью/тачпадом (ПК, ноутбуки) */
+@media (hover:hover) and (pointer:fine){
+  .hero::before{
+    display:block;
+    inset:-30px;
+    background:url('hero-bg.jpg') center/cover no-repeat;
+    filter:blur(2px);-webkit-filter:blur(2px);
+  }
+}
 .glass{background:rgba(15,23,42,.55);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border:1px solid rgba(255,255,255,.10);box-shadow:0 20px 60px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
 .glass-soft{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
 .btn-gold{background:linear-gradient(135deg,#0a9e33,#088126);color:#fff;font-weight:800;box-shadow:0 8px 30px -8px rgba(10,158,51,.5);transition:.25s;border:none;cursor:pointer}
@@ -73,7 +84,7 @@ select.pulse{border-color:#00F0FF!important}
 .manual-age-cat{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 12px;background:rgba(0,240,255,.10);border:1px solid rgba(0,240,255,.3);border-radius:10px;font-size:.82rem;color:#00F0FF;font-weight:700}
 
 @media (max-width:768px){
-  .hero::before{inset:-10px}
+
   .sticky-calc-btn{position:fixed;bottom:0;left:0;width:100%;z-index:9999;margin:0;border-radius:0;box-shadow:0 -4px 10px rgba(0,0,0,.15);padding:16px!important;font-size:16px!important;font-weight:bold;text-align:center}
   main{padding-bottom:80px!important}
   .engine-type-btn{padding:12px 8px;min-height:88px}
