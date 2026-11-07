@@ -748,6 +748,9 @@ function calculatePrice(){
 }
 
 function fillSpecCard(c){
+  /* ВЕРНУЛОСЬ: карточка видна и в режиме каталога, и в ручном */
+  document.getElementById('specCard').classList.remove('hidden');
+
   document.getElementById('specIcon').innerHTML = BODY_ICON[c.body] || BODY_ICON.SUV;
   document.getElementById('specType').textContent = TYPE_LABEL[c.type] || c.type;
   updatePowerDisplay('specPeak', c.pole_kw, 'peak');
