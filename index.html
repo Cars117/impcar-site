@@ -6,7 +6,6 @@
 <title>Авто из Китая под ключ | Прозрачный расчёт 2026–2027</title>
 <meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика.">
 
-<!-- Шрифт Inter Tight -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,16 +17,13 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: { sans: ['"Inter Tight"', 'system-ui', '-apple-system', 'sans-serif'] },
-      colors: {
-        ink: '#070b14', navy: '#0b1220', gold: '#FFD700', neon: '#00F0FF', brand: '#3b82f6',
-      }
+      colors: { ink: '#070b14', navy: '#0b1220', gold: '#FFD700', neon: '#00F0FF', brand: '#3b82f6' }
     }
   }
 }
 </script>
 
 <style>
-/* ================= БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ (WCAG AA) ================= */
 :root {
   --text-main: #111827; --text-muted: #4b5563; --bg-body: #f9fafb;
   --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.08);
@@ -51,27 +47,31 @@ html, body {
 h1 { font-size: clamp(1.75rem, 4vw + 1rem, 2.5rem); line-height: 1.2; letter-spacing: -0.02em; }
 h2 { font-size: clamp(1.25rem, 2vw + 1rem, 1.5rem); line-height: 1.3; letter-spacing: -0.01em; }
 
-/* ================= ФОН (HERO) ================= */
 .hero-bg { position: fixed; inset: 0; z-index: -2; background-image: url('hero-bg.jpg'); background-size: cover; background-position: center; filter: blur(8px) brightness(0.9); transform: scale(1.1); }
 .dark .hero-bg { filter: blur(8px) brightness(0.3); }
 .hero-overlay { position: fixed; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(249,250,251,0.7) 0%, rgba(249,250,251,0.95) 100%); }
 .dark .hero-overlay { background: linear-gradient(180deg, rgba(7,11,20,0.6) 0%, rgba(7,11,20,0.95) 100%); }
 
-/* ================= GLASSMORPHISM ================= */
 .glass { background: var(--glass-bg); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid var(--glass-border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
 .dark .glass { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); }
 
-/* ================= ПОЛЯ ВВОДА ================= */
-.field { background: var(--field-bg); border: 1px solid var(--field-border); border-radius: 12px; padding: 12px 16px; min-height: 48px; transition: all 0.2s ease; color: var(--text-main); width: 100%; font-size: 16px; appearance: none; }
+/* ПОЛЯ ВВОДА (ИСПРАВЛЕН БАГ С ЦВЕТОМ ТЕКСТА В DARK MODE) */
+.field { 
+  background: var(--field-bg); border: 1px solid var(--field-border); border-radius: 12px; 
+  padding: 12px 16px; min-height: 48px; transition: all 0.2s ease; 
+  color: var(--text-main); width: 100%; font-size: 16px; appearance: none; 
+}
+/* Принудительный белый текст для селектов в темной теме (Fix для ПК) */
+.dark select.field { color: #ffffff !important; background-color: #1e293b; }
+.dark select.field option { color: #ffffff; background-color: #1e293b; }
+
 .field:focus, .field:focus-visible { outline: none; border-color: var(--toggle-active); box-shadow: 0 0 0 4px var(--focus-ring); }
 .field.error-field { border-color: #ef4444 !important; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important; animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
-.dark select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); }
+.dark select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); }
 
-/* ================= ТУМБЛЕРЫ ================= */
-.wcag-switch { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--field-bg); transition: all 0.2s; user-select: none; min-height: 48px; }
+.wcag-switch { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--field-bg); transition: all 0.2s; user-select: none; min-height: 48px; touch-action: manipulation; }
 .wcag-switch:hover { border-color: var(--toggle-active); }
-.wcag-switch:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus-ring); }
 .wcag-switch[aria-pressed="true"] { border-color: var(--toggle-active); background: rgba(37, 99, 235, 0.05); }
 .dark .wcag-switch[aria-pressed="true"] { background: rgba(0, 240, 255, 0.08); }
 .switch-track { width: 44px; height: 24px; background: var(--toggle-bg); border-radius: 99px; position: relative; transition: 0.3s; flex-shrink: 0; }
@@ -81,16 +81,14 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .switch-text { font-weight: 500; font-size: 0.9rem; color: var(--text-muted); transition: 0.2s; }
 .wcag-switch[aria-pressed="true"] .switch-text { color: var(--text-main); font-weight: 600; }
 
-/* ================= КНОПКИ ДВИГАТЕЛЯ И АНИМАЦИЯ ПОДСКАЗКИ ================= */
-.engine-btn { background: var(--field-bg); border: 1px solid var(--field-border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); min-height: 96px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; position: relative; overflow: hidden; }
+/* КНОПКИ ДВИГАТЕЛЯ */
+.engine-btn { background: var(--field-bg); border: 1px solid var(--field-border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); min-height: 96px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; position: relative; overflow: hidden; touch-action: manipulation; }
 .engine-btn:hover { border-color: var(--toggle-active); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.engine-btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus-ring); }
 .engine-btn.selected { border-color: var(--toggle-active); background: rgba(37, 99, 235, 0.05); color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 0 0 1px var(--toggle-active); transform: translateY(1px); }
 .dark .engine-btn.selected { background: rgba(0, 240, 255, 0.08); color: #fff; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), 0 0 20px rgba(0, 240, 255, 0.15); }
 .engine-btn svg { width: 36px; height: 36px; transition: transform 0.3s; }
-.engine-btn:hover svg { transform: scale(1.1); }
 
-/* Анимация поочередного нажатия (Onboarding Hint) */
+/* Анимация подсказки */
 @keyframes hintPress {
   0%, 100% { transform: translateY(0); border-color: var(--field-border); box-shadow: none; }
   50% { transform: translateY(2px); border-color: var(--toggle-active); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); background: rgba(0, 240, 255, 0.05); }
@@ -101,50 +99,51 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .hint-animate:nth-child(3) { animation-delay: 1.0s; }
 .hint-animate:nth-child(4) { animation-delay: 1.5s; }
 
-/* ================= ПЕРЕКЛЮЧАТЕЛЬ ЕДИНИЦ ================= */
+/* АНИМАЦИЯ ТОКА ДЛЯ ЭЛЕКТРО */
+@keyframes electricPulse {
+  0% { stroke-dashoffset: 24; opacity: 0.5; }
+  50% { opacity: 1; filter: drop-shadow(0 0 4px #eab308); }
+  100% { stroke-dashoffset: 0; opacity: 0.5; }
+}
+.ev-bolt { stroke-dasharray: 24; animation: electricPulse 1.5s linear infinite; }
+
 .unit-toggle { display: inline-flex; background: var(--field-bg); border: 1px solid var(--field-border); border-radius: 8px; padding: 2px; }
-.unit-btn { padding: 4px 10px; font-size: 0.75rem; cursor: pointer; border-radius: 6px; color: var(--text-muted); transition: all 0.2s; font-weight: 600; border: none; background: transparent; }
-.unit-btn:focus-visible { outline: 2px solid var(--toggle-active); outline-offset: 1px; }
+.unit-btn { padding: 4px 10px; font-size: 0.75rem; cursor: pointer; border-radius: 6px; color: var(--text-muted); transition: all 0.2s; font-weight: 600; border: none; background: transparent; touch-action: manipulation;}
 .unit-btn.active { background: var(--toggle-active); color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 .dark .unit-btn.active { color: #070b14; }
 
-/* ================= КНОПКИ ДЕЙСТВИЙ ================= */
-.btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 600; border-radius: 12px; transition: all 0.2s ease; border: none; cursor: pointer; box-shadow: 0 4px 14px -4px rgba(16, 185, 129, 0.4); min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 600; border-radius: 12px; transition: all 0.2s ease; border: none; cursor: pointer; box-shadow: 0 4px 14px -4px rgba(16, 185, 129, 0.4); min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; touch-action: manipulation;}
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.5); filter: brightness(1.05); }
 .btn-primary:active { transform: translateY(0); }
-.btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.4); }
-.btn-secondary { background: transparent; border: 1px solid var(--field-border); color: var(--text-main); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
+.btn-secondary { background: transparent; border: 1px solid var(--field-border); color: var(--text-main); border-radius: 12px; transition: all 0.2s ease; cursor: pointer; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; touch-action: manipulation;}
 .btn-secondary:hover { background: var(--field-bg); border-color: var(--text-muted); }
-.btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus-ring); }
 
-/* ================= ТУМБЛЕР ДЕНЬ/НОЧЬ ================= */
-.theme-toggle { width: 44px; height: 24px; background: var(--toggle-bg); border-radius: 99px; position: relative; cursor: pointer; transition: 0.3s; border: none; padding: 0; }
-.theme-toggle:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus-ring); }
+.theme-toggle { width: 44px; height: 24px; background: var(--toggle-bg); border-radius: 99px; position: relative; cursor: pointer; transition: 0.3s; border: none; padding: 0; touch-action: manipulation;}
 .theme-thumb { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 .theme-thumb svg { width: 12px; height: 12px; color: #f59e0b; }
 .dark .theme-thumb { left: 22px; background: #1f2937; }
 .dark .theme-thumb svg { color: #e5e7eb; }
 
-/* ================= STICKY TOTAL ================= */
-.sticky-total { position: sticky; bottom: 0; z-index: 40; background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--glass-border); padding: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); transition: transform 0.3s ease; }
-.sticky-total.hidden-total { transform: translateY(100%); }
-
-/* ================= АНИМАЦИИ ================= */
 .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal.active { opacity: 1; transform: translateY(0); }
 .delay-100 { transition-delay: 0.1s; }
 .delay-200 { transition-delay: 0.2s; }
 
-/* Плавное появление ручного режима */
 @keyframes slideDownFade { from { opacity: 0; transform: translateY(-10px); max-height: 0; } to { opacity: 1; transform: translateY(0); max-height: 1000px; } }
 .animate-slide-down { animation: slideDownFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; overflow: hidden; }
 
 @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
+/* ОТКЛЮЧЕНИЕ АНИМАЦИЙ НА МОБИЛЬНЫХ ДЛЯ ИДЕАЛЬНОГО СКРОЛЛА */
+@media (hover: none) and (pointer: coarse) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .engine-btn:hover, .btn-primary:hover, .btn-secondary:hover { transform: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
-  .hint-animate { animation: none; }
+  .hint-animate, .ev-bolt { animation: none; }
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -171,7 +170,7 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
     </div>
   </header>
 
-  <main class="max-w-screen-xl mx-auto px-4 sm:px-6 pb-32 pt-8">
+  <main class="max-w-screen-xl mx-auto px-4 sm:px-6 pb-24 pt-8">
     
     <section class="text-center mb-10 reveal active delay-100 max-w-3xl mx-auto">
       <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-xs sm:text-sm mb-4 font-medium" style="color: var(--toggle-active)">
@@ -209,45 +208,58 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
         <h2 class="font-bold mb-2">Шаг 1. Тип двигателя</h2>
         <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите тип, чтобы мы применили верные ставки пошлин и утильсбора.</p>
         
-        <!-- Блок кнопок с анимацией подсказки -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="engineTypeGrid">
+          <!-- Электро (Анимация тока) -->
           <button type="button" class="engine-btn hint-animate" data-type="EV" aria-label="Электромобиль">
-            <svg class="text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+            <svg class="text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path class="ev-bolt" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+            </svg>
             <span class="text-xs font-semibold">Электро</span>
           </button>
+          
+          <!-- Посл. гибрид (Розетка с зарядкой) -->
           <button type="button" class="engine-btn hint-animate" data-type="SEQ_HYBRID" aria-label="Последовательный гибрид">
-            <svg class="text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5h6.75a2.25 2.25 0 012.25 2.25v.75a2.25 2.25 0 01-2.25 2.25H4.5m16.5-5.25v5.25m-16.5-5.25v5.25m0 0H3.375c-.621 0-1.125-.504-1.125-1.125v-2.25c0-.621.504-1.125 1.125-1.125H4.5m16.5 0V8.625c0-.621-.504-1.125-1.125-1.125h-1.5c-.621 0-1.125.504-1.125 1.125v1.875m-13.5 0V8.625c0-.621.504-1.125 1.125-1.125h1.5c.621 0 1.125.504 1.125 1.125v1.875" /></svg>
+            <svg class="text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v3a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-3z" />
+              <path d="M9 5.25V3m6 2.25V3M12 12.75v3.75a2.25 2.25 0 002.25 2.25H15" />
+              <circle cx="16.5" cy="18.75" r="1.5" fill="currentColor" />
+            </svg>
             <span class="text-xs font-semibold">Посл. гибрид</span>
           </button>
+          
+          <!-- Парал. гибрид (Розетка + Бензин) -->
           <button type="button" class="engine-btn hint-animate" data-type="PAR_HYBRID" aria-label="Параллельный гибрид">
-            <!-- Комбо: Батарейка + Двигатель -->
             <svg class="text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5h6.75a2.25 2.25 0 012.25 2.25v.75a2.25 2.25 0 01-2.25 2.25H4.5m16.5-5.25v5.25m-16.5-5.25v5.25m0 0H3.375c-.621 0-1.125-.504-1.125-1.125v-2.25c0-.621.504-1.125 1.125-1.125H4.5" class="opacity-60"/>
-              <path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+              <path d="M5.25 7.5A2.25 2.25 0 017.5 5.25h4.5a2.25 2.25 0 012.25 2.25v3a2.25 2.25 0 01-2.25 2.25h-4.5a2.25 2.25 0 01-2.25-2.25v-3z" class="opacity-70"/>
+              <path d="M9 5.25V3m3 2.25V3M10.5 12.75v2.25" class="opacity-70"/>
+              <path d="M16 10h3a1 1 0 011 1v8a1 1 0 01-1 1h-3a1 1 0 01-1-1v-8a1 1 0 011-1z" />
+              <path d="M16 10V8a1 1 0 011-1h1" />
+              <path d="M15 14h5" />
             </svg>
             <span class="text-xs font-semibold">Парал. гибрид</span>
           </button>
+          
+          <!-- ДВС (Двигатель автомобиля) -->
           <button type="button" class="engine-btn hint-animate" data-type="ICE" aria-label="ДВС">
-            <!-- Канистра с бензином -->
-            <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.5 3.75h3v2.25h-3V3.75z" />
-              <path d="M7.5 6h9a1.5 1.5 0 011.5 1.5v12a1.5 1.5 0 01-1.5 1.5h-9a1.5 1.5 0 01-1.5-1.5v-12A1.5 1.5 0 017.5 6z" />
-              <path d="M7.5 10.5h9M10.5 15h3" />
-              <path d="M13.5 3.75l2.25-1.5v1.5" />
+            <svg class="text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 10V8a2 2 0 012-2h8a2 2 0 012 2v2" />
+              <path d="M4 10h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z" />
+              <path d="M8 6V4m8 2V4M9 14h6M9 10h6" />
+              <path d="M12 18v3m-3-3v2m6-2v2" />
             </svg>
             <span class="text-xs font-semibold">ДВС</span>
           </button>
         </div>
 
-        <!-- Тумблер ручного режима (ПЕРЕНЕСЕН ПОД КНОПКИ) -->
-        <div id="manualSwitch" class="wcag-switch mb-6" role="switch" aria-pressed="false" tabindex="0" onclick="toggleManualMode()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleManualMode();}">
-          <div class="switch-track"><div class="switch-thumb"></div></div>
-          <div class="switch-text" id="switchLabel">Ручной ввод (нет в каталоге)</div>
-        </div>
-
         <div id="brandWrap" class="transition-all duration-300">
           <label class="block text-sm font-semibold mb-2">Бренд</label>
-          <select id="brandSel" class="field mb-6" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип двигателя выше —</option></select>
+          <select id="brandSel" class="field mb-4" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип двигателя выше —</option></select>
+          
+          <!-- Тумблер ручного режима ПЕРЕНЕСЕН СЮДА (под бренд) -->
+          <div id="manualSwitch" class="wcag-switch mb-6" role="switch" aria-pressed="false" tabindex="0" onclick="toggleManualMode()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleManualMode();}">
+            <div class="switch-track"><div class="switch-thumb"></div></div>
+            <div class="switch-text" id="switchLabel">Нет нужной модели? Ввести данные вручную из ПТС</div>
+          </div>
         </div>
         
         <button id="nextBtn1" class="btn-primary w-full text-base" onclick="nextFrom1()">
@@ -258,13 +270,13 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
       <!-- ШАГ 2 -->
       <div class="wizard-step hidden" data-step="2">
         <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
-        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите модель или введите данные вручную. <strong>Итоговая цена обновляется автоматически.</strong></p>
+        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите модель или введите данные вручную.</p>
 
-        <!-- Ручной ввод (с анимацией появления) -->
+        <!-- Ручной ввод -->
         <div id="manualPanel" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background: var(--field-bg)">
           <h3 class="font-bold mb-4 text-sm flex items-center gap-2" style="color: var(--toggle-active)">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
-            Ручной ввод по ПТС / ОТТС
+            Данные из ПТС / ОТТС
           </h3>
           
           <div class="grid grid-cols-2 gap-3 mb-4">
@@ -312,7 +324,7 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
           <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
         </div>
 
-        <!-- Карточка спецификаций (ВОЗВРАЩЕНА ПОЛНОСТЬЮ) -->
+        <!-- Карточка спецификаций -->
         <div id="specCard" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background: var(--field-bg)">
           <div class="flex items-start gap-4">
             <div id="specIcon" class="shrink-0 w-16 h-12 flex items-center justify-center" style="color: var(--toggle-active)"></div>
@@ -402,7 +414,7 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
           <button class="btn-secondary px-6" onclick="gotoStep(2)" aria-label="Назад">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg> Назад
           </button>
-          <button id="calcBtn" class="btn-primary flex-1" onclick="calculatePrice()" aria-label="Получить предложение">Получить предложение</button>
+          <button id="calcBtn" class="btn-primary flex-1" onclick="calculatePrice()" aria-label="Получить предложение">Рассчитать стоимость</button>
         </div>
         
         <div id="leadWrap" class="hidden reveal">
@@ -428,17 +440,7 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
     </div>
   </main>
 
-  <!-- Sticky Total Bar -->
-  <div id="stickyTotal" class="sticky-total hidden-total flex items-center justify-between gap-4 max-w-screen-xl mx-auto">
-    <div class="flex flex-col">
-      <span class="text-xs font-medium uppercase tracking-wider" style="color: var(--text-muted)">Итого под ключ</span>
-      <span id="stickyTotalValue" class="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">0 ₽</span>
-    </div>
-    <button id="stickyActionBtn" class="btn-primary px-6 py-3 text-sm" onclick="handleStickyAction()">Далее</button>
-  </div>
-
 <script>
-/* ================= КОНФИГУРАЦИЯ И СТАВКИ ================= */
 const CFG = { BOT_USERNAME: "Avto_Calc_bot", WA_NUMBER: "79266173662", FALLBACK_CNY_RUB: 12.5, FALLBACK_USD_RUB: 90.0, VAT_RATE: 0.22, LOGISTICS_CHINA: 125000, CERT_SBKTS: 45000, CERT_EPTS: 15000, CERT_GTO: 20000, MARGIN: 200000 };
 const RF_LOGISTICS = {"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000};
 
@@ -458,9 +460,7 @@ let selected = null, lastCalc = null, selectedEngineType = null, isManualMode = 
 let deliveryEnabled = true;
 let powerUnits = { peak: 'kw', k30: 'kw' };
 let currentStep = 1;
-let hintInterval = null;
 
-/* ================= ТЕМА И UI ================= */
 function toggleTheme() {
   document.documentElement.classList.toggle('dark');
   localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -478,7 +478,6 @@ updateThemeIcon();
 const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); }); }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ================= ЛОГИКА КАЛЬКУЛЯТОРА ================= */
 function totalPowerKw(c) {
   if (c.type === "EV" || c.type === "SEQ_HYBRID") return c.k30_kw;
   if (c.type === "PAR_HYBRID") return (c.pole_hp * HP_TO_KW) + c.k30_kw;
@@ -527,71 +526,26 @@ function renderRates() {
   else { b.textContent = `⚠️ Курс ориент.: $${f(state.usdRub)} · ¥${f(state.cnyRub)}`; b.style.color = "#d97706"; }
 }
 function priceToRub(val, cur) { if(cur==="USD") return val*state.usdRub; if(cur==="EUR") return val*state.eurRub; return val*state.cnyRub; }
+function rubToCny(val) { return Math.round(val / state.cnyRub); }
 
-function triggerError(elementId) { const el = document.getElementById(elementId); if(!el) return; el.classList.add('error-field'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.classList.remove('error-field'), 2000); }
+function triggerError(elementId) { const el = document.getElementById(elementId); if(!el) return; el.classList.add('error-field'); setTimeout(() => el.classList.remove('error-field'), 2000); }
 
-/* ================= МГНОВЕННЫЙ РАСЧЕТ ================= */
-function calculateTotalLive() {
-  let c = selected; let baseRub = 0; let age = 'new'; let year = document.getElementById('yearSel')?.value || '2026'; let city = '';
-  if (isManualMode) {
-    const v = manualInputs();
-    if (!isManualValid()) { updateStickyTotal(0, false); return; }
-    baseRub = priceToRub(v.price, v.cur); age = manualProd?.cat || 'new'; city = deliveryEnabled ? document.getElementById('mCitySel').value : '';
-    c = { type: v.t, engine_cc: v.cc, pole_hp: v.iceHp, k30_kw: (v.t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF) };
-  } else {
-    if (!c) { updateStickyTotal(0, false); return; }
-    let customPriceVal = parseFloat(document.getElementById('customPrice').value); const currency = document.getElementById('currencySel').value;
-    baseRub = customPriceVal > 0 ? priceToRub(customPriceVal, currency) : c.base_price_cny * state.cnyRub;
-    age = document.getElementById('ageSel').value; city = document.getElementById('citySel').value;
-  }
-  const totalKw = totalPowerKw(c); const dutyObj = customsDuty(age, c.engine_cc, baseRub, c.type, c.k30_kw); const customsFee = getCustomsFee(baseRub);
-  const util = lookupUtilFee(c.engine_cc, totalKw, age, year, c.type); const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
-  let logRF = (!isManualMode || deliveryEnabled) ? (RF_LOGISTICS[city] || 0) : 0;
-  const total = baseRub + CFG.LOGISTICS_CHINA + dutyObj.total + util + customsFee + certs + logRF + CFG.MARGIN;
-  updateStickyTotal(total, true);
-}
-
-function updateStickyTotal(total, isValid) {
-  const stickyBar = document.getElementById('stickyTotal'); const stickyVal = document.getElementById('stickyTotalValue'); const stickyBtn = document.getElementById('stickyActionBtn');
-  if (currentStep === 1) { stickyBar.classList.add('hidden-total'); return; }
-  stickyBar.classList.remove('hidden-total');
-  if (isValid && total > 0) { stickyVal.textContent = Math.round(total).toLocaleString('ru') + ' ₽'; stickyVal.style.opacity = '1'; }
-  else { stickyVal.textContent = '—'; stickyVal.style.opacity = '0.5'; }
-  if (currentStep === 2) { stickyBtn.innerHTML = 'Далее <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>'; stickyBtn.onclick = nextFrom2; }
-  else if (currentStep === 3) { stickyBtn.innerHTML = 'Получить предложение'; stickyBtn.onclick = calculatePrice; }
-}
-function handleStickyAction() { if (currentStep === 2) nextFrom2(); else if (currentStep === 3) calculatePrice(); }
-
-/* ================= РУЧНОЙ ВВОД ================= */
 function toggleManualMode() {
-  stopHintAnimation(); // Останавливаем подсказку если вдруг еще идет
+  stopHintAnimation();
   isManualMode = !isManualMode;
   const sw = document.getElementById('manualSwitch'); const lbl = document.getElementById('switchLabel'); const panel = document.getElementById('manualPanel');
   sw.setAttribute('aria-pressed', isManualMode);
-  lbl.textContent = isManualMode ? 'Ручной режим: ВКЛЮЧЕН ✓' : 'Ручной ввод (нет в каталоге)';
+  lbl.textContent = isManualMode ? 'Ручной режим: ВКЛЮЧЕН ✓' : 'Нет нужной модели? Ввести данные вручную из ПТС';
   
-  if(isManualMode) {
-    selected = null; document.getElementById('modelSel').innerHTML = '<option value="">— Сначала бренд —</option>'; document.getElementById('trimSel').innerHTML = '<option value="">— Сначала модель —</option>'; hideSpec();
-    document.getElementById('brandWrap').classList.add('hidden');
-    syncManualFields();
-    // Плавное появление
-    panel.classList.remove('hidden');
-    panel.classList.add('animate-slide-down');
-    renderManualLive();
-  } else {
-    ['mCc','mPrice','mHpIce','mKwEl'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('mKnow').checked = false; manualProd = null; hideSpec();
-    panel.classList.add('hidden'); panel.classList.remove('animate-slide-down');
-    document.getElementById('brandWrap').classList.remove('hidden');
-    if(selectedEngineType) fillBrandsByType(selectedEngineType);
-  }
-  applyStep2Visibility(); calculateTotalLive();
+  // На шаге 1 мы просто переключаем флаг. Панель появится на шаге 2.
+  // Но если мы уже на шаге 2, применяем видимость сразу.
+  if(currentStep === 2) applyStep2Visibility();
 }
 
 function toggleDelivery() {
   deliveryEnabled = !deliveryEnabled; const sw = document.getElementById('deliverySwitch'); const lbl = document.getElementById('deliveryLabel');
   sw.setAttribute('aria-pressed', deliveryEnabled); lbl.textContent = deliveryEnabled ? '🚚 Доставка до моего города' : '❌ Без доставки по РФ';
-  document.getElementById('mCityWrap').style.display = deliveryEnabled ? 'block' : 'none'; calculateTotalLive();
+  document.getElementById('mCityWrap').style.display = deliveryEnabled ? 'block' : 'none';
 }
 
 function manualInputs() {
@@ -614,22 +568,26 @@ function renderManualSpec() {
   initUnitToggles(manualCarData); selected = isManualValid() ? manualCarData : null;
 }
 
-/* ================= НАВИГАЦИЯ ================= */
 function gotoStep(n) {
   currentStep = n;
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== n));
   document.querySelectorAll('#stepDots span').forEach(d => { const i = +d.dataset.i; d.className = `h-1.5 rounded-full transition-all duration-300 ${i === n ? 'w-8 bg-emerald-500' : i < n ? 'w-8 bg-neon' : 'w-8 bg-gray-300 dark:bg-gray-700'}`; });
   if(n === 2) applyStep2Visibility();
   if(n === 3) { if(isManualMode && deliveryEnabled) document.getElementById('citySel').value = document.getElementById('mCitySel').value; document.getElementById('cityBlockFinal').style.display = (isManualMode && !deliveryEnabled) ? 'none' : 'block'; }
-  window.scrollTo({ top: document.getElementById('calcCard').offsetTop - 20, behavior: 'smooth' }); calculateTotalLive();
+  // Убрали scrollIntoView для предотвращения дергания на iOS/Android
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function applyStep2Visibility() {
   const panel = document.getElementById('manualPanel');
   if(isManualMode) { panel.classList.remove('hidden'); panel.classList.add('animate-slide-down'); } 
   else { panel.classList.add('hidden'); panel.classList.remove('animate-slide-down'); }
-  document.getElementById('catalogBlock').classList.toggle('hidden', isManualMode); document.getElementById('priceBlock').classList.toggle('hidden', isManualMode); document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
+  document.getElementById('catalogBlock').classList.toggle('hidden', isManualMode);
+  document.getElementById('priceBlock').classList.toggle('hidden', isManualMode);
+  document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
   if(isManualMode) renderManualSpec();
 }
+
 function nextFrom1() { if(!selectedEngineType) { triggerError('nextBtn1'); return; } if(!isManualMode && !document.getElementById('brandSel').value) { triggerError('brandSel'); return; } gotoStep(2); }
 function nextFrom2() {
   if(isManualMode) { if(!isManualValid()) { const v = manualInputs(); if(!v.isElec && v.cc <= 0) triggerError('mCc'); else if(v.price <= 0) triggerError('mPrice'); else if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) triggerError('mHpIce'); else if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) triggerError('mKwEl'); return; } gotoStep(3); return; }
@@ -641,9 +599,23 @@ function calculatePrice() {
   const c = selected || (isManualMode ? { brand: "Ручной ввод", model: "ПТС", trim: selectedEngineType, type: selectedEngineType, engine_cc: manualInputs().cc, k30_kw: manualInputs().know ? manualInputs().kwIn : manualInputs().kwIn * ESTIMATE_COEF, pole_hp: manualInputs().iceHp } : null);
   const age = isManualMode ? (manualProd?.cat || 'new') : document.getElementById('ageSel').value; const year = document.getElementById('yearSel').value;
   const city = isManualMode ? (deliveryEnabled ? document.getElementById('mCitySel').value : '') : document.getElementById('citySel').value;
-  let baseRub = 0;
-  if(isManualMode) { baseRub = priceToRub(manualInputs().price, manualInputs().cur); }
-  else { let cp = parseFloat(document.getElementById('customPrice').value); baseRub = cp > 0 ? priceToRub(cp, document.getElementById('currencySel').value) : c.base_price_cny * state.cnyRub; }
+  
+  let baseRub = 0; let baseCny = 0;
+  if(isManualMode) { 
+    const v = manualInputs();
+    baseRub = priceToRub(v.price, v.cur); 
+    baseCny = v.cur === 'CNY' ? v.price : rubToCny(baseRub);
+  } else { 
+    let cp = parseFloat(document.getElementById('customPrice').value); 
+    const cur = document.getElementById('currencySel').value;
+    if(cp > 0) {
+      baseRub = priceToRub(cp, cur);
+      baseCny = cur === 'CNY' ? cp : rubToCny(baseRub);
+    } else {
+      baseRub = c.base_price_cny * state.cnyRub;
+      baseCny = c.base_price_cny;
+    }
+  }
 
   const totalKw = totalPowerKw(c); const dutyObj = customsDuty(age, c.engine_cc, baseRub, c.type, c.k30_kw); const customsFee = getCustomsFee(baseRub);
   const util = lookupUtilFee(c.engine_cc, totalKw, age, year, c.type); const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
@@ -652,10 +624,13 @@ function calculatePrice() {
   lastCalc = { c, age, year, city, total, util, baseRub };
 
   const money = n => Math.round(n).toLocaleString('ru') + ' ₽';
-  const row = (icon, label, value) => `<div class="flex items-center justify-between py-3 border-b" style="border-color: var(--glass-border)"><div class="flex items-center gap-3"><span style="color:var(--toggle-active)">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div><b style="color: var(--text-main)">${value}</b></div>`;
+  const row = (icon, label, value, subvalue = '') => `<div class="flex items-center justify-between py-3 border-b" style="border-color: var(--glass-border)"><div class="flex items-center gap-3"><span style="color:var(--toggle-active)">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div><div class="text-right"><b style="color: var(--text-main)">${value}</b>${subvalue ? `<div class="text-xs mt-0.5" style="color: var(--text-muted)">(${subvalue})</div>` : ''}</div></div>`;
   
   const box = document.getElementById('resultBox'); box.classList.remove('hidden'); let rows = '';
-  rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>', 'Авто в Китае', money(baseRub));
+  
+  // Строка с ценой в рублях и юанях
+  rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>', 'Авто в Китае', money(baseRub), baseCny.toLocaleString('ru') + ' ¥');
+  
   rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>', 'Логистика Китай', money(CFG.LOGISTICS_CHINA));
   if(c.type === "EV" || c.type === "SEQ_HYBRID") {
     rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>', 'Пошлина 15%', money(dutyObj.duty));
@@ -664,7 +639,6 @@ function calculatePrice() {
   } else {
     rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>', 'Единая таможенная ставка', money(dutyObj.total));
   }
-  // СКРЫВАЕМ УТИЛЬ, ЕСЛИ 0
   if(util > 0) rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>', `Утилизационный сбор (${Math.round(totalKw*10)/10} кВт)`, money(util));
   
   rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>', 'Таможенный сбор', money(customsFee));
@@ -677,38 +651,36 @@ function calculatePrice() {
   const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city || 'не указан'}\nГод ввоза: ${year}`);
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`; document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
   document.getElementById('leadWrap').classList.remove('hidden');
-  setTimeout(() => { document.getElementById('leadWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('leadWrap').classList.add('active'); }, 100);
-  document.getElementById('stickyTotal').classList.add('hidden-total');
+  // Плавный скролл только после рендера, без резких скачков
+  setTimeout(() => { document.getElementById('leadWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('leadWrap').classList.add('active'); }, 50);
 }
 
-/* ================= ИНИЦИАЛИЗАЦИЯ ================= */
 function buildManualSelects() {
   const yS = document.getElementById('mYear'), mS = document.getElementById('mMonth'); const curY = new Date().getFullYear();
   for(let y = curY; y >= 2010; y--) { const o = document.createElement('option'); o.value = y; o.textContent = y; yS.appendChild(o); }
   ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'].forEach((mn,i) => { const o = document.createElement('option'); o.value = i+1; o.textContent = mn + ' (' + String(i+1).padStart(2,'0') + ')'; mS.appendChild(o); });
-  ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', () => { calcManualAge(); renderManualSpec(); calculateTotalLive(); }); });
-  document.getElementById('mCur').addEventListener('change', () => { renderManualSpec(); calculateTotalLive(); });
-  document.getElementById('mKnow').addEventListener('change', () => { renderManualSpec(); calculateTotalLive(); });
-  document.getElementById('mCitySel').addEventListener('change', calculateTotalLive);
+  ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', () => { calcManualAge(); renderManualSpec(); }); });
+  document.getElementById('mCur').addEventListener('change', () => { renderManualSpec(); });
+  document.getElementById('mKnow').addEventListener('change', () => { renderManualSpec(); });
 }
 function calcManualAge() { const y = +document.getElementById('mYear').value, m = +document.getElementById('mMonth').value; if(!y || !m) { manualProd = null; return; } const months = (new Date().getFullYear()-y)*12 + (new Date().getMonth()-(m-1)); manualProd = { y, m, cat: months <= 36 ? 'new' : months <= 60 ? 'mid' : 'old' }; }
 
 function fillBrandsByType(type) {
   const b = document.getElementById('brandSel'); b.disabled = false; b.innerHTML = '<option value="">— Выберите бренд —</option>';
   [...new Set(carDatabase.filter(c=>c.type===type).map(c=>c.brand))].sort().forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; b.appendChild(o); });
-  b.onchange = () => { fillModels(); calculateTotalLive(); };
+  b.onchange = () => { fillModels(); };
 }
 function fillModels() {
   const brand = document.getElementById('brandSel').value; const m = document.getElementById('modelSel'), t = document.getElementById('trimSel');
   m.innerHTML = '<option value="">— Модель —</option>'; t.innerHTML = '<option value="">— Комплектация —</option>'; m.disabled = !brand; t.disabled = true; if(!brand) return;
   [...new Set(carDatabase.filter(c=>c.brand===brand&&c.type===selectedEngineType).map(c=>c.model))].forEach(x => { const o = document.createElement('option'); o.value = x; o.textContent = x; m.appendChild(o); });
-  m.onchange = () => { fillTrims(m.value); calculateTotalLive(); };
+  m.onchange = () => { fillTrims(m.value); };
 }
 function fillTrims(model) {
   const brand = document.getElementById('brandSel').value; const t = document.getElementById('trimSel'); t.innerHTML = '<option value="">— Комплектация —</option>'; t.disabled = !model; if(!model) return;
   const list = carDatabase.filter(c=>c.brand===brand&&c.model===model&&c.type===selectedEngineType);
   list.forEach((c,i) => { const o = document.createElement('option'); o.value = i; o.textContent = c.trim; t.appendChild(o); });
-  t.onchange = () => { selected = list[+t.value]; showSpec(selected); calculateTotalLive(); };
+  t.onchange = () => { selected = list[+t.value]; showSpec(selected); };
 }
 
 function showSpec(c) {
@@ -741,15 +713,8 @@ function mapRow(r) {
   return { brand: String(r.brand||'').trim(), model: String(r.model||'').trim(), trim: String(r.trim||'').trim() || 'Base', body: ['SUV','Sedan','MPV'].includes(r.body) ? r.body : 'SUV', type, engine_cc: cleanNum(r.engine_cc), pole_hp: cleanNum(r.pole_hp) || Math.round(poleKw * KW_TO_HP), pole_kw: poleKw, k30_hp: k30Kw ? Math.round(k30Kw * KW_TO_HP) : 0, k30_kw: k30Kw, weight_kg: cleanNum(r.weight_kg), base_price_cny: cleanNum(r.base_price_cny), year_from: cleanNum(r.year_from) };
 }
 
-// Анимация подсказки (поочередное нажатие)
-function startHintAnimation() {
-  const btns = document.querySelectorAll('.engine-btn');
-  btns.forEach(btn => btn.classList.add('hint-animate'));
-}
-function stopHintAnimation() {
-  if(hintInterval) clearInterval(hintInterval);
-  document.querySelectorAll('.engine-btn').forEach(btn => btn.classList.remove('hint-animate'));
-}
+function startHintAnimation() { document.querySelectorAll('.engine-btn').forEach(btn => btn.classList.add('hint-animate')); }
+function stopHintAnimation() { document.querySelectorAll('.engine-btn').forEach(btn => btn.classList.remove('hint-animate')); }
 
 function updateTimer(){
   const targetDate=new Date('2027-01-01T00:00:00+03:00').getTime(); const distance=targetDate-new Date().getTime();
@@ -761,32 +726,25 @@ function updateTimer(){
 
 document.addEventListener('DOMContentLoaded', () => {
   buildManualSelects(); loadRates(); loadCars(); updateTimer(); setInterval(updateTimer, 60000);
-  startHintAnimation(); // Запускаем анимацию подсказки
+  startHintAnimation();
   
   document.querySelectorAll('.engine-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-      stopHintAnimation(); // Останавливаем анимацию при клике
+      stopHintAnimation();
       document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('selected'));
       this.classList.add('selected');
       selectedEngineType = this.dataset.type;
-      // Если был ручной режим, сбрасываем его при выборе типа
       if(isManualMode) {
         isManualMode = false;
         document.getElementById('manualSwitch').setAttribute('aria-pressed', 'false');
-        document.getElementById('switchLabel').textContent = 'Ручной ввод (нет в каталоге)';
-        document.getElementById('manualPanel').classList.add('hidden');
-        document.getElementById('manualPanel').classList.remove('animate-slide-down');
-        document.getElementById('brandWrap').classList.remove('hidden');
+        document.getElementById('switchLabel').textContent = 'Нет нужной модели? Ввести данные вручную из ПТС';
       }
-      fillBrandsByType(selectedEngineType); calculateTotalLive();
+      fillBrandsByType(selectedEngineType);
     });
   });
 
   const citySel = document.getElementById('citySel'); const mCitySel = document.getElementById('mCitySel');
   Object.keys(RF_LOGISTICS).forEach(c => { const o1 = document.createElement('option'); o1.value = c; o1.textContent = c; citySel.appendChild(o1); const o2 = document.createElement('option'); o2.value = c; o2.textContent = c; mCitySel.appendChild(o2); });
-  
-  document.getElementById('customPrice').addEventListener('input', calculateTotalLive); document.getElementById('currencySel').addEventListener('change', calculateTotalLive);
-  document.getElementById('ageSel').addEventListener('change', calculateTotalLive); document.getElementById('yearSel').addEventListener('change', calculateTotalLive); document.getElementById('citySel').addEventListener('change', calculateTotalLive);
 });
 
 const PROXY_CONFIG = { URL: "https://script.google.com/macros/s/AKfycbw4A0Kxg2gawadla2-_XGYu0NAc_Cdd7ow0vDfLaTNE79uQPEUChA-X800x1Z3lqzXb/exec", API_KEY: 'MySuperSecretKey_2026_Xy9#mP2!' };
