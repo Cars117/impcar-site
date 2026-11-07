@@ -2,265 +2,355 @@
 <html lang="ru" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Авто из Китая под ключ | Прозрачный расчёт 2026–2027</title>
-<meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика до вашего города.">
-<!-- Шрифт Inter Tight для нейтрального Apple-style вида -->
+<meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика.">
+
+<!-- Шрифт Inter Tight (Альтернатива SF Pro / Roboto) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   darkMode: 'class',
   theme: {
     extend: {
-      fontFamily: { sans: ['"Inter Tight"', '-apple-system', 'sans-serif'] },
+      fontFamily: { sans: ['"Inter Tight"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] },
       colors: {
         ink: '#070b14', navy: '#0b1220', gold: '#FFD700', neon: '#00F0FF',
-        surface: 'rgba(15,23,42,0.6)', 'surface-light': 'rgba(255,255,255,0.7)'
+        surface: 'rgba(15,23,42,0.6)', 'surface-light': 'rgba(255,255,255,0.8)'
       },
       borderRadius: { 'xl': '16px', '2xl': '24px' }
     }
   }
 }
 </script>
+
 <style>
-/* Базовые настройки для плавности и доступности */
-html,body { font-family: 'Inter Tight', sans-serif; -webkit-font-smoothing: antialiased; transition: background-color 0.3s ease, color 0.3s ease; }
-.dark body { background: #070b14; color: #e8edf7; }
-body:not(.dark) { background: #f5f5f7; color: #1d1d1f; }
-
-/* Glassmorphism эффекты */
-.glass { 
-  backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+/* ================= БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ ================= */
+:root {
+  --text-main: #1d1d1f;
+  --text-muted: #4b5563; /* WCAG AA compliant for light mode */
+  --bg-body: #f5f5f7;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --field-bg: rgba(0, 0, 0, 0.04);
+  --field-border: rgba(0, 0, 0, 0.1);
+  --toggle-bg: rgba(0, 0, 0, 0.1);
 }
-.dark .glass { background: rgba(15,23,42,0.6); border-color: rgba(255,255,255,0.08); }
-body:not(.dark) .glass { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.08); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); }
 
-/* Поля ввода в стиле Apple/Xiaomi (без рамок, только фон/нижняя линия) */
-.field { 
-  background: rgba(255,255,255,0.05); border: none; border-bottom: 1px solid rgba(255,255,255,0.15);
-  border-radius: 0 0 12px 12px; padding: 14px 0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+.dark {
+  --text-main: #f5f5f7;
+  --text-muted: #9ca3af; /* WCAG AA compliant for dark mode */
+  --bg-body: #070b14;
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --field-bg: rgba(255, 255, 255, 0.05);
+  --field-border: rgba(255, 255, 255, 0.15);
+  --toggle-bg: rgba(255, 255, 255, 0.15);
 }
-.dark .field { color: #fff; }
-body:not(.dark) .field { background: rgba(0,0,0,0.03); border-bottom-color: rgba(0,0,0,0.15); color: #1d1d1f; }
-.field:focus { outline: none; border-bottom-color: #00F0FF; box-shadow: 0 2px 0 0 #00F0FF; background: rgba(255,255,255,0.08); }
-body:not(.dark) .field:focus { background: rgba(0,0,0,0.05); }
-select.field option { background: #0b1220; color: #fff; }
-body:not(.dark) select.field option { background: #fff; color: #1d1d1f; }
 
-/* Кнопки с glow эффектом */
-.btn-gold { 
-  background: linear-gradient(135deg,#0a9e33,#088126); color:#fff; font-weight:700; 
-  border-radius: 16px; transition: all 0.25s ease; border:none; cursor:pointer;
-  box-shadow: 0 8px 30px -8px rgba(10,158,51,0.4);
+html, body {
+  font-family: 'Inter Tight', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  color: var(--text-main);
+  background-color: var(--bg-body);
+  overflow-x: hidden;
 }
-.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 40px -8px rgba(10,158,51,0.6); }
-.btn-neon { 
-  background: transparent; border: 1px solid #00F0FF; color: #00F0FF; border-radius: 16px; 
-  transition: all 0.25s ease; cursor: pointer;
-}
-.btn-neon:hover { background: rgba(0,240,255,0.1); box-shadow: 0 0 20px rgba(0,240,255,0.2); }
 
-/* Анимации появления при скролле */
-.reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2,0.8,0.2,1); }
+/* Fluid Typography */
+h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.2; }
+h2 { font-size: clamp(1.25rem, 4vw, 1.5rem); line-height: 1.3; }
+p, label, span, div { font-size: clamp(0.875rem, 2.5vw, 1rem); }
+
+/* ================= ФОН (HERO) ================= */
+.hero-bg {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
+  background-image: url('hero-bg.jpg'); /* Замените на ваше фото */
+  background-size: cover; background-position: center;
+  filter: blur(4px) brightness(0.8);
+}
+.dark .hero-bg { filter: blur(4px) brightness(0.4); }
+.hero-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+  background: linear-gradient(180deg, rgba(245,245,247,0.8) 0%, rgba(245,245,247,0.95) 100%);
+}
+.dark .hero-overlay {
+  background: linear-gradient(180deg, rgba(7,11,20,0.7) 0%, rgba(7,11,20,0.95) 100%);
+}
+
+/* ================= GLASSMORPHISM 2.0 ================= */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+}
+.dark .glass { box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); }
+
+/* ================= ПОЛЯ ВВОДА (Apple Style) ================= */
+.field {
+  background: var(--field-bg);
+  border: none;
+  border-bottom: 2px solid var(--field-border);
+  border-radius: 12px 12px 0 0;
+  padding: 14px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-main);
+  width: 100%;
+}
+.field:focus {
+  outline: none;
+  border-bottom-color: #00F0FF;
+  background: rgba(0, 240, 255, 0.05);
+  box-shadow: 0 4px 12px -4px rgba(0, 240, 255, 0.2);
+}
+.field.error-field {
+  border-bottom-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.05) !important;
+  animation: shake 0.4s;
+}
+select.field option { background: var(--bg-body); color: var(--text-main); }
+
+/* ================= КНОПКИ ДВИГАТЕЛЯ (ШАГ 1) ================= */
+.engine-btn {
+  background: var(--field-bg);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  color: var(--text-muted);
+}
+.engine-btn:hover { border-color: var(--field-border); }
+.engine-btn.selected {
+  border-color: #00F0FF;
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--text-main);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+}
+.dark .engine-btn.selected { color: #fff; }
+
+/* ================= КНОПКИ ДЕЙСТВИЙ ================= */
+.btn-gold {
+  background: linear-gradient(135deg, #0a9e33, #088126); color: #fff; font-weight: 600;
+  border-radius: 16px; transition: all 0.2s ease; border: none; cursor: pointer;
+  box-shadow: 0 8px 24px -8px rgba(10, 158, 51, 0.4);
+}
+.btn-gold:active { transform: scale(0.97); }
+.btn-neon {
+  background: transparent; border: 1px solid var(--field-border); color: var(--text-main);
+  border-radius: 16px; transition: all 0.2s ease; cursor: pointer;
+}
+.btn-neon:hover { border-color: #00F0FF; color: #00F0FF; }
+
+/* ================= ТУМБЛЕР ДЕНЬ/НОЧЬ ================= */
+.theme-toggle {
+  width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 99px;
+  position: relative; cursor: pointer; transition: 0.3s; border: 1px solid var(--glass-border);
+}
+.theme-thumb {
+  width: 22px; height: 22px; background: #fff; border-radius: 50%;
+  position: absolute; top: 2px; left: 2px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.dark .theme-thumb { left: 26px; background: #1e293b; color: #fff; }
+
+/* ================= АНИМАЦИИ (IntersectionObserver) ================= */
+.reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .reveal.active { opacity: 1; transform: translateY(0); }
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
 
-/* Уменьшение анимаций для доступности */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ================= ДОСТУПНОСТЬ (WCAG) ================= */
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition: none; opacity: 1; transform: none; }
-  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
-/* Тумблер День/Ночь */
-.theme-toggle { width: 48px; height: 26px; background: rgba(255,255,255,0.1); border-radius: 99px; position: relative; cursor: pointer; transition: 0.3s; }
-.dark .theme-toggle { background: rgba(255,255,255,0.15); }
-body:not(.dark) .theme-toggle { background: rgba(0,0,0,0.1); }
-.theme-thumb { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: 0.3s cubic-bezier(0.4,0,0.2,1); display:flex; align-items:center; justify-content:center; font-size:12px;}
-.dark .theme-thumb { left: 25px; color: #070b14; }
-body:not(.dark) .theme-thumb { left: 3px; color: #f59e0b; }
-
-/* Предупреждение об оценке */
-.estimate-warning { 
-  background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3); 
-  color: #fde047; border-radius: 12px; padding: 12px 16px; font-size: 0.8rem; line-height: 1.5; margin-top: 12px;
+/* ================= МОБИЛЬНАЯ АДАПТАЦИЯ (iPhone Safe Area) ================= */
+@supports (padding: max(0px)) {
+  .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
 }
-.dark .estimate-warning { background: rgba(250,204,21,0.08); }
-body:not(.dark) .estimate-warning { background: rgba(250,204,21,0.15); color: #854d0e; border-color: rgba(250,204,21,0.4); }
-
-/* Скроллбар */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-body:not(.dark) ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 </style>
 </head>
-<body class="dark overflow-x-hidden">
 
-<!-- Хедер с переключателем темы -->
-<header class="max-w-5xl mx-auto px-4 pt-6 flex items-center justify-between gap-3 reveal active">
-  <div class="flex items-center gap-2"><span class="text-2xl">🚗</span><span class="font-bold tracking-tight text-lg">IMPCar<span style="color:#0a9e33">AUTO</span></span></div>
-  <div class="flex items-center gap-4">
-    <div id="rateBox" class="glass rounded-full px-4 py-1.5 text-xs sm:text-sm" style="color:#cbd5e1">Курс: загружаем…</div>
-    <div class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему" role="button" tabindex="0">
-      <div class="theme-thumb">☀️</div>
+<body class="overflow-x-hidden safe-bottom">
+  <!-- Фоновые слои -->
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+
+  <!-- Хедер -->
+  <header class="max-w-5xl mx-auto px-4 pt-6 flex items-center justify-between gap-3 reveal active">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🚗</span>
+      <span class="font-bold tracking-tight text-lg" style="color: var(--text-main)">IMPCar<span style="color:#0a9e33">AUTO</span></span>
     </div>
-  </div>
-</header>
-
-<main class="max-w-3xl mx-auto px-4 pb-24 pt-8">
-  <!-- Карточка калькулятора -->
-  <div class="glass rounded-2xl p-5 sm:p-8 reveal active" id="calcCard">
-    
-    <!-- Шаги -->
-    <div class="flex items-center justify-center gap-3 mb-8" id="stepDots">
-      <span class="w-2.5 h-2.5 rounded-full bg-[#0a9e33] transition-all duration-300" data-i="1"></span>
-      <span class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all duration-300" data-i="2"></span>
-      <span class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all duration-300" data-i="3"></span>
+    <div class="flex items-center gap-4">
+      <div id="rateBox" class="glass rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium" style="color: var(--text-muted)">Курс: загружаем…</div>
+      <div class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему" role="button" tabindex="0">
+        <div class="theme-thumb" id="themeIcon">☀️</div>
+      </div>
     </div>
+  </header>
 
-    <!-- ШАГ 1: Тип двигателя -->
-    <div class="wizard-step" data-step="1">
-      <h2 class="text-xl font-bold mb-2">Шаг 1. Тип двигателя</h2>
-      <p class="text-sm mb-6 opacity-70">Тип влияет на пошлину, акциз и утильсбор.</p>
+  <main class="max-w-3xl mx-auto px-4 pb-24 pt-8">
+    <div class="glass rounded-2xl p-5 sm:p-8 reveal active delay-100" id="calcCard">
       
-      <div class="grid grid-cols-2 gap-3 mb-6">
-        <button type="button" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:border-[#00F0FF]/30 transition-all engine-btn" data-type="EV" aria-label="Электромобиль">
-          <span class="text-3xl">⚡</span><span class="text-xs font-semibold">Электро</span>
-        </button>
-        <button type="button" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:border-[#00F0FF]/30 transition-all engine-btn" data-type="SEQ_HYBRID" aria-label="Последовательный гибрид">
-          <span class="text-3xl">🔋</span><span class="text-xs font-semibold">Посл. гибрид</span>
-        </button>
-        <button type="button" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:border-[#00F0FF]/30 transition-all engine-btn" data-type="PAR_HYBRID" aria-label="Параллельный гибрид">
-          <svg viewBox="0 0 48 48" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="16" cy="24" r="8" stroke="#00F0FF"/><circle cx="32" cy="24" r="8" stroke="#FFD700"/><path d="M24 16 L24 32" stroke-dasharray="2 2"/></svg>
-          <span class="text-xs font-semibold">Парал. гибрид</span>
-        </button>
-        <button type="button" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:border-[#00F0FF]/30 transition-all engine-btn" data-type="ICE" aria-label="ДВС">
-          <span class="text-3xl">🛢️</span><span class="text-xs font-semibold">ДВС</span>
-        </button>
+      <!-- Индикатор шагов -->
+      <div class="flex items-center justify-center gap-3 mb-8" id="stepDots">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#0a9e33] transition-all duration-300" data-i="1"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-black/10 dark:bg-white/20 transition-all duration-300" data-i="2"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-black/10 dark:bg-white/20 transition-all duration-300" data-i="3"></span>
       </div>
 
-      <label class="block text-sm font-semibold mb-2">Бренд</label>
-      <select id="brandSel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-6" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип —</option></select>
-      
-      <button id="nextBtn1" class="btn-gold w-full py-4 text-base" onclick="nextFrom1()">Далее →</button>
-    </div>
-
-    <!-- ШАГ 2: Модель и характеристики -->
-    <div class="wizard-step hidden" data-step="2">
-      <h2 class="text-xl font-bold mb-2">Шаг 2. Характеристики</h2>
-      <p class="text-sm mb-6 opacity-70">Выберите модель или введите данные из ПТС вручную.</p>
-
-      <!-- Ручной ввод -->
-      <div id="manualPanel" class="glass rounded-xl p-4 mb-6 hidden">
-        <h3 class="font-bold mb-4 text-sm text-[#00F0FF]">📝 Ручной ввод по ПТС / ОТТС</h3>
+      <!-- ШАГ 1 -->
+      <div class="wizard-step" data-step="1">
+        <h2 class="font-bold mb-2">Шаг 1. Тип двигателя</h2>
+        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите тип, чтобы мы применили верные ставки пошлин и утильсбора.</p>
         
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          <div><label class="block text-xs font-semibold mb-1 opacity-70">Год выпуска</label><select id="mYear" class="field w-full rounded-xl px-3 py-2.5 text-sm"></select></div>
-          <div><label class="block text-xs font-semibold mb-1 opacity-70">Месяц</label><select id="mMonth" class="field w-full rounded-xl px-3 py-2.5 text-sm"></select></div>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <button type="button" class="engine-btn p-4 rounded-xl flex flex-col items-center gap-2" data-type="EV" aria-label="Электромобиль">
+            <span class="text-3xl">⚡</span><span class="text-xs font-semibold">Электро</span>
+          </button>
+          <button type="button" class="engine-btn p-4 rounded-xl flex flex-col items-center gap-2" data-type="SEQ_HYBRID" aria-label="Последовательный гибрид">
+            <span class="text-3xl">🔋</span><span class="text-xs font-semibold">Посл. гибрид</span>
+          </button>
+          <button type="button" class="engine-btn p-4 rounded-xl flex flex-col items-center gap-2" data-type="PAR_HYBRID" aria-label="Параллельный гибрид">
+            <svg viewBox="0 0 48 48" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="16" cy="24" r="8" stroke="#00F0FF"/><circle cx="32" cy="24" r="8" stroke="#FFD700"/><path d="M24 16 L24 32" stroke-dasharray="2 2"/></svg>
+            <span class="text-xs font-semibold">Парал. гибрид</span>
+          </button>
+          <button type="button" class="engine-btn p-4 rounded-xl flex flex-col items-center gap-2" data-type="ICE" aria-label="ДВС">
+            <span class="text-3xl">🛢️</span><span class="text-xs font-semibold">ДВС</span>
+          </button>
         </div>
 
-        <div id="mCcWrap" class="mb-4"><label class="block text-xs font-semibold mb-1 opacity-70">Объём ДВС (см³)</label><input id="mCc" type="number" class="field w-full rounded-xl px-3 py-2.5 text-sm" placeholder="1998" inputmode="numeric"></div>
-        
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          <div><label class="block text-xs font-semibold mb-1 opacity-70">Стоимость</label><input id="mPrice" type="number" class="field w-full rounded-xl px-3 py-2.5 text-sm" placeholder="139800" inputmode="numeric"></div>
-          <div><label class="block text-xs font-semibold mb-1 opacity-70">Валюта</label><select id="mCur" class="field w-full rounded-xl px-3 py-2.5 text-sm"><option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option></select></div>
+        <div id="brandWrap">
+          <label class="block text-sm font-semibold mb-2">Бренд</label>
+          <select id="brandSel" class="field mb-6" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип двигателя выше —</option></select>
         </div>
-
-        <div id="mHpWrap" class="mb-4"><label class="block text-xs font-semibold mb-1 opacity-70">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field w-full rounded-xl px-3 py-2.5 text-sm" placeholder="238" inputmode="numeric"></div>
         
-        <div id="mKwWrap" class="mb-4">
-          <label class="block text-xs font-semibold mb-1 opacity-70">Мощность электромотора (кВт)</label>
-          <input id="mKwEl" type="number" class="field w-full rounded-xl px-3 py-2.5 text-sm" placeholder="98" inputmode="decimal">
-          <!-- Юридически верное предупреждение -->
-          <div id="mEstimateWarn" class="estimate-warning hidden">
-            ⚠️ <b>Предварительная оценка:</b> Расчёт выполнен по коэффициенту 0.45 от пиковой мощности, так как точная 30-минутная мощность из ОТТС/СБКТС не указана. Итоговая сумма утильсбора фиксируется только на основании данных аккредитованной лаборатории.
+        <button id="nextBtn1" class="btn-gold w-full py-4 text-base" onclick="nextFrom1()">Далее →</button>
+      </div>
+
+      <!-- ШАГ 2 -->
+      <div class="wizard-step hidden" data-step="2">
+        <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
+        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите модель из каталога или введите данные из ПТС вручную.</p>
+
+        <!-- Ручной ввод -->
+        <div id="manualPanel" class="glass rounded-xl p-4 mb-6 hidden" style="background: var(--field-bg)">
+          <h3 class="font-bold mb-4 text-sm text-[#00F0FF]">📝 Ручной ввод по ПТС / ОТТС</h3>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Год выпуска</label><select id="mYear" class="field text-sm"></select></div>
+            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Месяц</label><select id="mMonth" class="field text-sm"></select></div>
+          </div>
+          <div id="mCcWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Стоимость</label><input id="mPrice" type="number" class="field text-sm" placeholder="139800" inputmode="numeric"></div>
+            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Валюта</label><select id="mCur" class="field text-sm"><option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option></select></div>
+          </div>
+          <div id="mHpWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="238" inputmode="numeric"></div>
+          <div id="mKwWrap" class="mb-4">
+            <label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность электромотора (кВт)</label>
+            <input id="mKwEl" type="number" class="field text-sm" placeholder="98" inputmode="decimal">
+            <div id="mEstimateWarn" class="estimate-warning hidden" style="background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3); color: #b45309; border-radius: 12px; padding: 12px; font-size: 0.75rem; margin-top: 12px;">
+              ⚠️ <b>Предварительная оценка:</b> Расчёт выполнен по коэффициенту 0.45 от пиковой мощности. Итоговая сумма фиксируется только на основании данных аккредитованной лаборатории (ОТТС/СБКТС).
+            </div>
+          </div>
+          <div class="flex items-start gap-3 mb-4">
+            <input id="mKnow" type="checkbox" class="mt-1 accent-[#00F0FF]" aria-label="Я знаю точную 30-минутную мощность">
+            <label for="mKnow" class="text-xs leading-snug" style="color: var(--text-muted)">Я знаю точную 30‑минутную мощность (из ОТТС / ЭПТС)</label>
           </div>
         </div>
 
-        <div class="flex items-start gap-3 mb-4">
-          <input id="mKnow" type="checkbox" class="mt-1 accent-[#00F0FF]" aria-label="Я знаю точную 30-минутную мощность">
-          <label for="mKnow" class="text-xs opacity-80 leading-snug">Я знаю точную 30‑минутную мощность электромотора (из ОТТС / ЭПТС / СБКТС)</label>
+        <!-- Каталог -->
+        <div id="catalogBlock">
+          <label class="block text-sm font-semibold mb-2">Модель</label>
+          <select id="modelSel" class="field mb-4" disabled aria-label="Выберите модель"><option value="">— Сначала бренд —</option></select>
+          <label class="block text-sm font-semibold mb-2">Комплектация</label>
+          <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
         </div>
-      </div>
 
-      <!-- Каталог -->
-      <div id="catalogBlock">
-        <label class="block text-sm font-semibold mb-2">Модель</label>
-        <select id="modelSel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-4" disabled aria-label="Выберите модель"><option value="">— Сначала бренд —</option></select>
-        <label class="block text-sm font-semibold mb-2">Комплектация</label>
-        <select id="trimSel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
-      </div>
-
-      <!-- Карточка спецификаций -->
-      <div id="specCard" class="glass rounded-xl p-4 mb-6 hidden">
-        <div class="flex items-start gap-4">
-          <div id="specIcon" class="shrink-0 w-16 h-12 text-[#00F0FF]"></div>
-          <div class="text-sm space-y-2 w-full">
-            <div><span class="opacity-60">Тип:</span> <b id="specType"></b></div>
-            <div class="flex justify-between items-center"><span class="opacity-60">Пиковая мощность:</span> <b id="specPeak" class="text-[#FFD700]"></b></div>
-            <div class="flex justify-between items-center" id="k30Row"><span class="opacity-60">30‑мин мощность:</span> <b id="specK30" class="text-[#00F0FF]"></b></div>
-            <div id="specTotalKwRow" class="text-xs mt-2 pt-2 border-t border-white/10"><span class="opacity-60">Итоговая для утиля:</span> <b id="specTotalKw" class="text-[#00F0FF]"></b></div>
+        <!-- Карточка спецификаций -->
+        <div id="specCard" class="glass rounded-xl p-4 mb-6 hidden" style="background: var(--field-bg)">
+          <div class="flex items-start gap-4">
+            <div id="specIcon" class="shrink-0 w-16 h-12 text-[#00F0FF]"></div>
+            <div class="text-sm space-y-2 w-full">
+              <div><span style="color: var(--text-muted)">Тип:</span> <b id="specType" style="color: var(--text-main)"></b></div>
+              <div class="flex justify-between items-center"><span style="color: var(--text-muted)">Пиковая мощность:</span> <b id="specPeak" class="text-[#FFD700]"></b></div>
+              <div class="flex justify-between items-center" id="k30Row"><span style="color: var(--text-muted)">30‑мин мощность:</span> <b id="specK30" class="text-[#00F0FF]"></b></div>
+              <div id="specTotalKwRow" class="text-xs mt-2 pt-2 border-t" style="border-color: var(--glass-border)"><span style="color: var(--text-muted)">Итоговая для утиля:</span> <b id="specTotalKw" class="text-[#00F0FF]"></b></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Общие поля -->
-      <div id="priceBlock">
-        <label class="block text-sm font-semibold mb-2">Ваша цена (если известна):</label>
-        <div class="flex gap-3 mb-6">
-          <input id="customPrice" type="number" class="field flex-1 rounded-xl px-4 py-3.5 text-base" placeholder="Например, 139800" inputmode="numeric">
-          <select id="currencySel" class="field rounded-xl px-4 py-3.5 text-base min-w-[110px]" aria-label="Валюта цены">
-            <option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option>
+        <!-- Общие поля -->
+        <div id="priceBlock">
+          <label class="block text-sm font-semibold mb-2">Ваша цена (если известна):</label>
+          <div class="flex gap-3 mb-6">
+            <input id="customPrice" type="number" class="field flex-1" placeholder="Например, 139800" inputmode="numeric">
+            <select id="currencySel" class="field min-w-[110px]" aria-label="Валюта цены">
+              <option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="ageBlock">
+          <label class="block text-sm font-semibold mb-2">Возраст автомобиля</label>
+          <select id="ageSel" class="field mb-4" aria-label="Возраст автомобиля">
+            <option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option>
           </select>
         </div>
-      </div>
 
-      <div id="ageBlock">
-        <label class="block text-sm font-semibold mb-2">Возраст автомобиля</label>
-        <select id="ageSel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-4" aria-label="Возраст автомобиля">
-          <option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option>
+        <label class="block text-sm font-semibold mb-2">Планируемый год ввоза</label>
+        <select id="yearSel" class="field mb-2" aria-label="Год ввоза">
+          <option value="2026">2026 (текущие ставки)</option>
+          <option value="2027">2027 (+10% индексация)</option>
         </select>
+        <p class="text-[10px] mb-6" style="color: var(--text-muted)">*Ставки 2027 года рассчитаны с учетом официальной индексации (+10%).</p>
+
+        <div class="flex gap-3">
+          <button class="btn-neon py-4 px-6" onclick="gotoStep(1)" aria-label="Назад">← Назад</button>
+          <button id="nextBtn2" class="btn-gold flex-1 py-4 text-base" onclick="nextFrom2()" aria-label="Далее">Далее →</button>
+        </div>
       </div>
 
-      <label class="block text-sm font-semibold mb-2">Планируемый год ввоза</label>
-      <select id="yearSel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-6" aria-label="Год ввоза">
-        <option value="2026">2026 (текущие ставки)</option>
-        <option value="2027">2027 (прогнозные ставки*)</option>
-      </select>
-      <p class="text-[10px] opacity-50 mb-6">*Ставки 2027 года являются прогнозными и будут скорректированы после выхода официального Постановления Правительства РФ.</p>
-
-      <div class="flex gap-3">
-        <button class="btn-neon py-4 px-6" onclick="gotoStep(1)" aria-label="Назад">← Назад</button>
-        <button id="nextBtn2" class="btn-gold flex-1 py-4 text-base" onclick="nextFrom2()" aria-label="Далее к расчету доставки">Далее →</button>
+      <!-- ШАГ 3 -->
+      <div class="wizard-step hidden" data-step="3">
+        <h2 class="font-bold mb-2">Шаг 3. Доставка и итог</h2>
+        <p class="text-sm mb-6" style="color: var(--text-muted)">Логистика зависит от региона получения.</p>
+        
+        <label class="block text-sm font-semibold mb-2">Город получения</label>
+        <select id="citySel" class="field mb-8" aria-label="Город доставки"></select>
+        
+        <div class="flex gap-3 mb-6">
+          <button class="btn-neon py-4 px-6" onclick="gotoStep(2)" aria-label="Назад">← Назад</button>
+          <button id="calcBtn" class="btn-gold flex-1 py-4 text-base" onclick="calculatePrice()" aria-label="Рассчитать">Рассчитать под ключ</button>
+        </div>
+        
+        <div id="resultBox" class="hidden mt-8 space-y-3"></div>
       </div>
     </div>
 
-    <!-- ШАГ 3: Доставка и результат -->
-    <div class="wizard-step hidden" data-step="3">
-      <h2 class="text-xl font-bold mb-2">Шаг 3. Доставка и итог</h2>
-      <p class="text-sm mb-6 opacity-70">Логистика зависит от региона.</p>
-      
-      <label class="block text-sm font-semibold mb-2">Город получения</label>
-      <select id="citySel" class="field w-full rounded-xl px-4 py-3.5 text-base mb-8" aria-label="Город доставки"></select>
-      
-      <button id="calcBtn" class="btn-gold w-full rounded-xl py-4 text-base sticky bottom-4 shadow-2xl" onclick="calculatePrice()" aria-label="Рассчитать полную стоимость">Рассчитать стоимость под ключ</button>
-      
-      <div id="resultBox" class="hidden mt-8 space-y-3"></div>
+    <!-- Блок контактов -->
+    <div id="leadWrap" class="glass rounded-2xl p-5 sm:p-8 mt-6 hidden reveal delay-200">
+      <h3 class="text-lg font-bold mb-2">📞 Персональное предложение</h3>
+      <p class="text-sm mb-6" style="color: var(--text-muted)">Менеджер подтвердит сумму по VIN и зафиксирует цену.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a id="waLinkNew" href="#" target="_blank" class="flex-1 bg-[#25D366] text-white text-center py-4 rounded-xl font-bold no-underline active:scale-95 transition-transform" aria-label="WhatsApp">💬 WhatsApp</a>
+        <a id="tgLinkNew" href="#" target="_blank" class="flex-1 bg-[#0088cc] text-white text-center py-4 rounded-xl font-bold no-underline active:scale-95 transition-transform" aria-label="Telegram">✈️ Telegram</a>
+      </div>
     </div>
-  </div>
-
-  <!-- Блок контактов -->
-  <div id="leadWrap" class="glass rounded-2xl p-5 sm:p-8 mt-6 hidden reveal">
-    <h3 class="text-lg font-bold mb-2">📞 Персональное предложение</h3>
-    <p class="text-sm mb-6 opacity-70">Менеджер подтвердит сумму по VIN и зафиксирует цену.</p>
-    <div class="flex flex-col sm:flex-row gap-3">
-      <a id="waLinkNew" href="#" target="_blank" class="flex-1 bg-[#25D366] text-white text-center py-4 rounded-xl font-bold no-underline hover:opacity-90 transition-opacity" aria-label="Написать в WhatsApp">💬 WhatsApp</a>
-      <a id="tgLinkNew" href="#" target="_blank" class="flex-1 bg-[#0088cc] text-white text-center py-4 rounded-xl font-bold no-underline hover:opacity-90 transition-opacity" aria-label="Написать в Telegram">✈️ Telegram</a>
-    </div>
-  </div>
-</main>
+  </main>
 
 <script>
 /* ================= КОНФИГУРАЦИЯ И СТАВКИ ================= */
@@ -271,32 +361,26 @@ const CFG = {
 };
 const RF_LOGISTICS = {"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000};
 
-// Ставки утильсбора [порог_квт, 2026_new, 2026_old, 2027_new(прогноз), 2027_old(прогноз)]
-// ПРИМЕЧАНИЕ: Столбцы 2027 пока дублируют 2026. Замените их, когда выйдет Постановление.
+// Ставки утильсбора [порог_квт, 2026_new, 2026_old, 2027_new, 2027_old]
 const RK_EV = [
-  [58.84, 3400, 5200, 3400, 5200],
-  [73.55, 991200, 1641600, 1090400, 1805800],
-  [95.61, 1317600, 1912800, 1449400, 2104000],
-  [117.68, 1560000, 2227200, 1716000, 2450000],
-  [139.75, 1848000, 2594400, 2032800, 2853800],
-  [161.81, 2193600, 3024000, 2413000, 3326400],
-  [183.88, 2599200, 3523200, 2859200, 3875600],
-  [205.94, 3079200, 4104000, 3387200, 4514400],
+  [58.84, 3400, 5200, 3400, 5200], [73.55, 991200, 1641600, 1090400, 1805800],
+  [95.61, 1317600, 1912800, 1449400, 2104000], [117.68, 1560000, 2227200, 1716000, 2450000],
+  [139.75, 1848000, 2594400, 2032800, 2853800], [161.81, 2193600, 3024000, 2413000, 3326400],
+  [183.88, 2599200, 3523200, 2859200, 3875600], [205.94, 3079200, 4104000, 3387200, 4514400],
   [Infinity, 3648000, 4780800, 4012800, 5258800]
 ];
 const RK = {
-  C1: [[117.68,3400,5200,3400,5200],[139.79,307200,568800,338000,625600],[161.85,316800,585600,348400,644200],[183.93,324000,602400,356400,662600],[Infinity,345600,602400,380200,662600]],
-  C2: [[117.68,3400,5200,3400,5200],[139.79,900000,1492800,990000,1642000],[161.85,952800,1584000,1048000,1742400],[183.93,1010400,1677600,1111400,1845400],[206.00,1142400,1838400,1256600,2022200],[228.06,1291200,2011200,1420400,2212400],[250.14,1459200,2203200,1605200,2423600],[272.21,1663200,2412000,1829600,2653200],[294.28,1896000,2640000,2085600,2904000],[316.35,2160000,2892000,2376000,3181200],[338.43,2464800,3168000,2711200,3484800],[367.85,2808000,3468000,3088800,3814800],[Infinity,3201600,3796800,3521800,4176400]],
-  C3: [[117.68,3400,5200,3400,5200],[139.79,2306800,3456000,2537400,3801600],[161.85,2364000,3501600,2600400,3851800],[183.93,2402400,3552000,2642600,3907200],[206.00,2520000,3660000,2772000,4026000],[228.06,2620800,3770400,2882800,4147400],[250.14,2726400,3873600,2999000,4261000],[272.21,2834400,3981600,3117800,4379800],[294.28,2949600,4094400,3244600,4503800],[316.35,3067200,4209600,3374000,4630600],[338.43,3189600,4327200,3508600,4760000],[367.85,3316800,4447200,3648400,4892000],[Infinity,3448800,4572000,3793600,5029200]],
-  C4: [[117.68,2584000,3956200,2842400,4351800],[139.79,2635200,4000800,2898800,4400800],[161.85,2688000,4044000,2956800,4448400],[183.93,2743200,4087200,3017600,4496000],[206.00,2810400,4144800,3091400,4559200],[228.06,2880000,4248000,3168000,4672800],[250.14,3038400,4356000,3342200,4791600],[272.21,3206400,4485600,3527000,4934200],[294.28,3384000,4620000,3722400,5082000],[316.35,3568800,4759200,3925600,5235200],[338.43,3765600,4900800,4142200,5390800],[367.85,3970000,5049600,4369200,5554600],[Infinity,4190400,5200800,4609400,5720800]],
-  C5: [[117.68,3290600,4325800,3619800,4758400],[139.79,3345600,4389600,3680200,4828600],[161.85,3403200,4456800,3743600,4902400],[183.93,3460800,4524000,3806800,4976400],[206.00,3530400,4627200,3883400,5090000],[228.06,3600000,4732800,3960000,5206000],[250.14,3727200,4992000,4100000,5491200],[272.21,3857600,5268000,4243200,5794800],[294.28,3993600,5558400,4393000,6114200],[316.35,4132800,5863200,4546000,6449600],[338.43,4276800,6187200,4704400,6806000],[367.85,4425600,6528000,4868200,7180800],[Infinity,4581600,6885600,5039800,7574200]]
+  C1: [[117.68,3400,5200,3400,5200],[139.75,307200,568800,338000,625600],[161.81,316800,585600,348400,644200],[183.88,324000,602400,356400,662600],[Infinity,345600,602400,380200,662600]],
+  C2: [[117.68,3400,5200,3400,5200],[139.75,900000,1492800,990000,1642000],[161.81,952800,1584000,1048000,1742400],[183.88,1010400,1677600,1111400,1845400],[205.94,1142400,1838400,1256600,2022200],[228.00,1291200,2011200,1420400,2212400],[250.07,1459200,2203200,1605200,2423600],[272.13,1663200,2412000,1829600,2653200],[294.20,1896000,2640000,2085600,2904000],[316.26,2160000,2892000,2376000,3181200],[338.33,2464800,3168000,2711200,3484800],[367.75,2808000,3468000,3088800,3814800],[Infinity,3201600,3796800,3521800,4176400]],
+  C3: [[117.68,3400,5200,3400,5200],[139.75,2306800,3456000,2537400,3801600],[161.81,2364000,3501600,2600400,3851800],[183.88,2402400,3552000,2642600,3907200],[205.94,2520000,3660000,2772000,4026000],[228.00,2620800,3770400,2882800,4147400],[250.07,2726400,3873600,2999000,4261000],[272.13,2834400,3981600,3117800,4379800],[294.20,2949600,4094400,3244600,4503800],[316.26,3067200,4209600,3374000,4630600],[338.33,3189600,4327200,3508600,4760000],[367.75,3316800,4447200,3648400,4892000],[Infinity,3448800,4572000,3793600,5029200]],
+  C4: [[117.68,2584000,3956200,2842400,4351800],[139.75,2635200,4000800,2898800,4400800],[161.81,2688000,4044000,2956800,4448400],[183.88,2743200,4087200,3017600,4496000],[205.94,2810400,4144800,3091400,4559200],[228.00,2880000,4248000,3168000,4672800],[250.07,3038400,4356000,3342200,4791600],[272.13,3206400,4485600,3527000,4934200],[294.20,3384000,4620000,3722400,5082000],[316.26,3568800,4759200,3925600,5235200],[338.33,3765600,4900800,4142200,5390800],[367.75,3972000,5049600,4369200,5554600],[Infinity,4190400,5200800,4609400,5720800]],
+  C5: [[117.68,3290600,4325800,3619800,4758400],[139.75,3345600,4389600,3680200,4828600],[161.81,3403200,4456800,3743600,4902400],[183.88,3460800,4524000,3806800,4976400],[205.94,3530400,4627200,3883400,5090000],[228.00,3600000,4732800,3960000,5206000],[250.07,3727200,4992000,4100000,5491200],[272.13,3857600,5268000,4243200,5794800],[294.20,3993600,5558400,4393000,6114200],[316.26,4132800,5863200,4546000,6449600],[338.33,4276800,6187200,4704400,6806000],[367.75,4425600,6528000,4868200,7180800],[Infinity,4581600,6885600,5039800,7574200]]
 };
 
 const HP_TO_KW = 0.73549875; const KW_TO_HP = 1.35962; const ESTIMATE_COEF = 0.45;
-let carDatabase = []; // Загружается динамически
+let carDatabase = [];
 const state = { cnyRub: CFG.FALLBACK_CNY_RUB, usdRub: CFG.FALLBACK_USD_RUB, eurRub: 98, ratesLive: false };
 let selected = null, lastCalc = null, selectedEngineType = null, isManualMode = false, manualProd = null;
-let powerUnits = { peak: 'kw', k30: 'kw' };
 
 /* ================= ТЕМА И UI ================= */
 function toggleTheme() {
@@ -305,15 +389,14 @@ function toggleTheme() {
   updateThemeIcon();
 }
 function updateThemeIcon() {
-  const thumb = document.querySelector('.theme-thumb');
-  thumb.textContent = document.documentElement.classList.contains('dark') ? '🌙' : '☀️';
+  document.getElementById('themeIcon').textContent = document.documentElement.classList.contains('dark') ? '🌙' : '☀️';
 }
 if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
   document.documentElement.classList.remove('dark');
 }
 updateThemeIcon();
 
-/* Анимации при скролле */
+/* IntersectionObserver для анимаций */
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
 }, { threshold: 0.1 });
@@ -328,18 +411,12 @@ function totalPowerKw(c) {
 
 function lookupUtilFee(volumeCc, totalKw, ageCategory, year, type) {
   const y = (year === "2027") ? "2027" : "2026";
-  // Индексы столбцов: [0]=порог, [1]=2026_new, [2]=2026_old, [3]=2027_new, [4]=2027_old
   const colIdx = (y === "2027") ? (ageCategory === "new" ? 3 : 4) : (ageCategory === "new" ? 1 : 2);
-  
   const scan = (tbl, pw) => { for (const b of tbl) { if (pw <= b[0]) return b[colIdx]; } return tbl[tbl.length - 1][colIdx]; };
-  
   if (type === "EV" || type === "SEQ_HYBRID") return scan(RK_EV, totalKw);
   let tbl;
-  if (volumeCc <= 1000) tbl = RK.C1;
-  else if (volumeCc <= 2000) tbl = RK.C2;
-  else if (volumeCc <= 3000) tbl = RK.C3;
-  else if (volumeCc <= 3500) tbl = RK.C4;
-  else tbl = RK.C5;
+  if (volumeCc <= 1000) tbl = RK.C1; else if (volumeCc <= 2000) tbl = RK.C2;
+  else if (volumeCc <= 3000) tbl = RK.C3; else if (volumeCc <= 3500) tbl = RK.C4; else tbl = RK.C5;
   return scan(tbl, totalKw);
 }
 
@@ -391,20 +468,27 @@ function renderRates() {
   const b = document.getElementById("rateBox");
   const f = n => n.toFixed(2).replace('.', ',');
   if(state.ratesLive) {
-    b.textContent = `Курс (live): $${f(state.usdRub)} · ¥${f(state.cnyRub)} · €${f(state.eurRub)}`;
-    b.style.color = "";
+    b.textContent = `Курс: $${f(state.usdRub)} · ¥${f(state.cnyRub)} · €${f(state.eurRub)}`;
+    b.style.color = "var(--text-muted)";
   } else {
     b.textContent = `⚠️ Курс ориент.: $${f(state.usdRub)} · ¥${f(state.cnyRub)}`;
-    b.style.color = "#fbbf24";
+    b.style.color = "#d97706";
   }
 }
 function priceToRub(val, cur) {
-  if(cur==="USD") return val*state.usdRub;
-  if(cur==="EUR") return val*state.eurRub;
-  return val*state.cnyRub;
+  if(cur==="USD") return val*state.usdRub; if(cur==="EUR") return val*state.eurRub; return val*state.cnyRub;
 }
 
-/* ================= РУЧНОЙ ВВОД И ВАЛИДАЦИЯ ================= */
+/* ================= ВАЛИДАЦИЯ БЕЗ ALERT (Focus Trap) ================= */
+function triggerError(elementId, message) {
+  const el = document.getElementById(elementId);
+  if(!el) return;
+  el.classList.add('error-field');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.classList.remove('error-field'), 2000);
+}
+
+/* ================= РУЧНОЙ ВВОД ================= */
 function manualInputs() {
   const t = selectedEngineType;
   const isElec = (t === "EV" || t === "SEQ_HYBRID");
@@ -433,14 +517,9 @@ function renderManualSpec() {
   const t = selectedEngineType;
   const card = document.getElementById('specCard');
   if(!t) { card.classList.add('hidden'); selected = null; return; }
-  
   const v = manualInputs();
-  // ★ ПРИОРИТЕТ ДАННЫХ ★
-  // Если пользователь знает точную 30-мин мощность (галочка стоит) -> используем её
-  // Если галочка НЕ стоит -> используем el_peak_kw * 0.45 и показываем предупреждение
   const el30 = (t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF);
   
-  // Показываем/скрываем юридическое предупреждение
   const estW = document.getElementById('mEstimateWarn');
   const showWarning = (v.isElec || v.t === "PAR_HYBRID") && !v.know && v.kwIn > 0;
   estW.classList.toggle('hidden', !showWarning);
@@ -449,35 +528,29 @@ function renderManualSpec() {
   const priceRub = v.price > 0 ? priceToRub(v.price, v.cur) : 0;
   
   const manualCarData = {
-    brand: "Ручной ввод", model: "ПТС / ОТТС", trim: t,
-    body: "SUV", type: t, engine_cc: v.cc,
+    brand: "Ручной ввод", model: "ПТС / ОТТС", trim: t, body: "SUV", type: t, engine_cc: v.cc,
     pole_hp: poleHp, pole_kw: Math.round(poleHp * HP_TO_KW * 10) / 10,
     k30_hp: Math.round(el30 * KW_TO_HP), k30_kw: Math.round(el30 * 10) / 10,
-    weight_kg: 0, base_price_cny: priceRub > 0 ? Math.round(priceRub / state.cnyRub) : 0,
-    notes: v.know ? "Точная 30-мин из ОТТС" : `Оценка ${ESTIMATE_COEF} от пиковой`
+    weight_kg: 0, base_price_cny: priceRub > 0 ? Math.round(priceRub / state.cnyRub) : 0
   };
   
   const total = totalPowerKw(manualCarData);
   card.classList.remove('hidden');
   document.getElementById('specType').textContent = t;
   document.getElementById('specPeak').textContent = `${manualCarData.pole_kw} кВт (${poleHp} л.с.)`;
-  
   const hasK30 = manualCarData.k30_kw > 0;
   document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none';
   if(hasK30) document.getElementById('specK30').textContent = `${manualCarData.k30_kw} кВт (${Math.round(el30 * KW_TO_HP)} л.с.)`;
-  
   document.getElementById('specTotalKw').textContent = `${Math.round(total * 10) / 10} кВт (${Math.round(total * KW_TO_HP)} л.с.)`;
-  
-  // Устанавливаем selected только если данные валидны
   selected = isManualValid() ? manualCarData : null;
 }
 
-/* ================= НАВИГАЦИЯ И РАСЧЁТ ================= */
+/* ================= НАВИГАЦИЯ ================= */
 function gotoStep(n) {
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== n));
   document.querySelectorAll('#stepDots span').forEach(d => {
     const i = +d.dataset.i;
-    d.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === n ? 'bg-[#0a9e33] scale-125' : i < n ? 'bg-[#00F0FF]' : 'bg-white/20'}`;
+    d.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === n ? 'bg-[#0a9e33] scale-125' : i < n ? 'bg-[#00F0FF]' : 'bg-black/10 dark:bg-white/20'}`;
   });
   if(n === 2) {
     document.getElementById('manualPanel').classList.toggle('hidden', !isManualMode);
@@ -490,22 +563,30 @@ function gotoStep(n) {
 }
 
 function nextFrom1() {
-  if(!selectedEngineType) return alert('Выберите тип двигателя');
-  if(!isManualMode && !document.getElementById('brandSel').value) return alert('Выберите бренд');
+  if(!selectedEngineType) { triggerError('nextBtn1', 'Выберите тип двигателя'); return; }
+  if(!isManualMode && !document.getElementById('brandSel').value) { triggerError('brandSel', 'Выберите бренд'); return; }
   gotoStep(2);
 }
 
 function nextFrom2() {
   if(isManualMode) {
-    if(!isManualValid()) return alert('Заполните все обязательные поля');
+    if(!isManualValid()) {
+      const v = manualInputs();
+      if(!v.isElec && v.cc <= 0) triggerError('mCc');
+      else if(v.price <= 0) triggerError('mPrice');
+      else if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) triggerError('mHpIce');
+      else if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) triggerError('mKwEl');
+      return;
+    }
     gotoStep(3); return;
   }
-  if(!document.getElementById('modelSel').value || !document.getElementById('trimSel').value) return alert('Выберите модель и комплектацию');
+  if(!document.getElementById('modelSel').value) { triggerError('modelSel'); return; }
+  if(!document.getElementById('trimSel').value) { triggerError('trimSel'); return; }
   gotoStep(3);
 }
 
 function calculatePrice() {
-  if(!selected) { alert('Заполните данные авто'); gotoStep(2); return; }
+  if(!selected) { gotoStep(2); return; }
   const c = selected;
   const age = isManualMode ? (manualProd?.cat || 'new') : document.getElementById('ageSel').value;
   const year = document.getElementById('yearSel').value;
@@ -513,8 +594,7 @@ function calculatePrice() {
 
   let baseRub = 0;
   if(isManualMode) {
-    const v = manualInputs();
-    baseRub = priceToRub(v.price, v.cur);
+    const v = manualInputs(); baseRub = priceToRub(v.price, v.cur);
   } else {
     let customPriceVal = parseFloat(document.getElementById('customPrice').value);
     const currency = document.getElementById('currencySel').value;
@@ -528,14 +608,13 @@ function calculatePrice() {
   const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
   const logRF = RF_LOGISTICS[city] || 100000;
   const total = baseRub + CFG.LOGISTICS_CHINA + dutyObj.total + util + customsFee + certs + logRF + CFG.MARGIN;
-  
   lastCalc = { c, age, year, city, total, util, baseRub };
 
   const money = n => Math.round(n).toLocaleString('ru') + ' ₽';
-  const row = (icon, label, value, cls='') => 
-    `<div class="flex items-center justify-between py-3 ${cls}" style="border-bottom:1px solid rgba(255,255,255,.05)">
-       <div class="flex items-center gap-3"><span style="color:#00F0FF;font-size:1.2em">${icon}</span><span class="text-sm opacity-70">${label}</span></div>
-       <b>${value}</b>
+  const row = (icon, label, value) => 
+    `<div class="flex items-center justify-between py-3" style="border-bottom:1px solid var(--glass-border)">
+       <div class="flex items-center gap-3"><span style="color:#00F0FF;font-size:1.2em">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div>
+       <b style="color: var(--text-main)">${value}</b>
      </div>`;
 
   const box = document.getElementById('resultBox');
@@ -557,22 +636,21 @@ function calculatePrice() {
   rows += row('🤝', 'Услуги компании', money(CFG.MARGIN));
 
   box.innerHTML = `<div class="glass rounded-xl p-5">
-    <div class="text-sm mb-4 opacity-60">Детализация · ${c.brand} ${c.model} ${c.trim} · ${city}</div>
+    <div class="text-sm mb-4" style="color: var(--text-muted)">Детализация · ${c.brand} ${c.model} ${c.trim} · ${city}</div>
     ${rows}
-    <div class="flex justify-between items-center pt-5 mt-2 border-t border-white/10">
-      <span class="text-lg font-bold">ИТОГО ПОД КЛЮЧ</span>
+    <div class="flex justify-between items-center pt-5 mt-2 border-t" style="border-color: var(--glass-border)">
+      <span class="text-lg font-bold" style="color: var(--text-main)">ИТОГО ПОД КЛЮЧ</span>
       <span class="text-2xl sm:text-3xl font-black text-[#FFD700]">${money(total)}</span>
     </div>
-    <p class="text-[10px] mt-4 opacity-50 leading-relaxed">*Расчёт предварительный (физлицо, личное пользование). Для юрлиц/перепродажи — иные ставки. Финальная сумма фиксируется в договоре по VIN. Ставки 2027 года являются прогнозными.</p>
+    <p class="text-[10px] mt-4 leading-relaxed" style="color: var(--text-muted)">*Расчёт предварительный (физлицо, личное пользование). Для юрлиц/перепродажи — иные ставки. Финальная сумма фиксируется в договоре по VIN.</p>
   </div>`;
 
-  // Ссылки на мессенджеры с предзаполненным текстом
   const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city}\nГод ввоза: ${year}`);
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`;
   document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
 
   document.getElementById('leadWrap').classList.remove('hidden');
-  document.getElementById('leadWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => document.getElementById('leadWrap').scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
 }
 
 /* ================= ИНИЦИАЛИЗАЦИЯ ================= */
@@ -583,7 +661,6 @@ function buildManualSelects() {
   const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
   months.forEach((mn,i) => { const o = document.createElement('option'); o.value = i+1; o.textContent = mn + ' (' + String(i+1).padStart(2,'0') + ')'; mS.appendChild(o); });
   
-  // Автопересчет при изменении любого поля ручного ввода
   ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.addEventListener('input', () => { calcManualAge(); renderManualSpec(); });
@@ -643,7 +720,6 @@ function showSpec(c) {
   document.getElementById('specTotalKw').textContent = `${Math.round(totalPowerKw(c)*10)/10} кВт`;
 }
 
-// Загрузка базы авто через прокси Google Apps Script
 async function loadCars() {
   try {
     const url = new URL(PROXY_CONFIG.URL);
@@ -655,7 +731,6 @@ async function loadCars() {
     const data = await res.json();
     if(data.success && data.rows?.length > 0) {
       carDatabase = data.rows.map(mapRow).filter(c => c.brand && c.model && c.base_price_cny > 0);
-      console.log(`✅ Загружено ${carDatabase.length} авто`);
     }
   } catch(e) { console.error('Ошибка загрузки:', e.message); }
 }
@@ -664,42 +739,32 @@ function mapRow(r) {
   const cleanNum = v => Number(String(v||'').replace(/[\s\u00A0]/g,'').replace(',','.')) || 0;
   const normType = t => {
     t = String(t||'').toLowerCase().trim();
-    if(/seq|посл/.test(t)) return 'SEQ_HYBRID';
-    if(/par|парал/.test(t)) return 'PAR_HYBRID';
-    if(/^(ev|bev)|элект/.test(t)) return 'EV';
-    return 'ICE';
+    if(/seq|посл/.test(t)) return 'SEQ_HYBRID'; if(/par|парал/.test(t)) return 'PAR_HYBRID';
+    if(/^(ev|bev)|элект/.test(t)) return 'EV'; return 'ICE';
   };
   const type = normType(r.type);
   const poleKw = cleanNum(r.el_peak_kw) || Math.round(cleanNum(r.pole_hp) * HP_TO_KW * 10) / 10;
   const k30Kw = cleanNum(r.k30_doc_kw);
   return {
-    brand: String(r.brand||'').trim(), model: String(r.model||'').trim(),
-    trim: String(r.trim||'').trim() || 'Base', body: ['SUV','Sedan','MPV'].includes(r.body) ? r.body : 'SUV',
-    type, engine_cc: cleanNum(r.engine_cc), pole_hp: cleanNum(r.pole_hp) || Math.round(poleKw * KW_TO_HP),
-    pole_kw: poleKw, k30_hp: k30Kw ? Math.round(k30Kw * KW_TO_HP) : 0, k30_kw: k30Kw,
-    weight_kg: cleanNum(r.weight_kg), base_price_cny: cleanNum(r.base_price_cny),
-    year_from: cleanNum(r.year_from), notes: String(r.notes||'').trim()
+    brand: String(r.brand||'').trim(), model: String(r.model||'').trim(), trim: String(r.trim||'').trim() || 'Base',
+    body: ['SUV','Sedan','MPV'].includes(r.body) ? r.body : 'SUV', type, engine_cc: cleanNum(r.engine_cc),
+    pole_hp: cleanNum(r.pole_hp) || Math.round(poleKw * KW_TO_HP), pole_kw: poleKw,
+    k30_hp: k30Kw ? Math.round(k30Kw * KW_TO_HP) : 0, k30_kw: k30Kw, weight_kg: cleanNum(r.weight_kg),
+    base_price_cny: cleanNum(r.base_price_cny), year_from: cleanNum(r.year_from)
   };
 }
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-  buildManualSelects();
-  loadRates();
-  loadCars();
+  buildManualSelects(); loadRates(); loadCars();
   
-  // Обработчики кнопок типа двигателя
+  // Обработчики кнопок типа двигателя (с явным состоянием selected)
   document.querySelectorAll('.engine-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-      document.querySelectorAll('.engine-btn').forEach(b => {
-        b.classList.remove('border-[#00F0FF]', 'bg-[#00F0FF]/10');
-        b.style.borderColor = '';
-      });
-      this.classList.add('border-[#00F0FF]', 'bg-[#00F0FF]/10');
+      document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
       selectedEngineType = this.dataset.type;
       isManualMode = false;
       fillBrandsByType(selectedEngineType);
-      gotoStep(1);
     });
   });
 
@@ -710,19 +775,17 @@ document.addEventListener('DOMContentLoaded', () => {
   manualToggle.onclick = () => {
     isManualMode = !isManualMode;
     manualToggle.textContent = isManualMode ? '📋 Вернуться к каталогу' : '✏️ Ввести данные вручную (нет в каталоге)';
-    document.getElementById('brandSel').parentElement.classList.toggle('hidden', isManualMode);
+    document.getElementById('brandWrap').classList.toggle('hidden', isManualMode);
     gotoStep(2);
   };
   document.querySelector('[data-step="2"]').prepend(manualToggle);
 
-  // Заполнение городов
   const citySel = document.getElementById('citySel');
   Object.keys(RF_LOGISTICS).forEach(c => {
     const o = document.createElement('option'); o.value = c; o.textContent = c; citySel.appendChild(o);
   });
 });
 
-// Конфиг прокси (замените на свой URL из Google Apps Script)
 const PROXY_CONFIG = {
   URL: "https://script.google.com/macros/s/AKfycbw4A0Kxg2gawadla2-_XGYu0NAc_Cdd7ow0vDfLaTNE79uQPEUChA-X800x1Z3lqzXb/exec",
   API_KEY: 'MySuperSecretKey_2026_Xy9#mP2!'
