@@ -28,13 +28,16 @@ tailwind.config = {
   --field-bg:#ffffff; --field-border:#d1d5db;
   --toggle-bg:#e5e7eb; --toggle-active:#2563eb; --focus-ring:rgba(37,99,235,.3);
   --success:#059669;
+  --cta:#059669; --cta-hover:#047857;
 }
 .dark {
   --text-main:#f3f4f6; --text-muted:#9ca3af; --bg-body:#070b14;
-  --glass-bg:rgba(15,23,42,.75); --glass-border:rgba(255,255,255,.1);
+  --glass-bg:rgba(15,23,42,.82); /* УПЛОТНЕНО для лучшей читаемости */
+  --glass-border:rgba(255,255,255,.1);
   --field-bg:rgba(255,255,255,.05); --field-border:rgba(255,255,255,.15);
   --toggle-bg:#374151; --toggle-active:#00F0FF; --focus-ring:rgba(0,240,255,.3);
   --success:#8fbf7f;
+  --cta:#10b981; --cta-hover:#059669;
 }
 html,body{
   font-family:'Inter Tight',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
@@ -44,6 +47,13 @@ html,body{
 }
 h1{font-size:clamp(1.75rem,4vw + 1rem,2.5rem);line-height:1.2;letter-spacing:-.02em}
 h2{font-size:clamp(1.25rem,2vw + 1rem,1.5rem);line-height:1.3;letter-spacing:-.01em}
+
+/* ТАБЛИЧНЫЕ ЦИФРЫ — цифры не "пляшут" при смене значений */
+b, .num, #countdown, #specPeak, #specK30, #specCc, #specPrice, #specTotalKw,
+#customPrice, #mPrice, #mCc, #mHpIce, #mKwEl, .engine-btn .text-xs {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
 
 .hero-bg{position:fixed;inset:0;z-index:-2;background-image:url('hero-bg.jpg');background-size:cover;background-position:center;filter:blur(8px) brightness(.9);transform:scale(1.1)}
 .dark .hero-bg{filter:blur(8px) brightness(.3)}
@@ -94,8 +104,9 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 .unit-btn.active{background:var(--toggle-active);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1)}
 .dark .unit-btn.active{color:#070b14}
 
-.btn-primary{background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:600;border-radius:12px;transition:all .2s ease;border:none;cursor:pointer;box-shadow:0 4px 14px -4px rgba(16,185,129,.4);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px -4px rgba(16,185,129,.5);filter:brightness(1.05)}
+/* ПЛОСКАЯ CTA (тренд 2027 — flat + мягкая тень, без градиента) */
+.btn-primary{background:var(--cta);color:#fff;font-weight:600;border-radius:12px;transition:all .2s ease;border:none;cursor:pointer;box-shadow:0 4px 14px -4px rgba(5,150,105,.35);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
+.btn-primary:hover{background:var(--cta-hover);transform:translateY(-2px);box-shadow:0 8px 20px -4px rgba(5,150,105,.45);filter:brightness(1.03)}
 .btn-primary:active{transform:translateY(0)}
 .btn-primary:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(16,185,129,.4)}
 .btn-secondary{background:transparent;border:1px solid var(--field-border);color:var(--text-main);border-radius:12px;transition:all .2s ease;cursor:pointer;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:500;touch-action:manipulation}
@@ -121,6 +132,12 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 
 .legal-note{background:var(--field-bg);border:1px solid var(--glass-border);border-radius:12px;padding:14px;font-size:.72rem;line-height:1.55;color:var(--text-muted)}
 .legal-note b{color:var(--text-main)}
+
+/* ЧИПЫ ДОВЕРИЯ */
+.trust-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:6px 10px;border-radius:999px;background:var(--field-bg);border:1px solid var(--glass-border);color:var(--text-muted)}
+
+/* Липкая правая колонка на десктопе */
+.sticky-summary{position:sticky;top:24px}
 
 @keyframes shake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
 
@@ -255,8 +272,7 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
       </div>
     </div>
 
-    <!-- ШАГ 2 -->
-        <!-- ШАГ 2 -->
+    <!-- ШАГ 2 (ЧИСТЫЙ, БЕЗ ДУБЛЕЙ, ОДИНАКОВЫЕ РАЗМЕРЫ В ОБОИХ РЕЖИМАХ) -->
     <div class="wizard-step hidden" data-step="2">
       <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
       <p class="text-sm mb-5" style="color:var(--text-muted)" id="step2Desc">Выберите модель из каталога.</p>
@@ -313,7 +329,7 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         <select id="trimSel" class="field text-sm" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
       </div>
 
-      <!-- КАРТОЧКА ХАРАКТЕРИСТИК: единственный экземпляр, одинакова в обоих режимах -->
+      <!-- КАРТОЧКА ХАРАКТЕРИСТИК (ЕДИНСТВЕННЫЙ ЭКЗЕМПЛЯР) -->
       <div id="specCard" class="glass rounded-xl p-3 sm:p-4 mb-4 hidden" style="background:var(--field-bg)">
         <div class="flex items-start gap-3">
           <div id="specIcon" class="shrink-0 w-10 h-8 flex items-center justify-center" style="color:var(--toggle-active)"></div>
@@ -377,29 +393,57 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         </button>
       </div>
     </div>
-    <!-- ШАГ 3 -->
+
+    <!-- ШАГ 3: ДВУХКОЛОНОЧНАЯ СЕТКА НА ДЕСКТОПЕ (lg:grid-cols-5, 60/40) -->
     <div class="wizard-step hidden" data-step="3">
       <h2 class="font-bold mb-2">Шаг 3. Доставка и расчёт</h2>
       <p class="text-sm mb-6" style="color:var(--text-muted)">Логистика зависит от региона получения.</p>
 
-      <div id="cityBlockFinal">
-        <label class="block text-sm font-semibold mb-2" for="citySel">Город получения</label>
-        <select id="citySel" class="field mb-6" aria-label="Город доставки"></select>
+      <div class="lg:grid lg:grid-cols-5 lg:gap-6">
+        <!-- ЛЕВАЯ КОЛОНКА: форма (60%) -->
+        <div class="lg:col-span-3">
+          <div id="cityBlockFinal" class="mb-4">
+            <label class="block text-xs font-semibold mb-1" for="citySel" style="color:var(--text-muted)">Город получения</label>
+            <select id="citySel" class="field text-sm" aria-label="Город доставки"></select>
+          </div>
+
+          <!-- ЧИПЫ ДОВЕРИЯ (2027) -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="trust-chip">📜 ПП РФ №1291 от 26.12.2013</span>
+            <span class="trust-chip">🗓 Ставки актуальны на 2026 г.</span>
+            <span class="trust-chip">⚖️ Расчёт по данным ОТТС/СБКТС</span>
+          </div>
+
+          <div class="legal-note mb-6">
+            <b>Правовая основа расчёта:</b> утилизационный сбор — ПП РФ №1291 от 26.12.2013 (ред. 06.02.2026 №89); базовая ставка для легковых M1 — 20 000 ₽; 30‑минутная мощность — по ОТТС / СБКТС / ЭПТС; льгота 0.17 / 0.26 — только физлицам для личного пользования. С 13.02.2024 действует формула доплаты: <b>УС = УСед + Ктп + Кндс + Ка</b> — при занижении таможенной стоимости ФТС доначисляет разницу пошлин, НДС и акциза.
+          </div>
+
+          <div class="flex gap-3 mb-6">
+            <button class="btn-secondary px-6" onclick="gotoStep(2)" aria-label="Назад">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg> Назад
+            </button>
+            <button id="calcBtn" class="btn-primary flex-1" onclick="calculatePrice()" aria-label="Рассчитать стоимость">Рассчитать стоимость</button>
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: липкая сводка (40%) -->
+        <aside class="lg:col-span-2 lg:pt-0">
+          <div class="sticky-summary" id="summaryWrap">
+            <div id="summaryPlaceholder" class="glass rounded-xl p-4" style="background:var(--field-bg)">
+              <div class="flex items-center gap-2 mb-2">
+                <svg class="w-5 h-5" style="color:var(--toggle-active)" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18zm-1.5-1.5h.008v.008H5.25V16.5zm0-3h.008v.008H5.25V13.5zm0-3h.008v.008H5.25V10.5z"/></svg>
+                <span class="text-sm font-semibold" style="color:var(--text-main)">Ваша сводка</span>
+              </div>
+              <p class="text-xs" style="color:var(--text-muted)">После расчёта здесь появится детальная смета: авто, пошлины, утильсбор, логистика, итог под ключ. Все цифры обновляются в реальном времени.</p>
+            </div>
+            <div id="resultBox" class="hidden space-y-3"></div>
+          </div>
+        </aside>
       </div>
 
-      <div class="legal-note mb-6">
-        <b>Правовая основа расчёта:</b> утилизационный сбор — ПП РФ №1291 от 26.12.2013 (ред. 06.02.2026 №89); базовая ставка для легковых M1 — 20 000 ₽; 30‑минутная мощность — по ОТТС / СБКТС / ЭПТС; льгота 0.17 / 0.26 — только физлицам для личного пользования. С 13.02.2024 действует формула доплаты: <b>УС = УСед + Ктп + Кндс + Ка</b> — при занижении таможенной стоимости ФТС доначисляет разницу пошлин, НДС и акциза.
-      </div>
-
-      <div class="flex gap-3 mb-8">
-        <button class="btn-secondary px-6" onclick="gotoStep(2)" aria-label="Назад">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg> Назад
-        </button>
-        <button id="calcBtn" class="btn-primary flex-1" onclick="calculatePrice()" aria-label="Рассчитать стоимость">Рассчитать стоимость</button>
-      </div>
-
-      <div id="leadWrap" class="hidden reveal">
-        <div class="glass rounded-2xl p-5 sm:p-6 mb-6" style="background:var(--field-bg)">
+      <!-- ЛИД-БЛОК (под сеткой, во всю ширину) -->
+      <div id="leadWrap" class="hidden reveal mt-6">
+        <div class="glass rounded-2xl p-5 sm:p-6" style="background:var(--field-bg)">
           <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
             <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Расчёт готов!
@@ -411,8 +455,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
           </div>
         </div>
       </div>
-
-      <div id="resultBox" class="hidden mt-6 space-y-3"></div>
     </div>
   </div>
 </main>
@@ -635,6 +677,10 @@ function gotoStep(n){
   if (n === 3){
     if (isManualMode && deliveryEnabled) document.getElementById('citySel').value = document.getElementById('mCitySel').value;
     document.getElementById('cityBlockFinal').style.display = (isManualMode && !deliveryEnabled) ? 'none' : 'block';
+    /* сброс сводки при заходе на Шаг 3 */
+    document.getElementById('summaryPlaceholder').classList.remove('hidden');
+    document.getElementById('resultBox').classList.add('hidden');
+    document.getElementById('leadWrap').classList.add('hidden');
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -726,8 +772,10 @@ function calculatePrice(){
 
   const estNote = c.k30_estimated ? `<div class="estimate-warn mt-4">⚠️ 30‑минутная мощность принята расчётно (пик × 0.45). Точная сумма утильсбора фиксируется по ОТТС / СБКТС / ЭПТС.</div>` : '';
 
-  document.getElementById('resultBox').classList.remove('hidden');
-  document.getElementById('resultBox').innerHTML = `<div class="glass rounded-2xl p-5">
+  document.getElementById('summaryPlaceholder').classList.add('hidden');
+  const rb = document.getElementById('resultBox');
+  rb.classList.remove('hidden');
+  rb.innerHTML = `<div class="glass rounded-2xl p-5">
     <div class="text-sm mb-4 font-medium" style="color:var(--text-muted)">Детализация · ${c.brand} ${c.model} ${c.trim}${city ? ' · '+city : ''} · ввоз ${year}</div>
     ${rows}
     <div class="flex justify-between items-center pt-5 mt-2">
@@ -747,7 +795,6 @@ function calculatePrice(){
 }
 
 function fillSpecCard(c){
-  /* ВЕРНУЛОСЬ: карточка видна и в режиме каталога, и в ручном */
   document.getElementById('specCard').classList.remove('hidden');
 
   document.getElementById('specIcon').innerHTML = BODY_ICON[c.body] || BODY_ICON.SUV;
@@ -784,7 +831,6 @@ function fillSpecCard(c){
   initUnitToggles(c);
 }
 
-/* ============ ВОССТАНОВЛЕНО: переключатели кВт ⇄ л.с. ============ */
 function updatePowerDisplay(id, kw, type){
   document.getElementById(id).textContent = (powerUnits[type]==='kw') ? kw+' кВт' : Math.round(kw*KW_TO_HP)+' л.с.';
 }
@@ -802,7 +848,6 @@ function initUnitToggles(car){
   });
 }
 
-/* ============ КАТАЛОГ ============ */
 function fillBrandsByType(type){
   const b = document.getElementById('brandSel');
   b.disabled = false; b.innerHTML = '<option value="">— Выберите бренд —</option>';
