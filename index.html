@@ -256,12 +256,14 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
     </div>
 
     <!-- ШАГ 2 -->
+        <!-- ШАГ 2 -->
     <div class="wizard-step hidden" data-step="2">
       <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
-      <p class="text-sm mb-6" style="color:var(--text-muted)" id="step2Desc">Выберите модель из каталога.</p>
+      <p class="text-sm mb-5" style="color:var(--text-muted)" id="step2Desc">Выберите модель из каталога.</p>
 
-      <div id="manualPanel" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background:var(--field-bg)">
-        <div class="mb-4">
+      <!-- РУЧНОЙ РЕЖИМ -->
+      <div id="manualPanel" class="glass rounded-xl p-3 sm:p-4 mb-4 hidden" style="background:var(--field-bg)">
+        <div class="mb-3">
           <label class="block text-xs font-semibold mb-1" for="mEngineType" style="color:var(--text-muted)">Тип двигателя (из ПТС / ОТТС)</label>
           <select id="mEngineType" class="field text-sm font-bold" style="color:var(--toggle-active)">
             <option value="EV">⚡ Электромобиль</option>
@@ -270,61 +272,53 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
             <option value="ICE">🛢️ ДВС (бензин / дизель)</option>
           </select>
         </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="block text-xs font-semibold mb-1" for="mYear" style="color:var(--text-muted)">Год выпуска</label><select id="mYear" class="field text-sm"></select></div>
           <div><label class="block text-xs font-semibold mb-1" for="mMonth" style="color:var(--text-muted)">Месяц</label><select id="mMonth" class="field text-sm"></select></div>
         </div>
-
-        <div id="mCcWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" for="mCc" style="color:var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
-
-        <div class="grid grid-cols-3 gap-3 mb-4">
+        <div id="mCcWrap" class="mb-3"><label class="block text-xs font-semibold mb-1" for="mCc" style="color:var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
+        <div class="grid grid-cols-3 gap-3 mb-3">
           <div class="col-span-2"><label class="block text-xs font-semibold mb-1" for="mPrice" style="color:var(--text-muted)">Стоимость</label><input id="mPrice" type="number" class="field text-sm" placeholder="139800" inputmode="numeric"></div>
           <div><label class="block text-xs font-semibold mb-1" for="mCur" style="color:var(--text-muted)">Валюта</label><select id="mCur" class="field text-sm"><option value="CNY">¥ CNY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
         </div>
-
-        <div id="deliverySwitch" class="wcag-switch mb-4" role="switch" aria-pressed="true" tabindex="0"
+        <div id="deliverySwitch" class="wcag-switch mb-3" role="switch" aria-pressed="true" tabindex="0"
              onclick="toggleDelivery()"
              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDelivery();}">
           <div class="switch-track"><div class="switch-thumb"></div></div>
           <div class="switch-text" id="deliveryLabel">🚚 Доставка до моего города</div>
         </div>
-        <div id="mCityWrap" class="mb-4">
+        <div id="mCityWrap" class="mb-3">
           <label class="block text-xs font-semibold mb-1" for="mCitySel" style="color:var(--text-muted)">Город получения</label>
           <select id="mCitySel" class="field text-sm"></select>
         </div>
-
-        <div id="mHpWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" for="mHpIce" style="color:var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="112" inputmode="numeric"></div>
-
-        <div id="mKwWrap" class="mb-4">
+        <div id="mHpWrap" class="mb-3"><label class="block text-xs font-semibold mb-1" for="mHpIce" style="color:var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="112" inputmode="numeric"></div>
+        <div id="mKwWrap" class="mb-3">
           <label class="block text-xs font-semibold mb-1" for="mKwEl" style="color:var(--text-muted)">Пиковая мощность электромотора (кВт)</label>
           <input id="mKwEl" type="number" class="field text-sm" placeholder="175" inputmode="decimal">
           <div id="mEstimateWarn" class="estimate-warn hidden">
             ⚠️ <b>Предварительная оценка:</b> 30‑минутная мощность не указана, расчёт по коэффициенту 0.45 от пиковой. Итоговая сумма утильсбора фиксируется только по данным ОТТС / СБКТС / ЭПТС.
           </div>
         </div>
-
-        <div class="flex items-start gap-3 mb-2" id="mKnowWrap">
+        <div class="flex items-start gap-3" id="mKnowWrap">
           <input id="mKnow" type="checkbox" class="mt-1 w-5 h-5 rounded cursor-pointer" style="accent-color:var(--toggle-active)" aria-label="Я знаю точную 30-минутную мощность">
           <label for="mKnow" class="text-xs leading-snug cursor-pointer" style="color:var(--text-muted)">Я знаю точную 30‑минутную мощность из ОТТС / ЭПТС (введу её в поле выше)</label>
         </div>
       </div>
 
-      <div id="catalogBlock">
-        <label class="block text-sm font-semibold mb-2" for="modelSel">Модель</label>
-        <select id="modelSel" class="field mb-4" disabled aria-label="Выберите модель"><option value="">— Сначала бренд —</option></select>
-        <label class="block text-sm font-semibold mb-2" for="trimSel">Комплектация</label>
-        <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
+      <!-- КАТАЛОГ -->
+      <div id="catalogBlock" class="mb-4">
+        <label class="block text-xs font-semibold mb-1" for="modelSel" style="color:var(--text-muted)">Модель</label>
+        <select id="modelSel" class="field text-sm mb-3" disabled aria-label="Выберите модель"><option value="">— Сначала бренд —</option></select>
+        <label class="block text-xs font-semibold mb-1" for="trimSel" style="color:var(--text-muted)">Комплектация</label>
+        <select id="trimSel" class="field text-sm" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
       </div>
 
-          <!-- КАРТОЧКА ХАРАКТЕРИСТИК (компактная, как блок-подсказка) -->
-      <div id="specCard" class="glass rounded-xl p-3 sm:p-4 mb-6 hidden" style="background:var(--field-bg)">
+      <!-- КАРТОЧКА ХАРАКТЕРИСТИК: единственный экземпляр, одинакова в обоих режимах -->
+      <div id="specCard" class="glass rounded-xl p-3 sm:p-4 mb-4 hidden" style="background:var(--field-bg)">
         <div class="flex items-start gap-3">
           <div id="specIcon" class="shrink-0 w-10 h-8 flex items-center justify-center" style="color:var(--toggle-active)"></div>
           <div class="text-xs w-full">
-            <div class="flex justify-between items-center gap-2 py-1">
-              <span style="color:var(--text-muted)">Тип:</span> <b id="specType" style="color:var(--text-main)"></b>
-            </div>
+            <div class="flex justify-between items-center gap-2 py-1"><span style="color:var(--text-muted)">Тип:</span><b id="specType" style="color:var(--text-main)"></b></div>
             <div class="flex justify-between items-center gap-2 py-1">
               <span style="color:var(--text-muted)">Пиковая мощность:</span>
               <span class="flex items-center gap-1.5"><b id="specPeak" class="text-yellow-500"></b>
@@ -338,59 +332,41 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
               </span>
             </div>
             <div id="k30Hint" class="py-0.5 text-[11px]" style="color:var(--text-muted)"></div>
-            <div id="specCcRow" class="flex justify-between items-center gap-2 py-1">
-              <span style="color:var(--text-muted)">Объём ДВС:</span> <b id="specCc" style="color:var(--text-main)"></b>
-            </div>
+            <div id="specCcRow" class="flex justify-between items-center gap-2 py-1"><span style="color:var(--text-muted)">Объём ДВС:</span><b id="specCc" style="color:var(--text-main)"></b></div>
             <div id="specNotesRow" class="py-0.5 text-[11px]" style="color:var(--text-muted)"><span id="specNotes"></span></div>
-            <div id="specPriceRow" class="flex justify-between items-center gap-2 py-1">
-              <span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b>
-            </div>
+            <div id="specPriceRow" class="flex justify-between items-center gap-2 py-1"><span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span><b id="specPrice" style="color:var(--text-main)"></b></div>
             <div class="flex justify-between items-center gap-2 pt-1.5 mt-1 border-t font-semibold" style="border-color:var(--glass-border)">
-              <span style="color:var(--text-muted)">Итоговая мощность для утиля:</span> <b id="specTotalKw" style="color:var(--toggle-active)"></b>
-            </div>
-          </div>
-        </div>
-      </div>
-            </div>
-            <div class="flex justify-between items-center" id="k30Row">
-              <span style="color:var(--text-muted)">30‑мин мощность:</span>
-              <span class="flex items-center gap-2"><b id="specK30" style="color:var(--toggle-active)"></b>
-                <span class="unit-toggle" id="k30UnitToggle"><button type="button" class="unit-btn active" data-unit="kw">кВт</button><button type="button" class="unit-btn" data-unit="hp">л.с.</button></span>
-              </span>
-            </div>
-            <div id="k30Hint" class="text-xs" style="color:var(--text-muted)"></div>
-            <div id="specCcRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Объём ДВС:</span> <b id="specCc" style="color:var(--text-main)"></b></div>
-            <div id="specNotesRow" class="text-xs" style="color:var(--text-muted)"><span id="specNotes"></span></div>
-            <div id="specPriceRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b></div>
-            <div class="text-xs pt-3 border-t font-semibold" style="border-color:var(--glass-border)">
-              <span class="flex justify-between items-center"><span style="color:var(--text-muted)">Итоговая мощность для утиля:</span> <b id="specTotalKw" style="color:var(--toggle-active)"></b></span>
+              <span style="color:var(--text-muted)">Итоговая мощность для утиля:</span><b id="specTotalKw" style="color:var(--toggle-active)"></b>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="priceBlock">
-        <label class="block text-sm font-semibold mb-2" for="customPrice">Ваша цена (если известна):</label>
-        <div class="grid grid-cols-3 gap-3 mb-6">
-          <div class="col-span-2"><input id="customPrice" type="number" class="field" placeholder="Например, 105800" inputmode="numeric"></div>
-          <div><select id="currencySel" class="field" aria-label="Валюта цены"><option value="CNY">¥ CNY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
+      <!-- ЦЕНА -->
+      <div id="priceBlock" class="mb-4">
+        <label class="block text-xs font-semibold mb-1" for="customPrice" style="color:var(--text-muted)">Ваша цена (если известна):</label>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2"><input id="customPrice" type="number" class="field text-sm" placeholder="Например, 105800" inputmode="numeric"></div>
+          <div><select id="currencySel" class="field text-sm" aria-label="Валюта цены"><option value="CNY">¥ CNY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
         </div>
       </div>
 
-      <div id="ageBlock">
-        <label class="block text-sm font-semibold mb-2" for="ageSel">Возраст автомобиля</label>
-        <select id="ageSel" class="field mb-2" aria-label="Возраст автомобиля">
+      <!-- ВОЗРАСТ -->
+      <div id="ageBlock" class="mb-3">
+        <label class="block text-xs font-semibold mb-1" for="ageSel" style="color:var(--text-muted)">Возраст автомобиля</label>
+        <select id="ageSel" class="field text-sm mb-1" aria-label="Возраст автомобиля">
           <option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option>
         </select>
-        <p class="text-[11px] mb-4" style="color:var(--text-muted)">Для утильсбора действуют 2 категории: до 3 лет и старше 3 лет.</p>
+        <p class="text-[11px]" style="color:var(--text-muted)">Для утильсбора действуют 2 категории: до 3 лет и старше 3 лет.</p>
       </div>
 
-      <label class="block text-sm font-semibold mb-2" for="yearSel">Планируемый год ввоза</label>
-      <select id="yearSel" class="field mb-2" aria-label="Год ввоза">
+      <!-- ГОД ВВОЗА -->
+      <label class="block text-xs font-semibold mb-1" for="yearSel" style="color:var(--text-muted)">Планируемый год ввоза</label>
+      <select id="yearSel" class="field text-sm mb-1" aria-label="Год ввоза">
         <option value="2026">2026 (текущие ставки)</option>
         <option value="2027">2027 (+10% индексация)</option>
       </select>
-      <p class="text-[11px] mb-6" style="color:var(--text-muted)">*Ставки 2027 года — по таблице индексации ПП РФ №1291.</p>
+      <p class="text-[11px] mb-5" style="color:var(--text-muted)">*Ставки 2027 года — по таблице индексации ПП РФ №1291.</p>
 
       <div class="flex gap-3">
         <button class="btn-secondary px-6" onclick="gotoStep(1)" aria-label="Назад">
@@ -401,7 +377,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         </button>
       </div>
     </div>
-
     <!-- ШАГ 3 -->
     <div class="wizard-step hidden" data-step="3">
       <h2 class="font-bold mb-2">Шаг 3. Доставка и расчёт</h2>
