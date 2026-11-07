@@ -341,7 +341,7 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
             </div>
             <div id="k30Hint" class="text-xs" style="color:var(--text-muted)"></div>
             <div id="specCcRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Объём ДВС:</span> <b id="specCc" style="color:var(--text-main)"></b></div>
-            <div id="specNotesRow" class="text-xs" style="color:var(--text-muted)"><span id="specNotes"></span></div>
+            <div id="specNotesRow" class="text-xs" style="color:var(--text-muted)"><span id="specNotes"></span></div><div id="specPriceRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b></div>
             <div class="text-xs pt-3 border-t font-semibold" style="border-color:var(--glass-border)">
               <span class="flex justify-between items-center"><span style="color:var(--text-muted)">Итоговая мощность для утиля:</span> <b id="specTotalKw" style="color:var(--toggle-active)"></b></span>
             </div>
@@ -448,7 +448,11 @@ const RK = {
 };
 
 const HP_TO_KW = 0.73549875, KW_TO_HP = 1.35962, ESTIMATE_COEF = 0.45;
-const TYPE_LABEL = { EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС (бензин/дизель)" };
+const BODY_ICON = {
+  SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="56" height="16" rx="3"/><path d="M10 14 L16 6 L48 6 L54 14"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>',
+  Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="18" width="56" height="12" rx="2"/><path d="M14 18 L22 10 L42 10 L50 18"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>',
+  MPV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="56" height="20" rx="3"/><path d="M10 10 L10 6 L54 6 L54 10"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>'
+};const TYPE_LABEL = { EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС (бензин/дизель)" };
 
 let carDatabase = [];
 const state = { cnyRub:CFG.FALLBACK_CNY_RUB, usdRub:CFG.FALLBACK_USD_RUB, eurRub:98, ratesLive:false };
@@ -605,8 +609,13 @@ function syncManualFieldsByType(){
 }
 function renderManualSpec(){
   const t = document.getElementById('mEngineType').value;
-  const card = document.getElementById('specCard');
   const v = manualInputs();
+  const card = document.getElementById('specCard');
+
+  /* Карточка появляется ТОЛЬКО когда введены мощности — никаких нулей */
+  const hasData = v.kwIn > 0 || v.iceHp > 0;
+  if (!hasData){ card.classList.add('hidden'); selected = null; return; }
+
   const el30 = (t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF);
   const estimated = (t !== "ICE") && !v.know && v.kwIn > 0;
   document.getElementById('mEstimateWarn').classList.toggle('hidden', !estimated);
@@ -621,7 +630,6 @@ function renderManualSpec(){
   fillSpecCard(car);
   selected = isManualValid() ? car : null;
 }
-
 /* ============ НАВИГАЦИЯ ============ */
 function gotoStep(n){
   currentStep = n;
@@ -755,36 +763,39 @@ function calculatePrice(){
 
 /* ============ КАРТОЧКА ХАРАКТЕРИСТИК ============ */
 function fillSpecCard(c){
+  document.getElementById('specIcon').innerHTML = BODY_ICON[c.body] || BODY_ICON.SUV;
   document.getElementById('specType').textContent = TYPE_LABEL[c.type] || c.type;
   updatePowerDisplay('specPeak', c.pole_kw, 'peak');
+
   const hasK30 = c.k30_kw > 0;
   document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none';
   if (hasK30) updatePowerDisplay('specK30', c.k30_kw, 'k30');
+
   const hint = document.getElementById('k30Hint');
-  if (c.k30_estimated){ hint.style.display=''; hint.innerHTML='⚠️ 30‑мин мощность — <b>оценка ×0.45</b> от пиковой (нет данных ОТТС).'; hint.style.color='#b45309'; }
-  else if (hasK30){ hint.style.display=''; hint.innerHTML='✔️ 30‑мин мощность из документов / базы.'; hint.style.color='var(--success)'; }
-  else hint.style.display='none';
+  if (c.k30_estimated){
+    hint.style.display = ''; hint.style.color = '#b45309';
+    hint.innerHTML = '⚠️ 30‑мин мощность — <b>оценка ×0.45</b> от пиковой (нет данных ОТТС).';
+  } else if (hasK30){
+    hint.style.display = ''; hint.style.color = 'var(--success)';
+    hint.innerHTML = '✔️ 30‑мин мощность: из документов / базы.';
+  } else hint.style.display = 'none';
+
   document.getElementById('specCcRow').style.display = c.engine_cc > 0 ? 'flex' : 'none';
   document.getElementById('specCc').textContent = c.engine_cc + ' см³';
+
   document.getElementById('specNotesRow').style.display = c.notes ? '' : 'none';
   document.getElementById('specNotes').textContent = c.notes || '';
+
+  const pr = document.getElementById('specPriceRow');
+  if (pr){
+    pr.style.display = c.base_price_cny > 0 ? 'flex' : 'none';
+    document.getElementById('specPrice').textContent = c.base_price_cny.toLocaleString('ru') + ' ¥';
+  }
+
   const tk = totalPowerKw(c);
   document.getElementById('specTotalKw').textContent = `${Math.round(tk*10)/10} кВт (${Math.round(tk*KW_TO_HP)} л.с.)`;
   initUnitToggles(c);
 }
-function updatePowerDisplay(id, kw, type){
-  document.getElementById(id).textContent = (powerUnits[type]==='kw') ? kw+' кВт' : Math.round(kw*KW_TO_HP)+' л.с.';
-}
-function initUnitToggles(car){
-  [['peak','peakUnitToggle','specPeak'],['k30','k30UnitToggle','specK30']].forEach(([type,tog,el])=>{
-    const box = document.getElementById(tog); if(!box) return;
-    box.querySelectorAll('.unit-btn').forEach(btn=>{
-      btn.onclick = ()=>{ box.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        powerUnits[type]=btn.dataset.unit; updatePowerDisplay(el, type==='peak'?car.pole_kw:car.k30_kw, type); };
-    });
-  });
-}
-
 /* ============ КАТАЛОГ ============ */
 function fillBrandsByType(type){
   const b = document.getElementById('brandSel');
