@@ -113,11 +113,9 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 .reveal.active{opacity:1;transform:translateY(0)}
 .delay-100{transition-delay:.1s}.delay-200{transition-delay:.2s}
 
-/* ИСПРАВЛЕНО: без max-height/overflow/forwards — форма не обрезается на iPhone SE */
 @keyframes slideDownFade{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 .animate-slide-down{animation:slideDownFade .4s cubic-bezier(.16,1,.3,1)}
 
-/* ИСПРАВЛЕНО: контраст предупреждения в обеих темах (WCAG AA) */
 .estimate-warn{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#92400e;border-radius:12px;padding:12px;font-size:.75rem;line-height:1.5;margin-top:12px}
 .dark .estimate-warn{color:#fcd34d}
 
@@ -262,7 +260,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
       <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
       <p class="text-sm mb-6" style="color:var(--text-muted)" id="step2Desc">Выберите модель из каталога.</p>
 
-      <!-- РУЧНОЙ РЕЖИМ: тип двигателя выбирается здесь -->
       <div id="manualPanel" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background:var(--field-bg)">
         <div class="mb-4">
           <label class="block text-xs font-semibold mb-1" for="mEngineType" style="color:var(--text-muted)">Тип двигателя (из ПТС / ОТТС)</label>
@@ -313,7 +310,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         </div>
       </div>
 
-      <!-- КАТАЛОГ -->
       <div id="catalogBlock">
         <label class="block text-sm font-semibold mb-2" for="modelSel">Модель</label>
         <select id="modelSel" class="field mb-4" disabled aria-label="Выберите модель"><option value="">— Сначала бренд —</option></select>
@@ -321,7 +317,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
       </div>
 
-      <!-- КАРТОЧКА ХАРАКТЕРИСТИК -->
       <div id="specCard" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background:var(--field-bg)">
         <div class="flex items-start gap-4">
           <div id="specIcon" class="shrink-0 w-16 h-12 flex items-center justify-center" style="color:var(--toggle-active)"></div>
@@ -341,7 +336,8 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
             </div>
             <div id="k30Hint" class="text-xs" style="color:var(--text-muted)"></div>
             <div id="specCcRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Объём ДВС:</span> <b id="specCc" style="color:var(--text-main)"></b></div>
-            <div id="specNotesRow" class="text-xs" style="color:var(--text-muted)"><span id="specNotes"></span></div><div id="specPriceRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b></div>
+            <div id="specNotesRow" class="text-xs" style="color:var(--text-muted)"><span id="specNotes"></span></div>
+            <div id="specPriceRow" class="flex justify-between items-center"><span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b></div>
             <div class="text-xs pt-3 border-t font-semibold" style="border-color:var(--glass-border)">
               <span class="flex justify-between items-center"><span style="color:var(--text-muted)">Итоговая мощность для утиля:</span> <b id="specTotalKw" style="color:var(--toggle-active)"></b></span>
             </div>
@@ -349,7 +345,6 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         </div>
       </div>
 
-      <!-- ЦЕНА / ВОЗРАСТ / ГОД -->
       <div id="priceBlock">
         <label class="block text-sm font-semibold mb-2" for="customPrice">Ваша цена (если известна):</label>
         <div class="grid grid-cols-3 gap-3 mb-6">
@@ -431,8 +426,6 @@ const CFG = { BOT_USERNAME:"Avto_Calc_bot", WA_NUMBER:"79266173662",
 const RF_LOGISTICS = {"Иркутск":55000,"Новосибирск":70000,"Екатеринбург":75000,"Москва":85000,"Санкт-Петербург":95000,"Казань":85000,"Краснодар":115000,"Сочи":125000};
 const PROXY_CONFIG = { URL:"https://script.google.com/macros/s/AKfycbw4A0Kxg2gawadla2-_XGYu0NAc_Cdd7ow0vDfLaTNE79uQPEUChA-X800x1Z3lqzXb/exec", API_KEY:'MySuperSecretKey_2026_Xy9#mP2!' };
 
-/* ============ СТАВКИ УТИЛЯ 2026/2027 (сверены с утиль1.xlsx) ============ */
-/* формат строки: [порог_кВт, 2026_new, 2026_old, 2027_new, 2027_old] */
 const RK_EV = [
  [58.84,3400,5200,3400,5200],[73.55,991200,1641600,1090400,1805800],
  [95.61,1317600,1912800,1449400,2104000],[117.68,1560000,2227200,1716000,2450000],
@@ -452,14 +445,14 @@ const BODY_ICON = {
   SUV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="14" width="56" height="16" rx="3"/><path d="M10 14 L16 6 L48 6 L54 14"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>',
   Sedan:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="18" width="56" height="12" rx="2"/><path d="M14 18 L22 10 L42 10 L50 18"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>',
   MPV:'<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="56" height="20" rx="3"/><path d="M10 10 L10 6 L54 6 L54 10"/><circle cx="18" cy="30" r="4" fill="currentColor" opacity="0.3"/><circle cx="46" cy="30" r="4" fill="currentColor" opacity="0.3"/></svg>'
-};const TYPE_LABEL = { EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС (бензин/дизель)" };
+};
+const TYPE_LABEL = { EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС (бензин/дизель)" };
 
 let carDatabase = [];
 const state = { cnyRub:CFG.FALLBACK_CNY_RUB, usdRub:CFG.FALLBACK_USD_RUB, eurRub:98, ratesLive:false };
 let selected = null, lastCalc = null, selectedEngineType = null, isManualMode = false, manualProd = null;
 let deliveryEnabled = true, powerUnits = { peak:'kw', k30:'kw' }, currentStep = 1;
 
-/* ============ ТЕМА ============ */
 function toggleTheme(){
   document.documentElement.classList.toggle('dark');
   localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -477,7 +470,6 @@ updateThemeIcon();
 const observer = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), { threshold:.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ============ РАСЧЁТНЫЕ ФОРМУЛЫ ============ */
 function totalPowerKw(c){
   if (c.type === "EV" || c.type === "SEQ_HYBRID") return c.k30_kw;
   if (c.type === "PAR_HYBRID") return (c.pole_hp * HP_TO_KW) + c.k30_kw;
@@ -509,7 +501,6 @@ function customsDuty(age, cc, priceRub, type, k30kw){
   }
   let total;
   if (age === "new"){
-    /* ИСПРАВЛЕНО: процент и порог €/см³ по ценовой корзине (ТК ЕАЭС) */
     const priceEur = priceRub / eur;
     let percent, minPerCc;
     if (priceEur <= 8500)        { percent = 0.54; minPerCc = 2.5; }
@@ -528,7 +519,6 @@ function customsDuty(age, cc, priceRub, type, k30kw){
 }
 function getCustomsFee(p){ if(p<=200000)return 1231; if(p<=450000)return 2462; if(p<=1200000)return 4924; if(p<=2700000)return 13541; if(p<=4200000)return 18465; if(p<=5500000)return 21344; if(p<=10000000)return 49240; return 73860; }
 
-/* ============ КУРСЫ ============ */
 async function loadRates(){
   try{
     const [cu,us] = await Promise.all([
@@ -551,7 +541,6 @@ function rubToCny(v){ return Math.round(v / state.cnyRub); }
 
 function triggerError(id){ const el = document.getElementById(id); if(!el) return; el.classList.add('error-field'); el.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>el.classList.remove('error-field'),2000); }
 
-/* ============ РЕЖИМЫ ============ */
 function toggleManualModeFromStep1(){
   isManualMode = !isManualMode;
   const sw = document.getElementById('manualSwitchStep1');
@@ -578,7 +567,6 @@ function toggleDelivery(){
   document.getElementById('mCityWrap').style.display = deliveryEnabled ? 'block' : 'none';
 }
 
-/* ============ РУЧНОЙ ВВОД ============ */
 function manualInputs(){
   const t = document.getElementById('mEngineType').value;
   const isElec = (t === "EV" || t === "SEQ_HYBRID");
@@ -612,7 +600,6 @@ function renderManualSpec(){
   const v = manualInputs();
   const card = document.getElementById('specCard');
 
-  /* Карточка появляется ТОЛЬКО когда введены мощности — никаких нулей */
   const hasData = v.kwIn > 0 || v.iceHp > 0;
   if (!hasData){ card.classList.add('hidden'); selected = null; return; }
 
@@ -630,7 +617,7 @@ function renderManualSpec(){
   fillSpecCard(car);
   selected = isManualValid() ? car : null;
 }
-/* ============ НАВИГАЦИЯ ============ */
+
 function gotoStep(n){
   currentStep = n;
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== n));
@@ -683,7 +670,6 @@ function nextFrom2(){
   gotoStep(3);
 }
 
-/* ============ ИТОГОВЫЙ РАСЧЁТ ============ */
 function calculatePrice(){
   if (!selected && !isManualMode){ gotoStep(2); return; }
   let c, age, baseRub = 0, baseCny = 0;
@@ -761,7 +747,6 @@ function calculatePrice(){
   setTimeout(()=>{ lw.classList.add('active'); lw.scrollIntoView({behavior:'smooth',block:'start'}); }, 50);
 }
 
-/* ============ КАРТОЧКА ХАРАКТЕРИСТИК ============ */
 function fillSpecCard(c){
   document.getElementById('specIcon').innerHTML = BODY_ICON[c.body] || BODY_ICON.SUV;
   document.getElementById('specType').textContent = TYPE_LABEL[c.type] || c.type;
@@ -796,6 +781,25 @@ function fillSpecCard(c){
   document.getElementById('specTotalKw').textContent = `${Math.round(tk*10)/10} кВт (${Math.round(tk*KW_TO_HP)} л.с.)`;
   initUnitToggles(c);
 }
+
+/* ============ ВОССТАНОВЛЕНО: переключатели кВт ⇄ л.с. ============ */
+function updatePowerDisplay(id, kw, type){
+  document.getElementById(id).textContent = (powerUnits[type]==='kw') ? kw+' кВт' : Math.round(kw*KW_TO_HP)+' л.с.';
+}
+function initUnitToggles(car){
+  [['peak','peakUnitToggle','specPeak'],['k30','k30UnitToggle','specK30']].forEach(([type,tog,el])=>{
+    const box = document.getElementById(tog); if(!box) return;
+    box.querySelectorAll('.unit-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        box.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        powerUnits[type] = btn.dataset.unit;
+        updatePowerDisplay(el, type==='peak' ? car.pole_kw : car.k30_kw, type);
+      };
+    });
+  });
+}
+
 /* ============ КАТАЛОГ ============ */
 function fillBrandsByType(type){
   const b = document.getElementById('brandSel');
@@ -825,7 +829,6 @@ function fillTrims(model){
     if (selected.base_price_cny > 0){ document.getElementById('customPrice').value = selected.base_price_cny; document.getElementById('currencySel').value = 'CNY'; } };
 }
 
-/* ============ ЗАГРУЗКА ТАБЛИЦЫ (под вашу структуру колонок) ============ */
 function cleanNum(v){ return Number(String(v==null?'':v).replace(/[\s\u00A0]/g,'').replace(',','.')) || 0; }
 function normType(t){
   t = String(t||'').toLowerCase().trim();
@@ -837,10 +840,8 @@ function normType(t){
 function mapRow(r){
   const type = normType(r.type);
   const peakKw = cleanNum(r.el_peak_kw);
-  /* поддерживаем оба имени колонки: k30_kw (ваша таблица) и k30_doc_kw */
   const k30Doc = cleanNum(r.k30_kw) || cleanNum(r.k30_doc_kw);
   let k30Kw = k30Doc, k30Estimated = false;
-  /* ПРАВИЛО: нет k30 из документов → оценка peak × 0.45 (во всех режимах) */
   if (!k30Kw && peakKw > 0 && type !== 'ICE'){ k30Kw = Math.round(peakKw * ESTIMATE_COEF * 10)/10; k30Estimated = true; }
   const poleKw = peakKw || Math.round(cleanNum(r.pole_hp) * HP_TO_KW * 10)/10;
   const act = String(r.active ?? '1').trim().toLowerCase();
@@ -875,7 +876,6 @@ async function loadCars(){
   }catch(e){ console.error('❌ Ошибка загрузки:', e.message); }
 }
 
-/* ============ СЛУЖЕБНЫЕ ============ */
 function buildManualSelects(){
   const yS = document.getElementById('mYear'), mS = document.getElementById('mMonth');
   const curY = new Date().getFullYear();
@@ -889,7 +889,7 @@ function buildManualSelects(){
   document.getElementById('mCur').addEventListener('change', renderManualSpec);
   document.getElementById('mKnow').addEventListener('change', renderManualSpec);
   document.getElementById('mCitySel').addEventListener('change', ()=>{});
-  calcManualAge(); /* ИСПРАВЛЕНО: инициализация возраста при загрузке */
+  calcManualAge();
 }
 function calcManualAge(){
   const y = +document.getElementById('mYear').value, m = +document.getElementById('mMonth').value;
@@ -916,7 +916,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       document.querySelectorAll('.engine-btn').forEach(b=>b.classList.remove('selected'));
       this.classList.add('selected');
       selectedEngineType = this.dataset.type;
-      if (isManualMode){ /* выход из ручного режима при выборе типа в каталоге */
+      if (isManualMode){
         isManualMode = false;
         document.getElementById('manualSwitchStep1').setAttribute('aria-pressed','false');
         document.getElementById('switchLabelStep1').textContent = 'Нет нужной модели? Ввести данные вручную из ПТС';
