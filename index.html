@@ -55,13 +55,12 @@ h2 { font-size: clamp(1.25rem, 2vw + 1rem, 1.5rem); line-height: 1.3; letter-spa
 .glass { background: var(--glass-bg); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid var(--glass-border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
 .dark .glass { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); }
 
-/* ПОЛЯ ВВОДА (ИСПРАВЛЕН БАГ С ЦВЕТОМ ТЕКСТА В DARK MODE) */
+/* ПОЛЯ ВВОДА (FIX DARK MODE SELECT) */
 .field { 
   background: var(--field-bg); border: 1px solid var(--field-border); border-radius: 12px; 
   padding: 12px 16px; min-height: 48px; transition: all 0.2s ease; 
   color: var(--text-main); width: 100%; font-size: 16px; appearance: none; 
 }
-/* Принудительный белый текст для селектов в темной теме (Fix для ПК) */
 .dark select.field { color: #ffffff !important; background-color: #1e293b; }
 .dark select.field option { color: #ffffff; background-color: #1e293b; }
 
@@ -81,14 +80,13 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .switch-text { font-weight: 500; font-size: 0.9rem; color: var(--text-muted); transition: 0.2s; }
 .wcag-switch[aria-pressed="true"] .switch-text { color: var(--text-main); font-weight: 600; }
 
-/* КНОПКИ ДВИГАТЕЛЯ */
+/* КНОПКИ ДВИГАТЕЛЯ (ШАГ 1) */
 .engine-btn { background: var(--field-bg); border: 1px solid var(--field-border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); min-height: 96px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; position: relative; overflow: hidden; touch-action: manipulation; }
 .engine-btn:hover { border-color: var(--toggle-active); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .engine-btn.selected { border-color: var(--toggle-active); background: rgba(37, 99, 235, 0.05); color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 0 0 1px var(--toggle-active); transform: translateY(1px); }
 .dark .engine-btn.selected { background: rgba(0, 240, 255, 0.08); color: #fff; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), 0 0 20px rgba(0, 240, 255, 0.15); }
-.engine-btn svg { width: 36px; height: 36px; transition: transform 0.3s; }
+.engine-btn svg { width: 40px; height: 40px; transition: transform 0.3s; }
 
-/* Анимация подсказки */
 @keyframes hintPress {
   0%, 100% { transform: translateY(0); border-color: var(--field-border); box-shadow: none; }
   50% { transform: translateY(2px); border-color: var(--toggle-active); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); background: rgba(0, 240, 255, 0.05); }
@@ -99,7 +97,6 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .hint-animate:nth-child(3) { animation-delay: 1.0s; }
 .hint-animate:nth-child(4) { animation-delay: 1.5s; }
 
-/* АНИМАЦИЯ ТОКА ДЛЯ ЭЛЕКТРО */
 @keyframes electricPulse {
   0% { stroke-dashoffset: 24; opacity: 0.5; }
   50% { opacity: 1; filter: drop-shadow(0 0 4px #eab308); }
@@ -134,7 +131,6 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 
 @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
-/* ОТКЛЮЧЕНИЕ АНИМАЦИЙ НА МОБИЛЬНЫХ ДЛЯ ИДЕАЛЬНОГО СКРОЛЛА */
 @media (hover: none) and (pointer: coarse) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .engine-btn:hover, .btn-primary:hover, .btn-secondary:hover { transform: none !important; }
@@ -205,86 +201,104 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
 
       <!-- ШАГ 1 -->
       <div class="wizard-step" data-step="1">
-        <h2 class="font-bold mb-2">Шаг 1. Тип двигателя</h2>
-        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите тип, чтобы мы применили верные ставки пошлин и утильсбора.</p>
+        <h2 class="font-bold mb-2">Шаг 1. Выбор режима</h2>
+        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите авто из нашего каталога или введите данные вручную.</p>
         
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="engineTypeGrid">
-          <!-- Электро (Анимация тока) -->
-          <button type="button" class="engine-btn hint-animate" data-type="EV" aria-label="Электромобиль">
-            <svg class="text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path class="ev-bolt" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-            </svg>
-            <span class="text-xs font-semibold">Электро</span>
-          </button>
-          
-          <!-- Посл. гибрид (Розетка с зарядкой) -->
-          <button type="button" class="engine-btn hint-animate" data-type="SEQ_HYBRID" aria-label="Последовательный гибрид">
-            <svg class="text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v3a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-3z" />
-              <path d="M9 5.25V3m6 2.25V3M12 12.75v3.75a2.25 2.25 0 002.25 2.25H15" />
-              <circle cx="16.5" cy="18.75" r="1.5" fill="currentColor" />
-            </svg>
-            <span class="text-xs font-semibold">Посл. гибрид</span>
-          </button>
-          
-          <!-- Парал. гибрид (Розетка + Бензин) -->
-          <button type="button" class="engine-btn hint-animate" data-type="PAR_HYBRID" aria-label="Параллельный гибрид">
-            <svg class="text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5.25 7.5A2.25 2.25 0 017.5 5.25h4.5a2.25 2.25 0 012.25 2.25v3a2.25 2.25 0 01-2.25 2.25h-4.5a2.25 2.25 0 01-2.25-2.25v-3z" class="opacity-70"/>
-              <path d="M9 5.25V3m3 2.25V3M10.5 12.75v2.25" class="opacity-70"/>
-              <path d="M16 10h3a1 1 0 011 1v8a1 1 0 01-1 1h-3a1 1 0 01-1-1v-8a1 1 0 011-1z" />
-              <path d="M16 10V8a1 1 0 011-1h1" />
-              <path d="M15 14h5" />
-            </svg>
-            <span class="text-xs font-semibold">Парал. гибрид</span>
-          </button>
-          
-          <!-- ДВС (Двигатель автомобиля) -->
-          <button type="button" class="engine-btn hint-animate" data-type="ICE" aria-label="ДВС">
-            <svg class="text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 10V8a2 2 0 012-2h8a2 2 0 012 2v2" />
-              <path d="M4 10h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z" />
-              <path d="M8 6V4m8 2V4M9 14h6M9 10h6" />
-              <path d="M12 18v3m-3-3v2m6-2v2" />
-            </svg>
-            <span class="text-xs font-semibold">ДВС</span>
-          </button>
+        <!-- Тумблер ручного режима (ЗДЕСЬ ОН ГЛАВНЫЙ) -->
+        <div id="manualSwitchStep1" class="wcag-switch mb-6" role="switch" aria-pressed="false" tabindex="0" onclick="toggleManualModeFromStep1()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleManualModeFromStep1();}">
+          <div class="switch-track"><div class="switch-thumb"></div></div>
+          <div class="switch-text" id="switchLabelStep1">Нет нужной модели? Ввести данные вручную из ПТС</div>
         </div>
 
-        <div id="brandWrap" class="transition-all duration-300">
-          <label class="block text-sm font-semibold mb-2">Бренд</label>
-          <select id="brandSel" class="field mb-4" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип двигателя выше —</option></select>
-          
-          <!-- Тумблер ручного режима ПЕРЕНЕСЕН СЮДА (под бренд) -->
-          <div id="manualSwitch" class="wcag-switch mb-6" role="switch" aria-pressed="false" tabindex="0" onclick="toggleManualMode()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleManualMode();}">
-            <div class="switch-track"><div class="switch-thumb"></div></div>
-            <div class="switch-text" id="switchLabel">Нет нужной модели? Ввести данные вручную из ПТС</div>
+        <div id="catalogModeStep1">
+          <p class="text-sm font-semibold mb-4" style="color: var(--text-main)">Выберите тип двигателя для поиска по каталогу:</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="engineTypeGrid">
+            
+            <!-- 1. ЭЛЕКТРО (Зарядный штекер) -->
+            <button type="button" class="engine-btn hint-animate" data-type="EV" aria-label="Электромобиль">
+              <svg class="text-yellow-500 ev-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 10.5L11 14h3l-1.5 4.5L16 14h-3l1.5-3.5z" fill="currentColor" stroke="none"/>
+                <rect x="8" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M10 6V4m4 2V4" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              <span class="text-xs font-semibold">Электро</span>
+            </button>
+            
+            <!-- 2. ПОСЛ. ГИБРИД (Батарея + Генератор) -->
+            <button type="button" class="engine-btn hint-animate" data-type="SEQ_HYBRID" aria-label="Последовательный гибрид">
+              <svg class="text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="8" width="12" height="8" rx="1.5" />
+                <path d="M16 11h1.5a1.5 1.5 0 011.5 1.5v0a1.5 1.5 0 01-1.5 1.5H16" />
+                <path d="M7 8V6m3 2V6" />
+                <path d="M10 12l-2 2 2 2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 12a4 4 0 11-8 0 4 4 0 018 0z" opacity="0.4"/>
+                <path d="M20 12h-2m-2-2v2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              <span class="text-xs font-semibold">Посл. гибрид</span>
+            </button>
+            
+            <!-- 3. ПАРАЛ. ГИБРИД (ДВС + Молния) -->
+            <button type="button" class="engine-btn hint-animate" data-type="PAR_HYBRID" aria-label="Параллельный гибрид">
+              <svg class="text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 10V8a2 2 0 012-2h8a2 2 0 012 2v2" />
+                <path d="M4 10h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z" />
+                <path d="M8 6V4m8 2V4M9 14h6M9 10h6" opacity="0.5"/>
+                <path d="M13.5 11.5L11 15h2.5l-1 3.5L16 14h-2.5l1-2.5z" fill="#FFD700" stroke="#FFD700" stroke-width="1"/>
+              </svg>
+              <span class="text-xs font-semibold">Парал. гибрид</span>
+            </button>
+            
+            <!-- 4. ДВС (V-образный двигатель) -->
+            <button type="button" class="engine-btn hint-animate" data-type="ICE" aria-label="ДВС">
+              <svg class="text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 8l-2 4v4l2 2h10l2-2v-4l-2-4H7z" />
+                <path d="M9 8V5h6v3" />
+                <path d="M12 12v6" stroke-dasharray="2 2"/>
+                <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+                <path d="M5 12H3m18 0h-2" />
+              </svg>
+              <span class="text-xs font-semibold">ДВС</span>
+            </button>
+
           </div>
+
+          <div id="brandWrap" class="transition-all duration-300">
+            <label class="block text-sm font-semibold mb-2">Бренд</label>
+            <select id="brandSel" class="field mb-6" disabled aria-label="Выберите бренд"><option value="">— Сначала выберите тип двигателя выше —</option></select>
+          </div>
+          
+          <button id="nextBtn1" class="btn-primary w-full text-base" onclick="nextFrom1()">
+            Далее <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+          </button>
         </div>
-        
-        <button id="nextBtn1" class="btn-primary w-full text-base" onclick="nextFrom1()">
-          Далее <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-        </button>
       </div>
 
       <!-- ШАГ 2 -->
       <div class="wizard-step hidden" data-step="2">
         <h2 class="font-bold mb-2">Шаг 2. Характеристики</h2>
-        <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите модель или введите данные вручную.</p>
+        <p class="text-sm mb-6" style="color: var(--text-muted)" id="step2Desc">Выберите модель из каталога.</p>
 
-        <!-- Ручной ввод -->
+        <!-- РУЧНОЙ ВВОД (ТЕПЕРЬ С ВЫБОРОМ ТИПА ДВИГАТЕЛЯ) -->
         <div id="manualPanel" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background: var(--field-bg)">
-          <h3 class="font-bold mb-4 text-sm flex items-center gap-2" style="color: var(--toggle-active)">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
-            Данные из ПТС / ОТТС
-          </h3>
           
+          <!-- Замена заголовка на селект типа двигателя -->
+          <div class="mb-4">
+            <label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Тип двигателя (из ПТС)</label>
+            <select id="mEngineType" class="field text-sm font-bold" style="color: var(--toggle-active)">
+              <option value="EV">⚡ Электромобиль</option>
+              <option value="SEQ_HYBRID">🔋 Последовательный гибрид</option>
+              <option value="PAR_HYBRID">🔄 Параллельный гибрид</option>
+              <option value="ICE">🛢️ ДВС (Бензин / Дизель)</option>
+            </select>
+          </div>
+
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Год выпуска</label><select id="mYear" class="field text-sm"></select></div>
             <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Месяц</label><select id="mMonth" class="field text-sm"></select></div>
           </div>
 
-          <div id="mCcWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
+          <div id="mCcWrap" class="mb-4 transition-all duration-300"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
           
           <div class="grid grid-cols-3 gap-3 mb-4">
             <div class="col-span-2"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Стоимость</label><input id="mPrice" type="number" class="field text-sm" placeholder="139800" inputmode="numeric"></div>
@@ -300,9 +314,9 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
             <select id="mCitySel" class="field text-sm"></select>
           </div>
 
-          <div id="mHpWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="238" inputmode="numeric"></div>
+          <div id="mHpWrap" class="mb-4 transition-all duration-300"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="238" inputmode="numeric"></div>
           
-          <div id="mKwWrap" class="mb-4">
+          <div id="mKwWrap" class="mb-4 transition-all duration-300">
             <label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность электромотора (кВт)</label>
             <input id="mKwEl" type="number" class="field text-sm" placeholder="98" inputmode="decimal">
             <div id="mEstimateWarn" class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); color: #b45309;">
@@ -310,7 +324,7 @@ select.field { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://ww
             </div>
           </div>
 
-          <div class="flex items-start gap-3 mb-2">
+          <div class="flex items-start gap-3 mb-2" id="mKnowWrap">
             <input id="mKnow" type="checkbox" class="mt-1 accent-[var(--toggle-active)] w-5 h-5 rounded cursor-pointer" aria-label="Я знаю точную 30-минутную мощность">
             <label for="mKnow" class="text-xs leading-snug cursor-pointer" style="color: var(--text-muted)">Я знаю точную 30‑минутную мощность (из ОТТС / ЭПТС)</label>
           </div>
@@ -530,16 +544,20 @@ function rubToCny(val) { return Math.round(val / state.cnyRub); }
 
 function triggerError(elementId) { const el = document.getElementById(elementId); if(!el) return; el.classList.add('error-field'); setTimeout(() => el.classList.remove('error-field'), 2000); }
 
-function toggleManualMode() {
-  stopHintAnimation();
+// НОВАЯ ЛОГИКА ПЕРЕКЛЮЧЕНИЯ РЕЖИМА С ШАГА 1
+function toggleManualModeFromStep1() {
   isManualMode = !isManualMode;
-  const sw = document.getElementById('manualSwitch'); const lbl = document.getElementById('switchLabel'); const panel = document.getElementById('manualPanel');
+  const sw = document.getElementById('manualSwitchStep1');
   sw.setAttribute('aria-pressed', isManualMode);
-  lbl.textContent = isManualMode ? 'Ручной режим: ВКЛЮЧЕН ✓' : 'Нет нужной модели? Ввести данные вручную из ПТС';
   
-  // На шаге 1 мы просто переключаем флаг. Панель появится на шаге 2.
-  // Но если мы уже на шаге 2, применяем видимость сразу.
-  if(currentStep === 2) applyStep2Visibility();
+  if(isManualMode) {
+    stopHintAnimation();
+    // Мгновенный переход на Шаг 2 в ручном режиме
+    gotoStep(2);
+  } else {
+    // Возврат на Шаг 1 в режим каталога
+    gotoStep(1);
+  }
 }
 
 function toggleDelivery() {
@@ -549,76 +567,155 @@ function toggleDelivery() {
 }
 
 function manualInputs() {
-  const t = selectedEngineType; const isElec = (t === "EV" || t === "SEQ_HYBRID");
+  // Тип двигателя теперь берется из селекта на Шаге 2
+  const t = document.getElementById('mEngineType').value; 
+  const isElec = (t === "EV" || t === "SEQ_HYBRID");
   return { t, isElec, cc: isElec ? 0 : (parseFloat(document.getElementById('mCc').value) || 0), price: parseFloat(document.getElementById('mPrice').value) || 0, cur: document.getElementById('mCur').value, iceHp: (t === "ICE" || t === "PAR_HYBRID") ? (parseFloat(document.getElementById('mHpIce').value) || 0) : 0, kwIn: (isElec || t === "PAR_HYBRID") ? (parseFloat(document.getElementById('mKwEl').value) || 0) : 0, know: document.getElementById('mKnow').checked };
 }
-function isManualValid() { if(!selectedEngineType) return false; const v = manualInputs(); if(v.price <= 0) return false; if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) return false; if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) return false; if(!v.isElec && v.cc <= 0) return false; return true; }
+
+function isManualValid() {
+  const v = manualInputs();
+  if(v.price <= 0) return false;
+  if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) return false;
+  if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) return false;
+  if(!v.isElec && v.cc <= 0) return false;
+  return true;
+}
+
+// Синхронизация полей при смене типа двигателя в ручном режиме
+function syncManualFieldsByType() {
+  const t = document.getElementById('mEngineType').value;
+  const isElec = (t === "EV" || t === "SEQ_HYBRID");
+  
+  document.getElementById('mCcWrap').style.display = isElec ? 'none' : 'block';
+  document.getElementById('mHpWrap').style.display = (t === "ICE" || t === "PAR_HYBRID") ? 'block' : 'none';
+  document.getElementById('mKwWrap').style.display = (isElec || t === "PAR_HYBRID") ? 'block' : 'none';
+  document.getElementById('mKnowWrap').style.display = (isElec || t === "PAR_HYBRID") ? 'flex' : 'none';
+  
+  renderManualSpec();
+}
 
 function renderManualSpec() {
-  const t = selectedEngineType; const card = document.getElementById('specCard'); if(!t) { card.classList.add('hidden'); selected = null; return; }
-  const v = manualInputs(); const el30 = (t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF);
-  const estW = document.getElementById('mEstimateWarn'); estW.classList.toggle('hidden', !((v.isElec || v.t === "PAR_HYBRID") && !v.know && v.kwIn > 0));
+  const t = document.getElementById('mEngineType').value;
+  const card = document.getElementById('specCard');
+  const v = manualInputs();
+  const el30 = (t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF);
+  
+  const estW = document.getElementById('mEstimateWarn');
+  estW.classList.toggle('hidden', !((v.isElec || v.t === "PAR_HYBRID") && !v.know && v.kwIn > 0));
+  
   const poleHp = (t === "ICE" || t === "PAR_HYBRID") ? v.iceHp : Math.round(v.kwIn * KW_TO_HP);
   const manualCarData = { brand: "Ручной ввод", model: "ПТС", trim: t, body: "SUV", type: t, engine_cc: v.cc, pole_hp: poleHp, pole_kw: Math.round(poleHp * HP_TO_KW * 10) / 10, k30_hp: Math.round(el30 * KW_TO_HP), k30_kw: Math.round(el30 * 10) / 10, weight_kg: 0, base_price_cny: 0 };
   
-  card.classList.remove('hidden'); document.getElementById('specType').textContent = t; updatePowerDisplay('specPeak', manualCarData.pole_kw, 'peak');
-  const hasK30 = manualCarData.k30_kw > 0; document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none'; if(hasK30) updatePowerDisplay('specK30', manualCarData.k30_kw, 'k30');
-  document.getElementById('specCcRow').style.display = manualCarData.engine_cc > 0 ? 'flex' : 'none'; document.getElementById('specCc').textContent = manualCarData.engine_cc + ' см³';
+  card.classList.remove('hidden');
+  document.getElementById('specType').textContent = {EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС"}[t];
+  updatePowerDisplay('specPeak', manualCarData.pole_kw, 'peak');
+  
+  const hasK30 = manualCarData.k30_kw > 0;
+  document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none';
+  if(hasK30) updatePowerDisplay('specK30', manualCarData.k30_kw, 'k30');
+  
+  document.getElementById('specCcRow').style.display = manualCarData.engine_cc > 0 ? 'flex' : 'none';
+  document.getElementById('specCc').textContent = manualCarData.engine_cc + ' см³';
+  
   document.getElementById('specTotalKw').textContent = `${Math.round(totalPowerKw(manualCarData)*10)/10} кВт (${Math.round(totalPowerKw(manualCarData)*KW_TO_HP)} л.с.)`;
-  initUnitToggles(manualCarData); selected = isManualValid() ? manualCarData : null;
+  initUnitToggles(manualCarData);
+  selected = isManualValid() ? manualCarData : null;
 }
 
 function gotoStep(n) {
   currentStep = n;
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== n));
   document.querySelectorAll('#stepDots span').forEach(d => { const i = +d.dataset.i; d.className = `h-1.5 rounded-full transition-all duration-300 ${i === n ? 'w-8 bg-emerald-500' : i < n ? 'w-8 bg-neon' : 'w-8 bg-gray-300 dark:bg-gray-700'}`; });
-  if(n === 2) applyStep2Visibility();
-  if(n === 3) { if(isManualMode && deliveryEnabled) document.getElementById('citySel').value = document.getElementById('mCitySel').value; document.getElementById('cityBlockFinal').style.display = (isManualMode && !deliveryEnabled) ? 'none' : 'block'; }
-  // Убрали scrollIntoView для предотвращения дергания на iOS/Android
+  
+  if(n === 1) {
+    // Сброс состояния тумблера на шаге 1 если вернулись назад
+    if(!isManualMode) {
+      document.getElementById('manualSwitchStep1').setAttribute('aria-pressed', 'false');
+      document.getElementById('catalogModeStep1').classList.remove('hidden');
+    }
+  }
+  
+  if(n === 2) {
+    applyStep2Visibility();
+    document.getElementById('step2Desc').textContent = isManualMode ? "Введите данные из ПТС / ОТТС." : "Выберите модель из каталога.";
+  }
+  
+  if(n === 3) {
+    if(isManualMode && deliveryEnabled) document.getElementById('citySel').value = document.getElementById('mCitySel').value;
+    document.getElementById('cityBlockFinal').style.display = (isManualMode && !deliveryEnabled) ? 'none' : 'block';
+  }
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function applyStep2Visibility() {
   const panel = document.getElementById('manualPanel');
-  if(isManualMode) { panel.classList.remove('hidden'); panel.classList.add('animate-slide-down'); } 
-  else { panel.classList.add('hidden'); panel.classList.remove('animate-slide-down'); }
+  if(isManualMode) {
+    panel.classList.remove('hidden');
+    panel.classList.add('animate-slide-down');
+    syncManualFieldsByType(); // Инициализация полей
+  } else {
+    panel.classList.add('hidden');
+    panel.classList.remove('animate-slide-down');
+  }
   document.getElementById('catalogBlock').classList.toggle('hidden', isManualMode);
   document.getElementById('priceBlock').classList.toggle('hidden', isManualMode);
   document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
-  if(isManualMode) renderManualSpec();
+  if(!isManualMode && selected) showSpec(selected); else if(!isManualMode) document.getElementById('specCard').classList.add('hidden');
 }
 
-function nextFrom1() { if(!selectedEngineType) { triggerError('nextBtn1'); return; } if(!isManualMode && !document.getElementById('brandSel').value) { triggerError('brandSel'); return; } gotoStep(2); }
+function nextFrom1() {
+  if(!selectedEngineType) { triggerError('nextBtn1'); return; }
+  if(!document.getElementById('brandSel').value) { triggerError('brandSel'); return; }
+  gotoStep(2);
+}
+
 function nextFrom2() {
-  if(isManualMode) { if(!isManualValid()) { const v = manualInputs(); if(!v.isElec && v.cc <= 0) triggerError('mCc'); else if(v.price <= 0) triggerError('mPrice'); else if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) triggerError('mHpIce'); else if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) triggerError('mKwEl'); return; } gotoStep(3); return; }
-  if(!document.getElementById('modelSel').value) { triggerError('modelSel'); return; } if(!document.getElementById('trimSel').value) { triggerError('trimSel'); return; } gotoStep(3);
+  if(isManualMode) {
+    if(!isManualValid()) {
+      const v = manualInputs();
+      if(!v.isElec && v.cc <= 0) triggerError('mCc');
+      else if(v.price <= 0) triggerError('mPrice');
+      else if((v.t === "ICE" || v.t === "PAR_HYBRID") && v.iceHp <= 0) triggerError('mHpIce');
+      else if((v.isElec || v.t === "PAR_HYBRID") && v.kwIn <= 0) triggerError('mKwEl');
+      return;
+    }
+    gotoStep(3); return;
+  }
+  if(!document.getElementById('modelSel').value) { triggerError('modelSel'); return; }
+  if(!document.getElementById('trimSel').value) { triggerError('trimSel'); return; }
+  gotoStep(3);
 }
 
 function calculatePrice() {
   if(!selected && !isManualMode) { gotoStep(2); return; }
-  const c = selected || (isManualMode ? { brand: "Ручной ввод", model: "ПТС", trim: selectedEngineType, type: selectedEngineType, engine_cc: manualInputs().cc, k30_kw: manualInputs().know ? manualInputs().kwIn : manualInputs().kwIn * ESTIMATE_COEF, pole_hp: manualInputs().iceHp } : null);
-  const age = isManualMode ? (manualProd?.cat || 'new') : document.getElementById('ageSel').value; const year = document.getElementById('yearSel').value;
-  const city = isManualMode ? (deliveryEnabled ? document.getElementById('mCitySel').value : '') : document.getElementById('citySel').value;
   
-  let baseRub = 0; let baseCny = 0;
-  if(isManualMode) { 
+  let c, age, year, city, baseRub = 0, baseCny = 0;
+  year = document.getElementById('yearSel').value;
+
+  if(isManualMode) {
     const v = manualInputs();
-    baseRub = priceToRub(v.price, v.cur); 
+    c = { brand: "Ручной ввод", model: "ПТС", trim: v.t, type: v.t, engine_cc: v.cc, k30_kw: (v.t === "ICE") ? 0 : (v.know ? v.kwIn : v.kwIn * ESTIMATE_COEF), pole_hp: v.iceHp };
+    age = manualProd?.cat || 'new';
+    city = deliveryEnabled ? document.getElementById('mCitySel').value : '';
+    baseRub = priceToRub(v.price, v.cur);
     baseCny = v.cur === 'CNY' ? v.price : rubToCny(baseRub);
-  } else { 
-    let cp = parseFloat(document.getElementById('customPrice').value); 
+  } else {
+    c = selected;
+    age = document.getElementById('ageSel').value;
+    city = document.getElementById('citySel').value;
+    let cp = parseFloat(document.getElementById('customPrice').value);
     const cur = document.getElementById('currencySel').value;
-    if(cp > 0) {
-      baseRub = priceToRub(cp, cur);
-      baseCny = cur === 'CNY' ? cp : rubToCny(baseRub);
-    } else {
-      baseRub = c.base_price_cny * state.cnyRub;
-      baseCny = c.base_price_cny;
-    }
+    if(cp > 0) { baseRub = priceToRub(cp, cur); baseCny = cur === 'CNY' ? cp : rubToCny(baseRub); }
+    else { baseRub = c.base_price_cny * state.cnyRub; baseCny = c.base_price_cny; }
   }
 
-  const totalKw = totalPowerKw(c); const dutyObj = customsDuty(age, c.engine_cc, baseRub, c.type, c.k30_kw); const customsFee = getCustomsFee(baseRub);
-  const util = lookupUtilFee(c.engine_cc, totalKw, age, year, c.type); const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
+  const totalKw = totalPowerKw(c);
+  const dutyObj = customsDuty(age, c.engine_cc, baseRub, c.type, c.k30_kw);
+  const customsFee = getCustomsFee(baseRub);
+  const util = lookupUtilFee(c.engine_cc, totalKw, age, year, c.type);
+  const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
   const logRF = (isManualMode && !deliveryEnabled) ? 0 : (RF_LOGISTICS[city] || 0);
   const total = baseRub + CFG.LOGISTICS_CHINA + dutyObj.total + util + customsFee + certs + logRF + CFG.MARGIN;
   lastCalc = { c, age, year, city, total, util, baseRub };
@@ -627,11 +724,9 @@ function calculatePrice() {
   const row = (icon, label, value, subvalue = '') => `<div class="flex items-center justify-between py-3 border-b" style="border-color: var(--glass-border)"><div class="flex items-center gap-3"><span style="color:var(--toggle-active)">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div><div class="text-right"><b style="color: var(--text-main)">${value}</b>${subvalue ? `<div class="text-xs mt-0.5" style="color: var(--text-muted)">(${subvalue})</div>` : ''}</div></div>`;
   
   const box = document.getElementById('resultBox'); box.classList.remove('hidden'); let rows = '';
-  
-  // Строка с ценой в рублях и юанях
   rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>', 'Авто в Китае', money(baseRub), baseCny.toLocaleString('ru') + ' ¥');
-  
   rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>', 'Логистика Китай', money(CFG.LOGISTICS_CHINA));
+  
   if(c.type === "EV" || c.type === "SEQ_HYBRID") {
     rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>', 'Пошлина 15%', money(dutyObj.duty));
     rows += row('<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>', `Акциз (${Math.round(c.k30_kw*KW_TO_HP)} л.с.)`, money(dutyObj.excise));
@@ -651,7 +746,6 @@ function calculatePrice() {
   const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city || 'не указан'}\nГод ввоза: ${year}`);
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`; document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
   document.getElementById('leadWrap').classList.remove('hidden');
-  // Плавный скролл только после рендера, без резких скачков
   setTimeout(() => { document.getElementById('leadWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('leadWrap').classList.add('active'); }, 50);
 }
 
@@ -659,11 +753,21 @@ function buildManualSelects() {
   const yS = document.getElementById('mYear'), mS = document.getElementById('mMonth'); const curY = new Date().getFullYear();
   for(let y = curY; y >= 2010; y--) { const o = document.createElement('option'); o.value = y; o.textContent = y; yS.appendChild(o); }
   ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'].forEach((mn,i) => { const o = document.createElement('option'); o.value = i+1; o.textContent = mn + ' (' + String(i+1).padStart(2,'0') + ')'; mS.appendChild(o); });
+  
+  // Слушатель на изменение типа двигателя в ручном режиме
+  document.getElementById('mEngineType').addEventListener('change', syncManualFieldsByType);
+
   ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', () => { calcManualAge(); renderManualSpec(); }); });
   document.getElementById('mCur').addEventListener('change', () => { renderManualSpec(); });
   document.getElementById('mKnow').addEventListener('change', () => { renderManualSpec(); });
 }
-function calcManualAge() { const y = +document.getElementById('mYear').value, m = +document.getElementById('mMonth').value; if(!y || !m) { manualProd = null; return; } const months = (new Date().getFullYear()-y)*12 + (new Date().getMonth()-(m-1)); manualProd = { y, m, cat: months <= 36 ? 'new' : months <= 60 ? 'mid' : 'old' }; }
+
+function calcManualAge() {
+  const y = +document.getElementById('mYear').value, m = +document.getElementById('mMonth').value;
+  if(!y || !m) { manualProd = null; return; }
+  const months = (new Date().getFullYear()-y)*12 + (new Date().getMonth()-(m-1));
+  manualProd = { y, m, cat: months <= 36 ? 'new' : months <= 60 ? 'mid' : 'old' };
+}
 
 function fillBrandsByType(type) {
   const b = document.getElementById('brandSel'); b.disabled = false; b.innerHTML = '<option value="">— Выберите бренд —</option>';
@@ -685,12 +789,15 @@ function fillTrims(model) {
 
 function showSpec(c) {
   if(!c) { document.getElementById('specCard').classList.add('hidden'); return; }
-  document.getElementById('specCard').classList.remove('hidden'); document.getElementById('specType').textContent = c.type; updatePowerDisplay('specPeak', c.pole_kw, 'peak');
+  document.getElementById('specCard').classList.remove('hidden');
+  document.getElementById('specType').textContent = {EV:"Электромобиль", SEQ_HYBRID:"Последовательный гибрид", PAR_HYBRID:"Параллельный гибрид", ICE:"ДВС"}[c.type];
+  updatePowerDisplay('specPeak', c.pole_kw, 'peak');
   const hasK30 = c.k30_kw > 0; document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none'; if(hasK30) updatePowerDisplay('specK30', c.k30_kw, 'k30');
   document.getElementById('specCcRow').style.display = c.engine_cc > 0 ? 'flex' : 'none'; document.getElementById('specCc').textContent = c.engine_cc + ' см³';
   document.getElementById('specTotalKw').textContent = `${Math.round(totalPowerKw(c)*10)/10} кВт (${Math.round(totalPowerKw(c)*KW_TO_HP)} л.с.)`;
   initUnitToggles(c); if(c.base_price_cny > 0) { document.getElementById('customPrice').value = c.base_price_cny; document.getElementById('currencySel').value = 'CNY'; }
 }
+
 function updatePowerDisplay(id, kw, type) { document.getElementById(id).textContent = (powerUnits[type]==='kw') ? kw+' кВт' : Math.round(kw*KW_TO_HP)+' л.с.'; }
 function initUnitToggles(car) {
   [['peak','peakUnitToggle','specPeak'],['k30','k30UnitToggle','specK30']].forEach(([type,togId,elId])=>{
@@ -734,11 +841,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('selected'));
       this.classList.add('selected');
       selectedEngineType = this.dataset.type;
-      if(isManualMode) {
-        isManualMode = false;
-        document.getElementById('manualSwitch').setAttribute('aria-pressed', 'false');
-        document.getElementById('switchLabel').textContent = 'Нет нужной модели? Ввести данные вручную из ПТС';
-      }
       fillBrandsByType(selectedEngineType);
     });
   });
