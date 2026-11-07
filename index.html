@@ -89,8 +89,8 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 .ev-bolt{stroke-dasharray:24;animation:electricPulse 1.5s linear infinite}
 
 .unit-toggle{display:inline-flex;background:var(--field-bg);border:1px solid var(--field-border);border-radius:8px;padding:2px}
-.unit-btn{padding:4px 10px;font-size:.75rem;cursor:pointer;border-radius:6px;color:var(--text-muted);transition:all .2s;font-weight:600;border:none;background:transparent;touch-action:manipulation}
-.unit-btn:focus-visible{outline:2px solid var(--toggle-active);outline-offset:1px}
+.unit-btn{padding:2px 8px;font-size:.65rem;cursor:pointer;border-radius:6px;color:var(--text-muted);transition:all .2s;font-weight:600;border:none;background:transparent;touch-action:manipulation}
+#specIcon svg{width:100%;height:100%}
 .unit-btn.active{background:var(--toggle-active);color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.1)}
 .dark .unit-btn.active{color:#070b14}
 
@@ -317,16 +317,40 @@ select.field{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
         <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
       </div>
 
-      <div id="specCard" class="glass rounded-2xl p-4 sm:p-5 mb-6 hidden" style="background:var(--field-bg)">
-        <div class="flex items-start gap-4">
-          <div id="specIcon" class="shrink-0 w-16 h-12 flex items-center justify-center" style="color:var(--toggle-active)"></div>
-          <div class="text-sm space-y-3 w-full">
-            <div class="flex justify-between items-center"><span style="color:var(--text-muted)">Тип:</span> <b id="specType" style="color:var(--text-main)"></b></div>
-            <div class="flex justify-between items-center">
+          <!-- КАРТОЧКА ХАРАКТЕРИСТИК (компактная, как блок-подсказка) -->
+      <div id="specCard" class="glass rounded-xl p-3 sm:p-4 mb-6 hidden" style="background:var(--field-bg)">
+        <div class="flex items-start gap-3">
+          <div id="specIcon" class="shrink-0 w-10 h-8 flex items-center justify-center" style="color:var(--toggle-active)"></div>
+          <div class="text-xs w-full">
+            <div class="flex justify-between items-center gap-2 py-1">
+              <span style="color:var(--text-muted)">Тип:</span> <b id="specType" style="color:var(--text-main)"></b>
+            </div>
+            <div class="flex justify-between items-center gap-2 py-1">
               <span style="color:var(--text-muted)">Пиковая мощность:</span>
-              <span class="flex items-center gap-2"><b id="specPeak" class="text-yellow-500"></b>
+              <span class="flex items-center gap-1.5"><b id="specPeak" class="text-yellow-500"></b>
                 <span class="unit-toggle" id="peakUnitToggle"><button type="button" class="unit-btn active" data-unit="kw">кВт</button><button type="button" class="unit-btn" data-unit="hp">л.с.</button></span>
               </span>
+            </div>
+            <div class="flex justify-between items-center gap-2 py-1" id="k30Row">
+              <span style="color:var(--text-muted)">30‑мин мощность:</span>
+              <span class="flex items-center gap-1.5"><b id="specK30" style="color:var(--toggle-active)"></b>
+                <span class="unit-toggle" id="k30UnitToggle"><button type="button" class="unit-btn active" data-unit="kw">кВт</button><button type="button" class="unit-btn" data-unit="hp">л.с.</button></span>
+              </span>
+            </div>
+            <div id="k30Hint" class="py-0.5 text-[11px]" style="color:var(--text-muted)"></div>
+            <div id="specCcRow" class="flex justify-between items-center gap-2 py-1">
+              <span style="color:var(--text-muted)">Объём ДВС:</span> <b id="specCc" style="color:var(--text-main)"></b>
+            </div>
+            <div id="specNotesRow" class="py-0.5 text-[11px]" style="color:var(--text-muted)"><span id="specNotes"></span></div>
+            <div id="specPriceRow" class="flex justify-between items-center gap-2 py-1">
+              <span style="color:var(--text-muted)">Ориентировочная цена в Китае:</span> <b id="specPrice" style="color:var(--text-main)"></b>
+            </div>
+            <div class="flex justify-between items-center gap-2 pt-1.5 mt-1 border-t font-semibold" style="border-color:var(--glass-border)">
+              <span style="color:var(--text-muted)">Итоговая мощность для утиля:</span> <b id="specTotalKw" style="color:var(--toggle-active)"></b>
+            </div>
+          </div>
+        </div>
+      </div>
             </div>
             <div class="flex justify-between items-center" id="k30Row">
               <span style="color:var(--text-muted)">30‑мин мощность:</span>
