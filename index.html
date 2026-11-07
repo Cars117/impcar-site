@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Авто из Китая под ключ | Прозрачный расчёт 2026–2027</title>
-<meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика.">
+<meta name="description" content="Калькулятор стоимости авто из Китая под ключ: таможня, утильсбор по 30-минутной мощности, логистика до вашего города.">
 
-<!-- Шрифт Inter Tight (Альтернатива SF Pro / Roboto) -->
+<!-- Шрифт Inter Tight -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@ tailwind.config = {
     extend: {
       fontFamily: { sans: ['"Inter Tight"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] },
       colors: {
-        ink: '#070b14', navy: '#0b1220', gold: '#FFD700', neon: '#00F0FF',
+        ink: '#070b14', navy: '#0b1220', gold: '#FFD700', neon: '#00F0FF', brand: '#3b82f6',
         surface: 'rgba(15,23,42,0.6)', 'surface-light': 'rgba(255,255,255,0.8)'
       },
       borderRadius: { 'xl': '16px', '2xl': '24px' }
@@ -29,33 +29,35 @@ tailwind.config = {
 </script>
 
 <style>
-/* ================= БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ ================= */
+/* ================= БАЗОВЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ (WCAG AA) ================= */
 :root {
   --text-main: #1d1d1f;
-  --text-muted: #4b5563; /* WCAG AA compliant for light mode */
+  --text-muted: #4b5563; /* Контраст > 4.5:1 на светлом фоне */
   --bg-body: #f5f5f7;
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.1);
   --field-bg: rgba(0, 0, 0, 0.04);
-  --field-border: rgba(0, 0, 0, 0.1);
-  --toggle-bg: rgba(0, 0, 0, 0.1);
+  --field-border: rgba(0, 0, 0, 0.15);
+  --toggle-bg: #e5e7eb;
+  --toggle-active: #3b82f6;
 }
 
 .dark {
   --text-main: #f5f5f7;
-  --text-muted: #9ca3af; /* WCAG AA compliant for dark mode */
+  --text-muted: #9ca3af; /* Контраст > 4.5:1 на темном фоне */
   --bg-body: #070b14;
-  --glass-bg: rgba(15, 23, 42, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --field-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --field-bg: rgba(255, 255, 255, 0.06);
   --field-border: rgba(255, 255, 255, 0.15);
-  --toggle-bg: rgba(255, 255, 255, 0.15);
+  --toggle-bg: #374151;
+  --toggle-active: #00F0FF;
 }
 
 html, body {
   font-family: 'Inter Tight', sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   color: var(--text-main);
   background-color: var(--bg-body);
   overflow-x: hidden;
@@ -64,25 +66,24 @@ html, body {
 /* Fluid Typography */
 h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.2; }
 h2 { font-size: clamp(1.25rem, 4vw, 1.5rem); line-height: 1.3; }
-p, label, span, div { font-size: clamp(0.875rem, 2.5vw, 1rem); }
 
 /* ================= ФОН (HERO) ================= */
 .hero-bg {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
-  background-image: url('hero-bg.jpg'); /* Замените на ваше фото */
+  background-image: url('hero-bg.jpg');
   background-size: cover; background-position: center;
-  filter: blur(4px) brightness(0.8);
+  filter: blur(4px) brightness(0.9);
 }
 .dark .hero-bg { filter: blur(4px) brightness(0.4); }
 .hero-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-  background: linear-gradient(180deg, rgba(245,245,247,0.8) 0%, rgba(245,245,247,0.95) 100%);
+  background: linear-gradient(180deg, rgba(245,245,247,0.85) 0%, rgba(245,245,247,0.98) 100%);
 }
 .dark .hero-overlay {
-  background: linear-gradient(180deg, rgba(7,11,20,0.7) 0%, rgba(7,11,20,0.95) 100%);
+  background: linear-gradient(180deg, rgba(7,11,20,0.75) 0%, rgba(7,11,20,0.98) 100%);
 }
 
-/* ================= GLASSMORPHISM 2.0 ================= */
+/* ================= GLASSMORPHISM ================= */
 .glass {
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
@@ -92,23 +93,25 @@ p, label, span, div { font-size: clamp(0.875rem, 2.5vw, 1rem); }
 }
 .dark .glass { box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); }
 
-/* ================= ПОЛЯ ВВОДА (Apple Style) ================= */
+/* ================= ПОЛЯ ВВОДА (Apple Style + Fix Height) ================= */
 .field {
   background: var(--field-bg);
   border: none;
   border-bottom: 2px solid var(--field-border);
   border-radius: 12px 12px 0 0;
   padding: 14px 16px;
+  min-height: 52px; /* Фиксированная высота для мобильных */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-main);
   width: 100%;
+  font-size: 16px; /* Предотвращает зум на iOS */
 }
 .field:focus {
   outline: none;
-  border-bottom-color: #00F0FF;
+  border-bottom-color: var(--toggle-active);
   background: rgba(0, 240, 255, 0.05);
-  box-shadow: 0 4px 12px -4px rgba(0, 240, 255, 0.2);
 }
+.dark .field:focus { background: rgba(0, 240, 255, 0.08); }
 .field.error-field {
   border-bottom-color: #ef4444 !important;
   background: rgba(239, 68, 68, 0.05) !important;
@@ -116,19 +119,56 @@ p, label, span, div { font-size: clamp(0.875rem, 2.5vw, 1rem); }
 }
 select.field option { background: var(--bg-body); color: var(--text-main); }
 
-/* ================= КНОПКИ ДВИГАТЕЛЯ (ШАГ 1) ================= */
+/* ================= ТУМБЛЕРЫ (WCAG AA Compliant) ================= */
+.wcag-switch {
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  padding: 12px 16px; border-radius: 12px; border: 1px solid var(--glass-border);
+  background: var(--field-bg); transition: all 0.2s; user-select: none;
+}
+.wcag-switch:hover { border-color: var(--toggle-active); }
+.wcag-switch[aria-pressed="true"] {
+  background: rgba(0, 240, 255, 0.1); border-color: var(--toggle-active);
+}
+.dark .wcag-switch[aria-pressed="true"] { background: rgba(0, 240, 255, 0.15); }
+
+.switch-track {
+  width: 44px; height: 24px; background: var(--toggle-bg); border-radius: 99px;
+  position: relative; transition: 0.3s; flex-shrink: 0;
+}
+.switch-thumb {
+  width: 20px; height: 20px; background: #fff; border-radius: 50%;
+  position: absolute; top: 2px; left: 2px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.wcag-switch[aria-pressed="true"] .switch-track { background: var(--toggle-active); }
+.wcag-switch[aria-pressed="true"] .switch-thumb { left: 22px; }
+
+.switch-text { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); transition: 0.2s; }
+.wcag-switch[aria-pressed="true"] .switch-text { color: var(--text-main); }
+
+/* ================= ПЕРЕКЛЮЧАТЕЛЬ ЕДИНИЦ (кВт / л.с.) ================= */
+.unit-toggle {
+  display: inline-flex; background: var(--field-bg); border-radius: 8px; padding: 2px;
+  border: 1px solid var(--glass-border);
+}
+.unit-btn {
+  padding: 4px 10px; font-size: 0.75rem; cursor: pointer; border-radius: 6px;
+  color: var(--text-muted); transition: all 0.2s; font-weight: 600;
+}
+.unit-btn.active {
+  background: var(--toggle-active); color: #fff;
+}
+.dark .unit-btn.active { color: #070b14; }
+
+/* ================= КНОПКИ ДВИГАТЕЛЯ ================= */
 .engine-btn {
-  background: var(--field-bg);
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-  color: var(--text-muted);
+  background: var(--field-bg); border: 2px solid transparent;
+  transition: all 0.2s ease; color: var(--text-muted); min-height: 88px;
 }
 .engine-btn:hover { border-color: var(--field-border); }
 .engine-btn.selected {
-  border-color: #00F0FF;
-  background: rgba(0, 240, 255, 0.1);
-  color: var(--text-main);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+  border-color: var(--toggle-active); background: rgba(0, 240, 255, 0.08);
+  color: var(--text-main); box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
 }
 .dark .engine-btn.selected { color: #fff; }
 
@@ -136,14 +176,14 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
 .btn-gold {
   background: linear-gradient(135deg, #0a9e33, #088126); color: #fff; font-weight: 600;
   border-radius: 16px; transition: all 0.2s ease; border: none; cursor: pointer;
-  box-shadow: 0 8px 24px -8px rgba(10, 158, 51, 0.4);
+  box-shadow: 0 8px 24px -8px rgba(10, 158, 51, 0.4); min-height: 52px;
 }
-.btn-gold:active { transform: scale(0.97); }
+.btn-gold:active { transform: scale(0.98); }
 .btn-neon {
   background: transparent; border: 1px solid var(--field-border); color: var(--text-main);
-  border-radius: 16px; transition: all 0.2s ease; cursor: pointer;
+  border-radius: 16px; transition: all 0.2s ease; cursor: pointer; min-height: 52px;
 }
-.btn-neon:hover { border-color: #00F0FF; color: #00F0FF; }
+.btn-neon:hover { border-color: var(--toggle-active); color: var(--toggle-active); }
 
 /* ================= ТУМБЛЕР ДЕНЬ/НОЧЬ ================= */
 .theme-toggle {
@@ -158,11 +198,10 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
 }
 .dark .theme-thumb { left: 26px; background: #1e293b; color: #fff; }
 
-/* ================= АНИМАЦИИ (IntersectionObserver) ================= */
+/* ================= АНИМАЦИИ ================= */
 .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .reveal.active { opacity: 1; transform: translateY(0); }
 .delay-100 { transition-delay: 0.1s; }
-.delay-200 { transition-delay: 0.2s; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -170,13 +209,12 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
   75% { transform: translateX(5px); }
 }
 
-/* ================= ДОСТУПНОСТЬ (WCAG) ================= */
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition: none; opacity: 1; transform: none; }
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
-/* ================= МОБИЛЬНАЯ АДАПТАЦИЯ (iPhone Safe Area) ================= */
+/* ================= МОБИЛЬНАЯ АДАПТАЦИЯ ================= */
 @supports (padding: max(0px)) {
   .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
 }
@@ -184,7 +222,6 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
 </head>
 
 <body class="overflow-x-hidden safe-bottom">
-  <!-- Фоновые слои -->
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
 
@@ -192,7 +229,8 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
   <header class="max-w-5xl mx-auto px-4 pt-6 flex items-center justify-between gap-3 reveal active">
     <div class="flex items-center gap-2">
       <span class="text-2xl">🚗</span>
-      <span class="font-bold tracking-tight text-lg" style="color: var(--text-main)">IMPCar<span style="color:#0a9e33">AUTO</span></span>
+      <!-- Логотип: IMPCar (белый/черный в зависимости от темы) + AUTO (синий) -->
+      <span class="font-bold tracking-tight text-lg" style="color: var(--text-main)">IMPCar<span style="color:#3b82f6">AUTO</span></span>
     </div>
     <div class="flex items-center gap-4">
       <div id="rateBox" class="glass rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium" style="color: var(--text-muted)">Курс: загружаем…</div>
@@ -217,6 +255,12 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
         <h2 class="font-bold mb-2">Шаг 1. Тип двигателя</h2>
         <p class="text-sm mb-6" style="color: var(--text-muted)">Выберите тип, чтобы мы применили верные ставки пошлин и утильсбора.</p>
         
+        <!-- Тумблер ручного режима (WCAG AA) -->
+        <div id="manualSwitch" class="wcag-switch mb-6" role="switch" aria-pressed="false" tabindex="0" onclick="toggleManualMode()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleManualMode()">
+          <div class="switch-track"><div class="switch-thumb"></div></div>
+          <div class="switch-text" id="switchLabel">Ручной ввод (нет в каталоге)</div>
+        </div>
+
         <div class="grid grid-cols-2 gap-3 mb-6">
           <button type="button" class="engine-btn p-4 rounded-xl flex flex-col items-center gap-2" data-type="EV" aria-label="Электромобиль">
             <span class="text-3xl">⚡</span><span class="text-xs font-semibold">Электро</span>
@@ -248,26 +292,43 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
 
         <!-- Ручной ввод -->
         <div id="manualPanel" class="glass rounded-xl p-4 mb-6 hidden" style="background: var(--field-bg)">
-          <h3 class="font-bold mb-4 text-sm text-[#00F0FF]">📝 Ручной ввод по ПТС / ОТТС</h3>
+          <h3 class="font-bold mb-4 text-sm" style="color: var(--toggle-active)">📝 Ручной ввод по ПТС / ОТТС</h3>
+          
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Год выпуска</label><select id="mYear" class="field text-sm"></select></div>
             <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Месяц</label><select id="mMonth" class="field text-sm"></select></div>
           </div>
+
           <div id="mCcWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Объём ДВС (см³)</label><input id="mCc" type="number" class="field text-sm" placeholder="1998" inputmode="numeric"></div>
-          <div class="grid grid-cols-2 gap-3 mb-4">
-            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Стоимость</label><input id="mPrice" type="number" class="field text-sm" placeholder="139800" inputmode="numeric"></div>
-            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Валюта</label><select id="mCur" class="field text-sm"><option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option></select></div>
+          
+          <!-- ИСПРАВЛЕНО: Поля цены и валюты теперь одинаковой высоты и пропорций -->
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="col-span-2"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Стоимость</label><input id="mPrice" type="number" class="field text-sm" placeholder="139800" inputmode="numeric"></div>
+            <div><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Валюта</label><select id="mCur" class="field text-sm"><option value="CNY">¥ CNY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
           </div>
+
+          <!-- Тумблер доставки (WCAG AA) -->
+          <div id="deliverySwitch" class="wcag-switch mb-4" role="switch" aria-pressed="true" tabindex="0" onclick="toggleDelivery()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleDelivery()">
+            <div class="switch-track"><div class="switch-thumb"></div></div>
+            <div class="switch-text" id="deliveryLabel">🚚 Доставка до моего города</div>
+          </div>
+          <div id="mCityWrap" class="mb-4">
+            <label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Город получения</label>
+            <select id="mCitySel" class="field text-sm"></select>
+          </div>
+
           <div id="mHpWrap" class="mb-4"><label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность ДВС (л.с.)</label><input id="mHpIce" type="number" class="field text-sm" placeholder="238" inputmode="numeric"></div>
+          
           <div id="mKwWrap" class="mb-4">
             <label class="block text-xs font-semibold mb-1" style="color: var(--text-muted)">Мощность электромотора (кВт)</label>
             <input id="mKwEl" type="number" class="field text-sm" placeholder="98" inputmode="decimal">
-            <div id="mEstimateWarn" class="estimate-warning hidden" style="background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3); color: #b45309; border-radius: 12px; padding: 12px; font-size: 0.75rem; margin-top: 12px;">
+            <div id="mEstimateWarn" class="hidden" style="background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.3); color: #b45309; border-radius: 12px; padding: 12px; font-size: 0.75rem; margin-top: 12px;">
               ⚠️ <b>Предварительная оценка:</b> Расчёт выполнен по коэффициенту 0.45 от пиковой мощности. Итоговая сумма фиксируется только на основании данных аккредитованной лаборатории (ОТТС/СБКТС).
             </div>
           </div>
+
           <div class="flex items-start gap-3 mb-4">
-            <input id="mKnow" type="checkbox" class="mt-1 accent-[#00F0FF]" aria-label="Я знаю точную 30-минутную мощность">
+            <input id="mKnow" type="checkbox" class="mt-1 accent-[#00F0FF] w-5 h-5" aria-label="Я знаю точную 30-минутную мощность">
             <label for="mKnow" class="text-xs leading-snug" style="color: var(--text-muted)">Я знаю точную 30‑минутную мощность (из ОТТС / ЭПТС)</label>
           </div>
         </div>
@@ -280,27 +341,48 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
           <select id="trimSel" class="field mb-6" disabled aria-label="Выберите комплектацию"><option value="">— Сначала модель —</option></select>
         </div>
 
-        <!-- Карточка спецификаций -->
+        <!-- Карточка спецификаций (С ВОЗВРАЩЕННЫМИ ПЕРЕКЛЮЧАТЕЛЯМИ) -->
         <div id="specCard" class="glass rounded-xl p-4 mb-6 hidden" style="background: var(--field-bg)">
           <div class="flex items-start gap-4">
             <div id="specIcon" class="shrink-0 w-16 h-12 text-[#00F0FF]"></div>
-            <div class="text-sm space-y-2 w-full">
+            <div class="text-sm space-y-3 w-full">
               <div><span style="color: var(--text-muted)">Тип:</span> <b id="specType" style="color: var(--text-main)"></b></div>
-              <div class="flex justify-between items-center"><span style="color: var(--text-muted)">Пиковая мощность:</span> <b id="specPeak" class="text-[#FFD700]"></b></div>
-              <div class="flex justify-between items-center" id="k30Row"><span style="color: var(--text-muted)">30‑мин мощность:</span> <b id="specK30" class="text-[#00F0FF]"></b></div>
-              <div id="specTotalKwRow" class="text-xs mt-2 pt-2 border-t" style="border-color: var(--glass-border)"><span style="color: var(--text-muted)">Итоговая для утиля:</span> <b id="specTotalKw" class="text-[#00F0FF]"></b></div>
+              
+              <div class="flex justify-between items-center">
+                <span style="color: var(--text-muted)">Пиковая мощность:</span> 
+                <div class="flex items-center gap-2">
+                  <b id="specPeak" class="text-[#FFD700]"></b>
+                  <div class="unit-toggle" id="peakUnitToggle">
+                    <div class="unit-btn active" data-unit="kw">кВт</div>
+                    <div class="unit-btn" data-unit="hp">л.с.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center" id="k30Row">
+                <span style="color: var(--text-muted)">30‑мин мощность:</span> 
+                <div class="flex items-center gap-2">
+                  <b id="specK30" class="text-[#00F0FF]"></b>
+                  <div class="unit-toggle" id="k30UnitToggle">
+                    <div class="unit-btn active" data-unit="kw">кВт</div>
+                    <div class="unit-btn" data-unit="hp">л.с.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="specTotalKwRow" class="text-xs mt-2 pt-2 border-t" style="border-color: var(--glass-border)">
+                <span style="color: var(--text-muted)">Итоговая для утиля:</span> <b id="specTotalKw" class="text-[#00F0FF]"></b>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Общие поля -->
+        <!-- Общие поля (С ИСПРАВЛЕННОЙ ВЕРСТКОЙ ЦЕНЫ/ВАЛЮТЫ) -->
         <div id="priceBlock">
           <label class="block text-sm font-semibold mb-2">Ваша цена (если известна):</label>
-          <div class="flex gap-3 mb-6">
-            <input id="customPrice" type="number" class="field flex-1" placeholder="Например, 139800" inputmode="numeric">
-            <select id="currencySel" class="field min-w-[110px]" aria-label="Валюта цены">
-              <option value="CNY">¥ Юани</option><option value="USD">$ Доллары</option><option value="EUR">€ Евро</option>
-            </select>
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="col-span-2"><input id="customPrice" type="number" class="field" placeholder="Например, 139800" inputmode="numeric"></div>
+            <div><select id="currencySel" class="field" aria-label="Валюта цены"><option value="CNY">¥ CNY</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
           </div>
         </div>
 
@@ -342,7 +424,7 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
     </div>
 
     <!-- Блок контактов -->
-    <div id="leadWrap" class="glass rounded-2xl p-5 sm:p-8 mt-6 hidden reveal delay-200">
+    <div id="leadWrap" class="glass rounded-2xl p-5 sm:p-8 mt-6 hidden reveal delay-100">
       <h3 class="text-lg font-bold mb-2">📞 Персональное предложение</h3>
       <p class="text-sm mb-6" style="color: var(--text-muted)">Менеджер подтвердит сумму по VIN и зафиксирует цену.</p>
       <div class="flex flex-col sm:flex-row gap-3">
@@ -353,7 +435,7 @@ select.field option { background: var(--bg-body); color: var(--text-main); }
   </main>
 
 <script>
-/* ================= КОНФИГУРАЦИЯ И СТАВКИ ================= */
+/* ================= КОНФИГУРАЦИЯ И СТАВКИ (2026-2027) ================= */
 const CFG = {
   BOT_USERNAME: "Avto_Calc_bot", WA_NUMBER: "79266173662",
   FALLBACK_CNY_RUB: 12.5, FALLBACK_USD_RUB: 90.0, VAT_RATE: 0.22,
@@ -381,6 +463,8 @@ const HP_TO_KW = 0.73549875; const KW_TO_HP = 1.35962; const ESTIMATE_COEF = 0.4
 let carDatabase = [];
 const state = { cnyRub: CFG.FALLBACK_CNY_RUB, usdRub: CFG.FALLBACK_USD_RUB, eurRub: 98, ratesLive: false };
 let selected = null, lastCalc = null, selectedEngineType = null, isManualMode = false, manualProd = null;
+let deliveryEnabled = true;
+let powerUnits = { peak: 'kw', k30: 'kw' };
 
 /* ================= ТЕМА И UI ================= */
 function toggleTheme() {
@@ -396,7 +480,6 @@ if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme')
 }
 updateThemeIcon();
 
-/* IntersectionObserver для анимаций */
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
 }, { threshold: 0.1 });
@@ -479,8 +562,8 @@ function priceToRub(val, cur) {
   if(cur==="USD") return val*state.usdRub; if(cur==="EUR") return val*state.eurRub; return val*state.cnyRub;
 }
 
-/* ================= ВАЛИДАЦИЯ БЕЗ ALERT (Focus Trap) ================= */
-function triggerError(elementId, message) {
+/* ================= ВАЛИДАЦИЯ (БЕЗ ALERT) ================= */
+function triggerError(elementId) {
   const el = document.getElementById(elementId);
   if(!el) return;
   el.classList.add('error-field');
@@ -488,7 +571,43 @@ function triggerError(elementId, message) {
   setTimeout(() => el.classList.remove('error-field'), 2000);
 }
 
-/* ================= РУЧНОЙ ВВОД ================= */
+/* ================= РУЧНОЙ ВВОД И ТУМБЛЕРЫ ================= */
+function toggleManualMode() {
+  isManualMode = !isManualMode;
+  const sw = document.getElementById('manualSwitch');
+  const lbl = document.getElementById('switchLabel');
+  
+  sw.setAttribute('aria-pressed', isManualMode);
+  lbl.textContent = isManualMode ? 'Ручной режим: ВКЛЮЧЕН ✓' : 'Ручной ввод (нет в каталоге)';
+  
+  if(isManualMode) {
+    selected = null;
+    document.getElementById('modelSel').innerHTML = '<option value="">— Сначала бренд —</option>';
+    document.getElementById('trimSel').innerHTML = '<option value="">— Сначала модель —</option>';
+    hideSpec();
+    document.getElementById('brandWrap').classList.add('hidden');
+    syncManualFields();
+    renderManualLive();
+  } else {
+    ['mCc','mPrice','mHpIce','mKwEl'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('mKnow').checked = false;
+    manualProd = null;
+    hideSpec();
+    document.getElementById('brandWrap').classList.remove('hidden');
+    if(selectedEngineType) fillBrandsByType(selectedEngineType);
+  }
+  applyStep2Visibility();
+}
+
+function toggleDelivery() {
+  deliveryEnabled = !deliveryEnabled;
+  const sw = document.getElementById('deliverySwitch');
+  const lbl = document.getElementById('deliveryLabel');
+  sw.setAttribute('aria-pressed', deliveryEnabled);
+  lbl.textContent = deliveryEnabled ? '🚚 Доставка до моего города' : '❌ Без доставки по РФ';
+  document.getElementById('mCityWrap').style.display = deliveryEnabled ? 'block' : 'none';
+}
+
 function manualInputs() {
   const t = selectedEngineType;
   const isElec = (t === "EV" || t === "SEQ_HYBRID");
@@ -537,11 +656,14 @@ function renderManualSpec() {
   const total = totalPowerKw(manualCarData);
   card.classList.remove('hidden');
   document.getElementById('specType').textContent = t;
-  document.getElementById('specPeak').textContent = `${manualCarData.pole_kw} кВт (${poleHp} л.с.)`;
+  updatePowerDisplay('specPeak', manualCarData.pole_kw, 'peak');
+  
   const hasK30 = manualCarData.k30_kw > 0;
   document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none';
-  if(hasK30) document.getElementById('specK30').textContent = `${manualCarData.k30_kw} кВт (${Math.round(el30 * KW_TO_HP)} л.с.)`;
+  if(hasK30) updatePowerDisplay('specK30', manualCarData.k30_kw, 'k30');
+  
   document.getElementById('specTotalKw').textContent = `${Math.round(total * 10) / 10} кВт (${Math.round(total * KW_TO_HP)} л.с.)`;
+  initUnitToggles(manualCarData);
   selected = isManualValid() ? manualCarData : null;
 }
 
@@ -552,19 +674,21 @@ function gotoStep(n) {
     const i = +d.dataset.i;
     d.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === n ? 'bg-[#0a9e33] scale-125' : i < n ? 'bg-[#00F0FF]' : 'bg-black/10 dark:bg-white/20'}`;
   });
-  if(n === 2) {
-    document.getElementById('manualPanel').classList.toggle('hidden', !isManualMode);
-    document.getElementById('catalogBlock').classList.toggle('hidden', isManualMode);
-    document.getElementById('priceBlock').classList.toggle('hidden', isManualMode);
-    document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
-    if(isManualMode) renderManualSpec();
-  }
+  if(n === 2) applyStep2Visibility();
   window.scrollTo({ top: document.getElementById('calcCard').offsetTop - 20, behavior: 'smooth' });
 }
 
+function applyStep2Visibility() {
+  document.getElementById('manualPanel').classList.toggle('hidden', !isManualMode);
+  document.getElementById('catalogBlock').classList.toggle('hidden', isManualMode);
+  document.getElementById('priceBlock').classList.toggle('hidden', isManualMode);
+  document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
+  if(isManualMode) renderManualSpec();
+}
+
 function nextFrom1() {
-  if(!selectedEngineType) { triggerError('nextBtn1', 'Выберите тип двигателя'); return; }
-  if(!isManualMode && !document.getElementById('brandSel').value) { triggerError('brandSel', 'Выберите бренд'); return; }
+  if(!selectedEngineType) { triggerError('nextBtn1'); return; }
+  if(!isManualMode && !document.getElementById('brandSel').value) { triggerError('brandSel'); return; }
   gotoStep(2);
 }
 
@@ -590,7 +714,7 @@ function calculatePrice() {
   const c = selected;
   const age = isManualMode ? (manualProd?.cat || 'new') : document.getElementById('ageSel').value;
   const year = document.getElementById('yearSel').value;
-  const city = document.getElementById('citySel').value;
+  const city = isManualMode ? (deliveryEnabled ? document.getElementById('mCitySel').value : '') : document.getElementById('citySel').value;
 
   let baseRub = 0;
   if(isManualMode) {
@@ -606,14 +730,14 @@ function calculatePrice() {
   const customsFee = getCustomsFee(baseRub);
   const util = lookupUtilFee(c.engine_cc, totalKw, age, year, c.type);
   const certs = CFG.CERT_SBKTS + CFG.CERT_EPTS + CFG.CERT_GTO;
-  const logRF = RF_LOGISTICS[city] || 100000;
+  const logRF = (isManualMode && !deliveryEnabled) ? 0 : (RF_LOGISTICS[city] || 100000);
   const total = baseRub + CFG.LOGISTICS_CHINA + dutyObj.total + util + customsFee + certs + logRF + CFG.MARGIN;
   lastCalc = { c, age, year, city, total, util, baseRub };
 
   const money = n => Math.round(n).toLocaleString('ru') + ' ₽';
   const row = (icon, label, value) => 
     `<div class="flex items-center justify-between py-3" style="border-bottom:1px solid var(--glass-border)">
-       <div class="flex items-center gap-3"><span style="color:#00F0FF;font-size:1.2em">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div>
+       <div class="flex items-center gap-3"><span style="color:var(--toggle-active);font-size:1.2em">${icon}</span><span class="text-sm" style="color: var(--text-muted)">${label}</span></div>
        <b style="color: var(--text-main)">${value}</b>
      </div>`;
 
@@ -632,11 +756,11 @@ function calculatePrice() {
   rows += row('♻️', `Утилизационный сбор (${Math.round(totalKw*10)/10} кВт)`, money(util));
   rows += row('📄', 'Таможенный сбор', money(customsFee));
   rows += row('🔖', 'СБКТС + ЭПТС', money(certs));
-  rows += row('🚚', `Доставка до ${city}`, money(logRF));
+  if(logRF > 0) rows += row('🚚', `Доставка до ${city}`, money(logRF));
   rows += row('🤝', 'Услуги компании', money(CFG.MARGIN));
 
   box.innerHTML = `<div class="glass rounded-xl p-5">
-    <div class="text-sm mb-4" style="color: var(--text-muted)">Детализация · ${c.brand} ${c.model} ${c.trim} · ${city}</div>
+    <div class="text-sm mb-4" style="color: var(--text-muted)">Детализация · ${c.brand} ${c.model} ${c.trim} ${city ? '· '+city : ''}</div>
     ${rows}
     <div class="flex justify-between items-center pt-5 mt-2 border-t" style="border-color: var(--glass-border)">
       <span class="text-lg font-bold" style="color: var(--text-main)">ИТОГО ПОД КЛЮЧ</span>
@@ -645,7 +769,7 @@ function calculatePrice() {
     <p class="text-[10px] mt-4 leading-relaxed" style="color: var(--text-muted)">*Расчёт предварительный (физлицо, личное пользование). Для юрлиц/перепродажи — иные ставки. Финальная сумма фиксируется в договоре по VIN.</p>
   </div>`;
 
-  const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city}\nГод ввоза: ${year}`);
+  const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city || 'не указан'}\nГод ввоза: ${year}`);
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`;
   document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
 
@@ -713,11 +837,32 @@ function showSpec(c) {
   if(!c) { document.getElementById('specCard').classList.add('hidden'); return; }
   document.getElementById('specCard').classList.remove('hidden');
   document.getElementById('specType').textContent = c.type;
-  document.getElementById('specPeak').textContent = `${c.pole_kw} кВт (${c.pole_hp} л.с.)`;
+  updatePowerDisplay('specPeak', c.pole_kw, 'peak');
   const hasK30 = c.k30_kw > 0;
   document.getElementById('k30Row').style.display = hasK30 ? 'flex' : 'none';
-  if(hasK30) document.getElementById('specK30').textContent = `${c.k30_kw} кВт (${Math.round(c.k30_kw*KW_TO_HP)} л.с.)`;
+  if(hasK30) updatePowerDisplay('specK30', c.k30_kw, 'k30');
   document.getElementById('specTotalKw').textContent = `${Math.round(totalPowerKw(c)*10)/10} кВт`;
+  initUnitToggles(c);
+}
+
+function updatePowerDisplay(id, kw, type) {
+  const el = document.getElementById(id);
+  el.textContent = (powerUnits[type]==='kw') ? kw+' кВт' : Math.round(kw*KW_TO_HP)+' л.с.';
+}
+
+function initUnitToggles(car) {
+  [['peak','peakUnitToggle','specPeak'],['k30','k30UnitToggle','specK30']].forEach(([type,togId,elId])=>{
+    const box = document.getElementById(togId);
+    if(!box) return;
+    box.querySelectorAll('.unit-btn').forEach(btn=>{
+      btn.onclick = function(){
+        box.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        powerUnits[type] = btn.dataset.unit;
+        updatePowerDisplay(elId, type==='peak'?car.pole_kw:car.k30_kw, type);
+      };
+    });
+  });
 }
 
 async function loadCars() {
@@ -757,32 +902,23 @@ function mapRow(r) {
 document.addEventListener('DOMContentLoaded', () => {
   buildManualSelects(); loadRates(); loadCars();
   
-  // Обработчики кнопок типа двигателя (с явным состоянием selected)
   document.querySelectorAll('.engine-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('selected'));
       this.classList.add('selected');
       selectedEngineType = this.dataset.type;
       isManualMode = false;
+      document.getElementById('manualSwitch').setAttribute('aria-pressed', 'false');
+      document.getElementById('switchLabel').textContent = 'Ручной ввод (нет в каталоге)';
       fillBrandsByType(selectedEngineType);
     });
   });
 
-  // Переключение ручной режим / каталог
-  const manualToggle = document.createElement('button');
-  manualToggle.className = 'btn-neon w-full py-3 text-sm mb-6';
-  manualToggle.textContent = '✏️ Ввести данные вручную (нет в каталоге)';
-  manualToggle.onclick = () => {
-    isManualMode = !isManualMode;
-    manualToggle.textContent = isManualMode ? '📋 Вернуться к каталогу' : '✏️ Ввести данные вручную (нет в каталоге)';
-    document.getElementById('brandWrap').classList.toggle('hidden', isManualMode);
-    gotoStep(2);
-  };
-  document.querySelector('[data-step="2"]').prepend(manualToggle);
-
   const citySel = document.getElementById('citySel');
+  const mCitySel = document.getElementById('mCitySel');
   Object.keys(RF_LOGISTICS).forEach(c => {
-    const o = document.createElement('option'); o.value = c; o.textContent = c; citySel.appendChild(o);
+    const o1 = document.createElement('option'); o1.value = c; o1.textContent = c; citySel.appendChild(o1);
+    const o2 = document.createElement('option'); o2.value = c; o2.textContent = c; mCitySel.appendChild(o2);
   });
 });
 
