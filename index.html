@@ -947,7 +947,9 @@ function renderAgeTransitionWarn(){
   var ny = now.getFullYear(), nm = now.getMonth() + 1;
   var catNow = manualProd ? manualProd.cat : null;
   var importYear = +document.getElementById('yearSel').value || 2026;
-  var monthsToImport = monthsBetween(y, mo, importYear, 1);
+  var refY = importYear <= ny ? ny : importYear;
+  var refM = importYear <= ny ? nm : 1;
+  var monthsToImport = monthsBetween(y, mo, refY, refM);
   var catImport = catFromMonths(monthsToImport);
   var msgs = [];
 
