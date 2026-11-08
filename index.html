@@ -206,8 +206,8 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
           <div class="text-xs" style="color:var(--text-muted)">Текущие условия действуют до выхода новой редакции ПП № 1291</div>
         </div>
       </div>
-      <div id="countdown" class="font-mono font-bold text-lg sm:text-xl whitespace-nowrap" style="color:var(--toggle-active)">
-        <span id="days">00</span>д <span id="hours">00</span>ч <span id="minutes">00</span>м
+         <div id="countdown" class="font-mono font-bold text-lg sm:text-xl whitespace-nowrap" style="color:var(--toggle-active)">
+        <span id="days">00</span>д <span id="hours">00</span>ч <span id="minutes">00</span>м <span id="seconds">00</span>с
       </div>
     </div>
   </section>
@@ -314,6 +314,7 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
           <input id="mKnow" type="checkbox" class="mt-1 w-5 h-5 rounded cursor-pointer" style="accent-color:var(--toggle-active)" aria-label="Я знаю точную 30-минутную мощность">
           <label for="mKnow" class="text-xs leading-snug cursor-pointer" style="color:var(--text-muted)">Я знаю точную 30‑минутную мощность из ОТТС / ЭПТС — введу её в поле выше</label>
         </div>
+        <div id="ageTransitionWarn" class="estimate-warn hidden"></div> 
       </div>
       <button id="nextBtn1Manual" class="btn-primary w-full text-base hidden" onclick="nextFrom1Manual()">
         Далее <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
@@ -601,6 +602,7 @@ function applyStep1Mode(){
     ? 'Ручной режим ВКЛЮЧЁН ✓ — нажмите, чтобы вернуться к каталогу'
     : 'Нужной модели нет? Введите характеристики вручную (ПТС / СБКТС / ОТТС)';
   if (isManualMode) syncManualFieldsByType();
+  renderAgeTransitionWarn();
 }
 function toggleManualModeFromStep1(){
   isManualMode = !isManualMode;
@@ -655,6 +657,7 @@ function syncManualFieldsByType(){
   document.getElementById('mKwWrap').style.display  = (isElec || t === "PAR_HYBRID") ? 'block' : 'none';
   document.getElementById('mKnowWrap').style.display= (isElec || t === "PAR_HYBRID") ? 'flex' : 'none';
   renderManualSpec();
+  renderAgeTransitionWarn();
 }
 function renderManualSpec(){
   const t = document.getElementById('mEngineType').value;
@@ -899,20 +902,21 @@ function buildManualSelects(){
   const curY = new Date().getFullYear();
   for (let y = curY; y >= 2010; y--){ const o = document.createElement('option'); o.value = y; o.textContent = y; yS.appendChild(o); }
   const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-months.forEach(function(mn, i){
-  const o = document.createElement('option');
-  o.value = i + 1;
-  o.textContent = mn + ' (' + String(i + 1).padStart(2, '0') + ')';
-  mS.appendChild(o);
-});
+  months.forEach(function(mn, i){
+    const o = document.createElement('option');
+    o.value = i + 1;
+    o.textContent = mn + ' (' + pad2(i + 1) + ')';
+    mS.appendChild(o);
+  });
   document.getElementById('mEngineType').addEventListener('change', syncManualFieldsByType);
   ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id=>{
     const el = document.getElementById(id);
-    if (el) el.addEventListener('input', ()=>{ calcManualAge(); renderManualSpec(); });
+    if (el) el.addEventListener('input', ()=>{ calcManualAge(); renderManualSpec(); renderAgeTransitionWarn(); });
   });
   document.getElementById('mCur').addEventListener('change', renderManualSpec);
   document.getElementById('mKnow').addEventListener('change', renderManualSpec);
   document.getElementById('mCitySel').addEventListener('change', ()=>{});
+  document.getElementById('yearSel').addEventListener('change', function(){ if (isManualMode){ calcManualAge(); renderManualSpec(); renderAgeTransitionWarn(); } });
   calcManualAge();
 }
 function calcManualAge(){
@@ -921,18 +925,71 @@ function calcManualAge(){
   const months = (new Date().getFullYear()-y)*12 + (new Date().getMonth()-(m-1));
   manualProd = { y, m, cat: months <= 36 ? 'new' : months <= 60 ? 'mid' : 'old' };
 }
+function pad2(n){ return (n<10?'0':'')+n; }
+function catLabel(c){ return c==='new'?'до 3 лет': c==='mid'?'3-5 лет': c==='old'?'старше 5 лет':'?'; }
+function catFromMonths(m){ return m<=36?'new': m<=60?'mid':'old'; }
+function monthsBetween(by,bm,ty,tm){ return (ty-by)*12 + (tm-bm); }
+function addMonths(y,m,n){ var t=y*12+(m-1)+n; return { y: Math.floor(t/12), m: (t%12)+1 }; }
+
+function renderAgeTransitionWarn(){
+  var box = document.getElementById('ageTransitionWarn');
+  if (!box) return;
+  if (!isManualMode){ box.classList.add('hidden'); box.innerHTML = ''; return; }
+  var y = +document.getElementById('mYear').value;
+  var mo = +document.getElementById('mMonth').value;
+  var filled = (+document.getElementById('mPrice').value > 0) ||
+               (+document.getElementById('mHpIce').value > 0) ||
+               (+document.getElementById('mKwEl').value > 0) ||
+               (+document.getElementById('mCc').value > 0);
+  if (!y || !mo || !filled){ box.classList.add('hidden'); box.innerHTML = ''; return; }
+
+  var now = new Date();
+  var ny = now.getFullYear(), nm = now.getMonth() + 1;
+  var catNow = manualProd ? manualProd.cat : null;
+  var importYear = +document.getElementById('yearSel').value || 2026;
+  var monthsToImport = monthsBetween(y, mo, importYear, 1);
+  var catImport = catFromMonths(monthsToImport);
+  var msgs = [];
+
+  if (catNow && catImport && catImport !== catNow){
+    msgs.push('Внимание: при ввозе в ' + importYear + ' году автомобиль попадёт в категорию «' +
+      catLabel(catImport) + '», а не «' + catLabel(catNow) +
+      '». Утильсбор и пошлина считаются по другой таблице — итоговая сумма может измениться.');
+  }
+
+  var nextThr = catNow === 'new' ? 36 : catNow === 'mid' ? 60 : 0;
+  if (nextThr > 0){
+    var thr = addMonths(y, mo, nextThr);
+    var left = monthsBetween(ny, nm, thr.y, thr.m);
+    if (left > 0 && left <= 6){
+      var nextCat = catNow === 'new' ? 'mid' : 'old';
+      msgs.push('До перехода в категорию «' + catLabel(nextCat) + '» осталось около ' + left +
+        ' мес. (месяц перехода: ' + thr.y + '.' + pad2(thr.m) +
+        '). Если растаможка задержится, сумма утиля и пошлины пересчитается по новой категории.');
+    }
+  }
+
+  if (msgs.length === 0){ box.classList.add('hidden'); box.innerHTML = ''; }
+  else { box.classList.remove('hidden'); box.innerHTML = msgs.join('<br>'); }
+}
 function startHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.add('hint-animate')); }
 function stopHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.remove('hint-animate')); }
 function updateTimer(){
-  const dist = new Date('2027-01-01T00:00:00+03:00').getTime() - Date.now();
-  if (dist < 0){ document.getElementById('countdown').innerHTML = 'Ставки 2027 уже действуют'; return; }
-  document.getElementById('days').textContent = String(Math.floor(dist/86400000)).padStart(2,'0');
-  document.getElementById('hours').textContent = String(Math.floor(dist%86400000/3600000)).padStart(2,'0');
-  document.getElementById('minutes').textContent = String(Math.floor(dist%3600000/60000)).padStart(2,'0');
+  var dist = new Date('2027-01-01T00:00:00+03:00').getTime() - Date.now();
+  var cd = document.getElementById('countdown');
+  if (dist < 0){ cd.innerHTML = 'Ставки 2027 уже действуют'; return; }
+  var d = Math.floor(dist/86400000);
+  var h = Math.floor(dist%86400000/3600000);
+  var m = Math.floor(dist%3600000/60000);
+  var s = Math.floor(dist%60000/1000);
+  document.getElementById('days').textContent = pad2(d);
+  document.getElementById('hours').textContent = pad2(h);
+  document.getElementById('minutes').textContent = pad2(m);
+  document.getElementById('seconds').textContent = pad2(s);
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  buildManualSelects(); loadRates(); loadCars(); updateTimer(); setInterval(updateTimer, 60000);
+  buildManualSelects(); loadRates(); loadCars(); updateTimer(); setInterval(updateTimer, 1000);
   startHintAnimation();
   document.querySelectorAll('.engine-btn').forEach(btn=>{
     btn.addEventListener('click', function(){
