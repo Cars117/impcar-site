@@ -728,7 +728,7 @@ function calculatePrice(){
     c = { brand:"Ручной ввод", model:"ПТС", trim:v.t, type:v.t, engine_cc:v.cc,
           pole_hp:v.iceHp, k30_kw:(v.t==="ICE") ? 0 : (v.know ? v.kwIn : v.kwIn*ESTIMATE_COEF),
           k30_estimated:(v.t!=="ICE") && !v.know && v.kwIn>0, notes:"" };
-    age = manualProd?.cat || 'new';
+    age = importAgeCat(+document.getElementById('mYear').value, +document.getElementById('mMonth').value, +document.getElementById('yearSel').value) || (manualProd?.cat || 'new');
     city = deliveryEnabled ? document.getElementById('mCitySel').value : '';
     baseRub = priceToRub(v.price, v.cur);
     baseCny = v.cur === 'CNY' ? v.price : rubToCny(baseRub);
@@ -930,7 +930,14 @@ function catLabel(c){ return c==='new'?'до 3 лет': c==='mid'?'3-5 лет': 
 function catFromMonths(m){ return m<=36?'new': m<=60?'mid':'old'; }
 function monthsBetween(by,bm,ty,tm){ return (ty-by)*12 + (tm-bm); }
 function addMonths(y,m,n){ var t=y*12+(m-1)+n; return { y: Math.floor(t/12), m: (t%12)+1 }; }
-
+function importAgeCat(y, mo, importYear){
+  if (!y || !mo || !importYear) return null;
+  var now = new Date();
+  var ny = now.getFullYear(), nm = now.getMonth() + 1;
+  var refY = importYear <= ny ? ny : importYear;
+  var refM = importYear <= ny ? nm : 1;
+  return catFromMonths(monthsBetween(y, mo, refY, refM));
+}
 function renderAgeTransitionWarn(){
   var box = document.getElementById('ageTransitionWarn');
   if (!box) return;
@@ -947,10 +954,8 @@ function renderAgeTransitionWarn(){
   var ny = now.getFullYear(), nm = now.getMonth() + 1;
   var catNow = manualProd ? manualProd.cat : null;
   var importYear = +document.getElementById('yearSel').value || 2026;
-  var refY = importYear <= ny ? ny : importYear;
-  var refM = importYear <= ny ? nm : 1;
-  var monthsToImport = monthsBetween(y, mo, refY, refM);
-  var catImport = catFromMonths(monthsToImport);
+  var catImport = importAgeCat(y, mo, importYear);
+  var catImportEnd = catFromMonths(monthsBetween(y, mo, importYear, 12));
   var msgs = [];
 
   if (catNow && catImport && catImport !== catNow){
@@ -959,15 +964,22 @@ function renderAgeTransitionWarn(){
       '». Утильсбор и пошлина считаются по другой таблице — итоговая сумма может измениться.');
   }
 
-  var nextThr = catNow === 'new' ? 36 : catNow === 'mid' ? 60 : 0;
-  if (nextThr > 0){
-    var thr = addMonths(y, mo, nextThr);
-    var left = monthsBetween(ny, nm, thr.y, thr.m);
-    if (left > 0 && left <= 6){
-      var nextCat = catNow === 'new' ? 'mid' : 'old';
-      msgs.push('До перехода в категорию «' + catLabel(nextCat) + '» осталось около ' + left +
-        ' мес. (месяц перехода: ' + thr.y + '.' + pad2(thr.m) +
-        '). Если растаможка задержится, сумма утиля и пошлины пересчитается по новой категории.');
+  if (importYear !== ny && catImport && catImportEnd && catImport !== catImportEnd){
+    msgs.push('В течение ' + importYear + ' года категория изменится с «' + catLabel(catImport) +
+      '» на «' + catLabel(catImportEnd) + '». Уточните месяц растаможки: сумма утиля и пошлины зависит от категории на дату оформления.');
+  }
+
+  if (importYear === ny){
+    var nextThr = catNow === 'new' ? 36 : catNow === 'mid' ? 60 : 0;
+    if (nextThr > 0){
+      var thr = addMonths(y, mo, nextThr);
+      var left = monthsBetween(ny, nm, thr.y, thr.m);
+      if (left > 0 && left <= 6){
+        var nextCat = catNow === 'new' ? 'mid' : 'old';
+        msgs.push('До перехода в категорию «' + catLabel(nextCat) + '» осталось около ' + left +
+          ' мес. (месяц перехода: ' + thr.y + '.' + pad2(thr.m) +
+          '). Если растаможка задержится, сумма утиля и пошлины пересчитается по новой категории.');
+      }
     }
   }
 
