@@ -897,7 +897,13 @@ function buildManualSelects(){
   const yS = document.getElementById('mYear'), mS = document.getElementById('mMonth');
   const curY = new Date().getFullYear();
   for (let y = curY; y >= 2010; y--){ const o = document.createElement('option'); o.value = y; o.textContent = y; yS.appendChild(o); }
-  ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'].forEach((mn,i)=>{ const o=document.createElement('option'); o.value=i+1; o.textContent=`${mn} (${String(i+1).padStart(2,'0)})`; mS.appendChild(o); });
+  const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+months.forEach(function(mn, i){
+  const o = document.createElement('option');
+  o.value = i + 1;
+  o.textContent = mn + ' (' + String(i + 1).padStart(2, '0') + ')';
+  mS.appendChild(o);
+});
   document.getElementById('mEngineType').addEventListener('change', syncManualFieldsByType);
   ['mYear','mMonth','mCc','mPrice','mHpIce','mKwEl'].forEach(id=>{
     const el = document.getElementById(id);
