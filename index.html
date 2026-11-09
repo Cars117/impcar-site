@@ -1128,6 +1128,7 @@ function initListbox(id){
   function closePanel(){ panel.hidden = true; trig.setAttribute('aria-expanded','false'); }
   function choose(val){
     sel.value = val;
+    sel.dispatchEvent(new Event('input',{bubbles:true}));
     sel.dispatchEvent(new Event('change',{bubbles:true}));
     syncLabel();
     closePanel();
@@ -1166,6 +1167,10 @@ function updateTimer(){
 document.addEventListener('DOMContentLoaded', ()=>{
   buildManualSelects(); loadRates(); loadCars(); updateTimer(); setInterval(updateTimer, 1000);
   initListbox('yearSel');
+  initListbox('ageSel');
+  initListbox('mCur');
+  initListbox('mYear');
+  initListbox('mMonth');
   startHintAnimation();
   document.querySelectorAll('.engine-btn').forEach(btn=>{
     btn.addEventListener('click', function(){
