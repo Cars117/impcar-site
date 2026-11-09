@@ -1057,6 +1057,8 @@ function initListbox(id){
   if (!sel || sel.dataset.lbReady === '1') return;
   sel.dataset.lbReady = '1';
   sel.setAttribute('aria-hidden','true');
+  sel.classList.add('lb-native');
+  sel.tabIndex = -1;
   var wrap = document.createElement('div');
   wrap.className = 'lb-wrap';
   sel.parentNode.insertBefore(wrap, sel);
