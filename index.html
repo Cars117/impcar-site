@@ -152,6 +152,7 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 #resultBox b, #resultBox .text-2xl, #resultBox .text-3xl{ white-space:nowrap; }
 #resultBox .text-sm{ font-size:.8125rem; line-height:1.35; }
 #resultBox .text-xs{ font-size:.6875rem; }
+#finalTotal{font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
 #resultBox .text-lg{ font-size:.9375rem; letter-spacing:-.01em; }
 @media (max-width:360px){
   .unit-toggle{ flex-wrap:wrap; }
@@ -714,7 +715,30 @@ function nextFrom2(){
   if (!document.getElementById('trimSel').value){ triggerError('trimSel'); return; }
   gotoStep(3);
 }
-
+let _countRaf = null;
+function animateFinalTotal(){
+  var el = document.getElementById('finalTotal');
+  if (!el || !lastCalc) return;
+  var fmt = function(n){ return Math.round(n).toLocaleString('ru') + ' ₽'; };
+  var target = lastCalc.total;
+  if (_countRaf){ cancelAnimationFrame(_countRaf); _countRaf = null; }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    el.textContent = fmt(target);
+    return;
+  }
+  el.textContent = fmt(0);
+  var dur = 700, start = null;
+  function step(ts){
+    if (start === null) start = ts;
+    var p = (ts - start) / dur;
+    if (p > 1) p = 1;
+    var eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(target * eased);
+    if (p < 1){ _countRaf = requestAnimationFrame(step); }
+    else { _countRaf = null; }
+  }
+  _countRaf = requestAnimationFrame(step);
+}
 function calculatePrice(){
   if (!selected && !isManualMode){ gotoStep(2); return; }
   let c, age, baseRub = 0, baseCny = 0;
@@ -774,12 +798,12 @@ function calculatePrice(){
     ${rows}
     <div class="flex justify-between items-center pt-5 mt-2">
       <span class="text-lg font-bold" style="color:var(--text-main)">ИТОГО ПОД КЛЮЧ</span>
-      <span class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">${money(total)}</span>
+      <span id="finalTotal" class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">${money(total)}</span>
     </div>
     ${estNote}
     <p class="text-[11px] mt-4 leading-relaxed" style="color:var(--text-muted)">*Расчёт предварительный и выполнен для физлица на личное пользование. Итоговые суммы пошлин, НДС, акциза и утильсбора определяются таможенным органом по фактическим документам (ОТТС / СБКТС / ЭПТС) и фиксируются в договоре по VIN. Возможна корректировка при расхождении заявленной и таможенной стоимости.</p>
   </div>`;
-  const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city || 'не указан'}\nГод ввоза: ${year}`);
+  animateFinalTotal();const txt = encodeURIComponent(`Здравствуйте! Хочу уточнить расчёт:\nАвто: ${c.brand} ${c.model} ${c.trim}\nЦена: ${money(baseRub)}\nИтого: ${money(total)}\nГород: ${city || 'не указан'}\nГод ввоза: ${year}`);
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`;
   document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
   const lw = document.getElementById('leadWrap');
