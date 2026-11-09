@@ -615,7 +615,12 @@ function applyStep1Mode(){
   document.getElementById('switchLabelStep1').textContent = isManualMode
     ? 'Ручной режим ВКЛЮЧЁН ✓ — нажмите, чтобы вернуться к каталогу'
     : 'Нужной модели нет? Введите характеристики вручную (ПТС / СБКТС / ОТТС)';
-  if (isManualMode) syncManualFieldsByType();
+  if (isManualMode){
+    if (selectedEngineType) document.getElementById('mEngineType').value = selectedEngineType;
+    var _t0 = document.getElementById('mEngineType').value;
+    document.querySelectorAll('.engine-btn').forEach(function(b){ if (b.dataset.type === _t0) b.classList.add('selected'); else b.classList.remove('selected'); });
+    syncManualFieldsByType();
+  }
   renderAgeTransitionWarn();
 }
 function toggleManualModeFromStep1(){
