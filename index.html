@@ -801,6 +801,7 @@ function calculatePrice(){
       <span class="text-lg font-bold" style="color:var(--text-main)">ИТОГО ПОД КЛЮЧ</span>
       <span id="finalTotal" class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">${money(total)}</span>
     </div>
+    <div class="text-xs mt-3" style="color:var(--text-muted)">Курс на момент расчёта: $${state.usdRub.toFixed(2).replace('.',',')} · ¥${state.cnyRub.toFixed(2).replace('.',',')} · €${state.eurRub.toFixed(2).replace('.',',')}</div>
     ${estNote}
     <p class="text-[11px] mt-4 leading-relaxed" style="color:var(--text-muted)">*Расчёт предварительный и выполнен для физлица на личное пользование. Итоговые суммы пошлин, НДС, акциза и утильсбора определяются таможенным органом по фактическим документам (ОТТС / СБКТС / ЭПТС) и фиксируются в договоре по VIN. Возможна корректировка при расхождении заявленной и таможенной стоимости.</p>
   </div>`;
