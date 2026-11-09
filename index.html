@@ -160,6 +160,13 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
   #resultBox .flex.justify-between{ flex-wrap:wrap; row-gap:2px; }
   #resultBox b{ white-space:normal; word-break:keep-all; }
 }
+#stickyCta{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:var(--glass-bg);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-top:1px solid var(--glass-border);box-shadow:0 -8px 24px -8px rgba(0,0,0,.35)}
+#stickyCta .stickyCta-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:48rem;margin:0 auto}
+#stickyCta .stickyCta-val{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+#stickyCta .stickyCta-cap{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+#stickyCta #stickyCtaVal{font-size:1.05rem;font-weight:800;color:var(--text-main);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#stickyCta .stickyCta-btn{flex:0 0 auto;min-height:44px;padding:0 16px;font-size:.9rem}
+@media (min-width:640px){#stickyCta{display:none}}
 </style>
 
 <script>
@@ -458,7 +465,15 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
     </div>
   </div>
 </main>
-
+  <div id="stickyCta" class="hidden">
+    <div class="stickyCta-inner">
+      <div class="stickyCta-val">
+        <span class="stickyCta-cap">Итого под ключ</span>
+        <b id="stickyCtaVal">—</b>
+      </div>
+      <button type="button" class="btn-primary stickyCta-btn" onclick="document.getElementById('leadWrap').scrollIntoView({behavior:'smooth',block:'start'})" aria-label="Перейти к заявке">Оставить заявку ↓</button>
+    </div>
+  </div>
 <script>
 /* ============ КОНФИГ ============ */
 const CFG = { BOT_USERNAME:"Avto_Calc_bot", WA_NUMBER:"79266173662",
@@ -678,7 +693,7 @@ function renderManualSpec(){
 }
 
 function gotoStep(n){
-  currentStep = n;
+  currentStep = n;  var _scp = document.getElementById('stickyCta'); if (_scp) _scp.classList.add('hidden');
   document.querySelectorAll('.wizard-step').forEach(s => s.classList.toggle('hidden', +s.dataset.step !== n));
   document.querySelectorAll('#stepDots span').forEach(d => {
     const i = +d.dataset.i;
@@ -739,6 +754,13 @@ function animateFinalTotal(){
     else { _countRaf = null; }
   }
   _countRaf = requestAnimationFrame(step);
+}
+function revealStickyCTA(){
+  var p = document.getElementById('stickyCta');
+  if (!p || !lastCalc) return;
+  var v = document.getElementById('stickyCtaVal');
+  if (v) v.textContent = Math.round(lastCalc.total).toLocaleString('ru') + ' ₽';
+  p.classList.remove('hidden');
 }
 function calculatePrice(){
   if (!selected && !isManualMode){ gotoStep(2); return; }
@@ -809,7 +831,7 @@ function calculatePrice(){
   document.getElementById('waLinkNew').href = `https://wa.me/${CFG.WA_NUMBER}?text=${txt}`;
   document.getElementById('tgLinkNew').href = `https://t.me/${CFG.BOT_USERNAME}?text=${txt}`;
   const lw = document.getElementById('leadWrap');
-  lw.classList.remove('hidden');
+  lw.classList.remove('hidden');  revealStickyCTA();
   setTimeout(()=>{ lw.classList.add('active'); lw.scrollIntoView({behavior:'smooth',block:'start'}); }, 50);
 }
 
