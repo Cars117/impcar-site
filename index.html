@@ -1066,6 +1066,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   });
   const citySel = document.getElementById('citySel'), mCitySel = document.getElementById('mCitySel');
+    let _cityTimer = null;
+  [citySel, mCitySel].forEach(function(sel){
+    sel.addEventListener('change', function(){
+      if (document.getElementById('resultBox').classList.contains('hidden')) return;
+      clearTimeout(_cityTimer);
+      _cityTimer = setTimeout(function(){ calculatePrice(); }, 250);
+    });
+  });
   Object.keys(RF_LOGISTICS).forEach(c=>{
     const o1 = document.createElement('option'); o1.value = c; o1.textContent = c; citySel.appendChild(o1);
     const o2 = document.createElement('option'); o2.value = c; o2.textContent = c; mCitySel.appendChild(o2);
