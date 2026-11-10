@@ -1181,7 +1181,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
       this.classList.add('selected');
       selectedEngineType = this.dataset.type;
       if (isManualMode){                 /* в ручном режиме кнопка типа = пресет для mEngineType */
-        document.getElementById('mEngineType').value = selectedEngineType;
+        document.getElementById('mEngineType').value = selectedEngineType; 
+        document.getElementById('mEngineType')._lbSync && document.getElementById('mEngineType')._lbSync();
         syncManualFieldsByType();
         return;
       }
