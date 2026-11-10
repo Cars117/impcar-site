@@ -727,6 +727,7 @@ function gotoStep(n){
   }
   if (n === 3){
     if (isManualMode && deliveryEnabled) document.getElementById('citySel').value = document.getElementById('mCitySel').value;
+    document.getElementById('citySel')._lbSync && document.getElementById('citySel')._lbSync();
     document.getElementById('cityBlockFinal').style.display = (isManualMode && !deliveryEnabled) ? 'none' : 'block';
     document.getElementById('summaryPlaceholder').classList.remove('hidden');
     document.getElementById('resultBox').classList.add('hidden');
@@ -1146,6 +1147,7 @@ function initListbox(id){
   });
   document.addEventListener('click', function(e){ if (!wrap.contains(e.target)) closePanel(); });
   sel.addEventListener('change', syncLabel);
+  sel._lbSync = syncLabel;
   syncLabel();
 }
 function startHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.add('hint-animate')); }
@@ -1207,6 +1209,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const o1 = document.createElement('option'); o1.value = c; o1.textContent = c; citySel.appendChild(o1);
     const o2 = document.createElement('option'); o2.value = c; o2.textContent = c; mCitySel.appendChild(o2);
   });
+  initListbox('citySel');
+  initListbox('mCitySel');
+  initListbox('currencySel');
+  initListbox('mEngineType');
 });
 </script>
 </body>
