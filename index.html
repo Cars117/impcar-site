@@ -907,6 +907,7 @@ function fillModels(){
   if (!brand) return;
   [...new Set(carDatabase.filter(c=>c.brand===brand && c.type===selectedEngineType).map(c=>c.model))].forEach(x=>{ const o=document.createElement('option'); o.value=x; o.textContent=x; m.appendChild(o); });
   m.onchange = ()=>fillTrims(m.value);
+    m._lbRebuild && m._lbRebuild();
 }
 function fillTrims(model){
   const brand = document.getElementById('brandSel').value;
