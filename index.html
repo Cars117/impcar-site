@@ -895,12 +895,14 @@ function fillBrandsByType(type){
   b.disabled = false; b.innerHTML = '<option value="">— Выберите бренд —</option>';
   [...new Set(carDatabase.filter(c=>c.type===type).map(c=>c.brand))].sort().forEach(x=>{ const o=document.createElement('option'); o.value=x; o.textContent=x; b.appendChild(o); });
   b.onchange = fillModels;
+  b._lbRebuild && b._lbRebuild();
 }
 function fillModels(){
   const brand = document.getElementById('brandSel').value;
   const m = document.getElementById('modelSel'), t = document.getElementById('trimSel');
   m.innerHTML = '<option value="">— Модель —</option>'; t.innerHTML = '<option value="">— Комплектация —</option>';
   m.disabled = !brand; t.disabled = true; selected = null;
+  m._lbRebuild && m._lbRebuild(); t._lbRebuild && t._lbRebuild();
   document.getElementById('specCard').classList.add('hidden');
   if (!brand) return;
   [...new Set(carDatabase.filter(c=>c.brand===brand && c.type===selectedEngineType).map(c=>c.model))].forEach(x=>{ const o=document.createElement('option'); o.value=x; o.textContent=x; m.appendChild(o); });
@@ -1149,6 +1151,7 @@ function initListbox(id){
   document.addEventListener('click', function(e){ if (!wrap.contains(e.target)) closePanel(); });
   sel.addEventListener('change', syncLabel);
   sel._lbSync = syncLabel;
+  sel._lbRebuild = function(){ buildOptions(); syncLabel(); };
   syncLabel();
 }
 function startHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.add('hint-animate')); }
@@ -1215,6 +1218,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initListbox('mCitySel');
   initListbox('currencySel');
   initListbox('mEngineType');
+  initListbox('brandSel');
+  initListbox('modelSel');
+  initListbox('trimSel');
 });
 </script>
 </body>
