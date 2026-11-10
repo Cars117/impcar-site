@@ -19,7 +19,7 @@
   --field-bg:#ffffff; --field-border:#d1d5db;
   --toggle-bg:#e5e7eb; --toggle-active:#2563eb; --focus-ring:rgba(37,99,235,.3);
   --success:#059669;
-  --cta:#059669; --cta-hover:#0477;
+  --cta:#059669; --cta-hover:#047857;
 }
 .dark {
   --text-main:#f3f4f6; --text-muted:#9ca3af; --bg-body:#070b14;
@@ -121,6 +121,9 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 .dark .estimate-warn{color:#fcd34d}
 .hidden{display:none!important}
 @media (min-width:640px){#rateBox{display:block!important}}
+  #ratePill{display:inline-flex;align-items:center;gap:4px;border-radius:9999px;padding:4px 10px;font-size:11px;font-weight:600;background:var(--field-bg);border:1px solid var(--glass-border);color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";max-width:140px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:640px){#ratePill{display:none}}
+@media (max-width:360px){#ratePill{font-size:10px;padding:3px 8px;max-width:104px}}
 .legal-note{background:var(--field-bg);border:1px solid var(--glass-border);border-radius:12px;padding:14px;font-size:.72rem;line-height:1.55;color:var(--text-muted)}
 .legal-note b{color:var(--text-main)}
 
@@ -204,6 +207,7 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
     <span class="font-bold tracking-tight text-lg" style="color:var(--text-main)">IMPCar<span class="text-brand">AUTO</span></span>
   </div>
   <div class="flex items-center gap-3 sm:gap-4">
+      <div id="ratePill" style="color:var(--text-muted)">¥…</div>
     <div id="rateBox" class="glass rounded-full px-3 py-1.5 text-xs sm:text-sm font-medium hidden sm:block" style="color:var(--text-muted)">Курс: загружаем…</div>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему"><div class="theme-thumb" id="themeIcon"></div></button>
   </div>
@@ -615,6 +619,7 @@ function renderRates(){
   const b = document.getElementById("rateBox"), f = n => n.toFixed(2).replace('.',',');
   if(state.ratesLive){ b.textContent = `Курс: $${f(state.usdRub)} · ¥${f(state.cnyRub)} · €${f(state.eurRub)}`; b.style.color = "var(--text-muted)"; }
   else { b.textContent = `⚠️ Курс ориент.: $${f(state.usdRub)} · ¥${f(state.cnyRub)}`; b.style.color = "#d97706"; }
+    const p = document.getElementById("ratePill"); if(p){ if(state.ratesLive){ p.textContent = `¥${f(state.cnyRub)} · $${f(state.usdRub)}`; p.style.color = "var(--text-muted)"; } else { p.textContent = `¥${f(state.cnyRub)} · $${f(state.usdRub)}`; p.style.color = "#d97706"; } }
 }
 function priceToRub(v,c){ return c==="USD" ? v*state.usdRub : c==="EUR" ? v*state.eurRub : v*state.cnyRub; }
 function rubToCny(v){ return Math.round(v / state.cnyRub); }
