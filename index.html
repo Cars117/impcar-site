@@ -633,6 +633,7 @@ function applyStep1Mode(){
     : 'Нужной модели нет? Введите характеристики вручную (ПТС / СБКТС / ОТТС)';
   if (isManualMode){
     if (selectedEngineType) document.getElementById('mEngineType').value = selectedEngineType;
+    document.getElementById('mEngineType')._lbSync && document.getElementById('mEngineType')._lbSync();
     var _t0 = document.getElementById('mEngineType').value;
     document.querySelectorAll('.engine-btn').forEach(function(b){ if (b.dataset.type === _t0) b.classList.add('selected'); else b.classList.remove('selected'); });
     syncManualFieldsByType();
