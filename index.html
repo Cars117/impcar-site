@@ -914,11 +914,13 @@ function fillTrims(model){
   const t = document.getElementById('trimSel');
   t.innerHTML = '<option value="">— Комплектация —</option>'; t.disabled = !model;
   document.getElementById('specCard').classList.add('hidden'); selected = null;
+    t._lbRebuild && t._lbRebuild();
   if (!model) return;
   const list = carDatabase.filter(c=>c.brand===brand && c.model===model && c.type===selectedEngineType);
   list.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=c.trim; t.appendChild(o); });
   t.onchange = ()=>{ selected = list[+t.value]; fillSpecCard(selected);
     if (selected.base_price_cny > 0){ document.getElementById('customPrice').value = selected.base_price_cny; document.getElementById('currencySel').value = 'CNY';  document.getElementById('currencySel')._lbSync && document.getElementById('currencySel')._lbSync(); } };
+    t._lbRebuild && t._lbRebuild();
 }
 
 function cleanNum(v){ return Number(String(v==null?'':v).replace(/[\s\u00A0]/g,'').replace(',','.')) || 0; }
