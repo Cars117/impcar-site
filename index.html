@@ -1131,7 +1131,7 @@ function initListbox(id){
       panel.appendChild(row);
     }
   }
-  function openPanel(){ buildOptions(); panel.hidden = false; trig.setAttribute('aria-expanded','true'); panel.focus(); }
+  function openPanel(){  if (sel.disabled) return; buildOptions(); panel.hidden = false; trig.setAttribute('aria-expanded','true'); panel.focus(); }
   function closePanel(){ panel.hidden = true; trig.setAttribute('aria-expanded','false'); }
   function choose(val){
     sel.value = val;
