@@ -186,6 +186,18 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 .lb-option[aria-selected="true"]{font-weight:600;color:var(--toggle-active)}
 .lb-check{flex:0 0 auto;width:16px;height:16px;color:var(--toggle-active);opacity:0}
 .lb-option[aria-selected="true"] .lb-check{opacity:1}
+#ageBlock .lb-wrap{display:none}
+.age-segments{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.age-btn{min-height:48px;padding:8px 6px;font-size:.8rem;font-weight:600;line-height:1.2;text-align:center;white-space:normal;cursor:pointer;border:1px solid var(--field-border);border-radius:12px;background:var(--field-bg);color:var(--text-main);transition:all .2s ease;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";touch-action:manipulation}
+.age-btn:hover{border-color:var(--toggle-active)}
+.age-btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--focus-ring)}
+.age-btn.is-selected{border-color:var(--toggle-active);background:rgba(37,99,235,.05);color:var(--text-main);box-shadow:0 0 0 1px var(--toggle-active)}
+.dark .age-btn.is-selected{background:rgba(0,240,255,.08);color:#fff;box-shadow:0 0 0 1px var(--toggle-active),0 0 16px rgba(0,240,255,.15)}
+.age-btn[disabled]{opacity:.4;cursor:not-allowed;filter:grayscale(.5)}
+.age-badge{display:flex;align-items:flex-start;gap:6px;background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.3);color:var(--success);padding:8px 12px;border-radius:10px;font-size:.75rem;line-height:1.4;font-weight:500;margin-top:8px;animation:slideDownFade .3s ease-out}
+.dark .age-badge{background:rgba(143,191,127,.12);border-color:rgba(143,191,127,.3)}
+@media (max-width:360px){.age-segments{gap:6px}.age-btn{font-size:.72rem;padding:6px 4px}}
+@media (prefers-reduced-motion:reduce){.age-badge{animation:none}}
 </style>
 
 <script>
@@ -399,12 +411,20 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
       </div>
 
       <!-- ВОЗРАСТ -->
-      <div id="ageBlock" class="mb-3">
-        <label class="block text-xs font-semibold mb-1" for="ageSel" style="color:var(--text-muted)">Возраст автомобиля</label>
-        <select id="ageSel" class="field text-sm mb-1" aria-label="Возраст автомобиля">
-          <option value="new">До 3 лет</option><option value="mid">От 3 до 5 лет</option><option value="old">Старше 5 лет</option>
+      <div id="ageBlock" class="mb-4">
+        <label class="block text-sm font-semibold mb-3" style="color:var(--text-main)">Возраст автомобиля</label>
+        <div class="age-segments" role="group" aria-label="Категория возраста автомобиля">
+          <button type="button" class="age-btn" data-age="new" onclick="syncAgeSegmentToSelect('new')">До 3 лет</button>
+          <button type="button" class="age-btn" data-age="mid" onclick="syncAgeSegmentToSelect('mid')">3–5 лет</button>
+          <button type="button" class="age-btn" data-age="old" onclick="syncAgeSegmentToSelect('old')">Старше 5 лет</button>
+        </div>
+        <select id="ageSel" class="hidden" aria-hidden="true" tabindex="-1">
+          <option value="new">До 3 лет</option><option value="mid">3–5 лет</option><option value="old">Старше 5 лет</option>
         </select>
-        <p class="text-[11px]" style="color:var(--text-muted)">Для утильсбора действуют 2 категории: до 3 лет и старше 3 лет.</p>
+        <div id="derivedAgeBadge" class="age-badge hidden" aria-live="polite">
+          <span>✓ Категория по году выпуска из базы: <b id="derivedAgeText">до 3 лет</b>. Точно — только ручной ввод (нужен месяц выпуска).</span>
+        </div>
+        <p class="text-[11px] mt-2" style="color:var(--text-muted)">Для утильсбора действуют 2 категории (до 3 лет / старше 3 лет). Для таможенной пошлины ДВС — 3 категории (до 3 лет / 3–5 лет / старше 5 лет).</p>
       </div>
 
       <!-- ГОД ВВОЗА -->
@@ -747,6 +767,7 @@ function applyStep2Visibility(){
   document.getElementById('priceBlock').classList.toggle('hidden', isManualMode);
   document.getElementById('ageBlock').classList.toggle('hidden', isManualMode);
   if (!isManualMode){ selected ? fillSpecCard(selected) : document.getElementById('specCard').classList.add('hidden'); }
+  updateDerivedAge();
 }
 function nextFrom1(){
   if (!selectedEngineType){ triggerError('nextBtn1'); return; }
@@ -924,7 +945,8 @@ function fillTrims(model){
   const list = carDatabase.filter(c=>c.brand===brand && c.model===model && c.type===selectedEngineType);
   list.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=c.trim; t.appendChild(o); });
   t.onchange = ()=>{ selected = list[+t.value]; fillSpecCard(selected);
-    if (selected.base_price_cny > 0){ document.getElementById('customPrice').value = selected.base_price_cny; document.getElementById('currencySel').value = 'CNY';  document.getElementById('currencySel')._lbSync && document.getElementById('currencySel')._lbSync(); } };
+    if (selected.base_price_cny > 0){ document.getElementById('customPrice').value = selected.base_price_cny; document.getElementById('currencySel').value = 'CNY';  document.getElementById('currencySel')._lbSync && document.getElementById('currencySel')._lbSync(); } 
+    updateDerivedAge();};
     t._lbRebuild && t._lbRebuild();
 }
 
@@ -994,7 +1016,7 @@ function buildManualSelects(){
   document.getElementById('mCur').addEventListener('change', renderManualSpec);
   document.getElementById('mKnow').addEventListener('change', renderManualSpec);
   document.getElementById('mCitySel').addEventListener('change', ()=>{});
-  document.getElementById('yearSel').addEventListener('change', function(){ if (isManualMode){ calcManualAge(); renderManualSpec(); renderAgeTransitionWarn(); } });
+  document.getElementById('yearSel').addEventListener('change', function(){ if (isManualMode){ calcManualAge(); renderManualSpec(); renderAgeTransitionWarn(); } else { updateDerivedAge(); } });
   calcManualAge();
 }
 function calcManualAge(){
@@ -1161,6 +1183,58 @@ function initListbox(id){
   sel._lbSync = syncLabel;
   sel._lbRebuild = function(){ buildOptions(); syncLabel(); };
   syncLabel();
+}
+/* ===== premium-age: сегмент-зеркало возраста (R2=а, П1/П2/П3; D1-D8) ===== */
+function updateSegmentsUI(value){
+  document.querySelectorAll('.age-btn').forEach(function(btn){
+    btn.classList.toggle('is-selected', btn.dataset.age === value);
+  });
+}
+function syncAgeSegmentToSelect(value){
+  var ageSel = document.getElementById('ageSel');
+  if (!ageSel) return;                       /* D8: блокировка клика нативна на disabled-кнопках */
+  ageSel.value = value;
+  ageSel.dispatchEvent(new Event('change', { bubbles: true }));  /* D8: инвариант initListbox; ВИДИМЫЙ результат = updateSegmentsUI */
+  updateSegmentsUI(value);
+  /* П3: авто-пересчёт НЕ обещаем; расчёт = существующий порядок (кнопка «Рассчитать» / смена города) */
+}
+function updateDerivedAge(){
+  var badge = document.getElementById('derivedAgeBadge');
+  var ageSel = document.getElementById('ageSel');
+  if (!badge || !ageSel) return;
+  var btns = document.querySelectorAll('.age-btn');
+  /* П2: ручной — ageBlock скрыт; read-only зеркало computed (безвредно в скрытом), бейдж базы скрыт */
+  if (isManualMode){
+    badge.classList.add('hidden');
+    var my = +document.getElementById('mYear').value, mm = +document.getElementById('mMonth').value;
+    var mcat = importAgeCat(my, mm, +document.getElementById('yearSel').value) || (manualProd && manualProd.cat) || 'new';
+    btns.forEach(function(b){ b.disabled = true; b.setAttribute('aria-disabled','true'); });
+    updateSegmentsUI(mcat);                  /* D4 */
+    return;
+  }
+  /* D1: год выпуска = selected.year_from (глобал. state из fillTrims.onchange), НЕ getCurrentTrimYearFrom() */
+  var yearFrom = (selected && selected.year_from) ? selected.year_from : 0;
+  var yearImport = +document.getElementById('yearSel').value;
+  if (!yearFrom){                            /* Fallback-каталог: год неизвестен → кнопки активны, бейдж скрыт */
+    badge.classList.add('hidden');
+    btns.forEach(function(b){ b.disabled = false; b.setAttribute('aria-disabled','false'); });
+    updateSegmentsUI(ageSel.value);          /* D4: подсветить текущее (в т.ч. первичная инициализация new) */
+    return;
+  }
+  /* П1: derived = importAgeCat(year_from, 7 = 1 июля, год ввоза yearSel) — НЕ текущий год, НЕ вычитание лет */
+  var cat = importAgeCat(yearFrom, 7, yearImport);
+  if (!cat){ badge.classList.add('hidden'); btns.forEach(function(b){ b.disabled=false; b.setAttribute('aria-disabled','false'); }); updateSegmentsUI(ageSel.value); return; }
+  var labels = { new:'до 3 лет', mid:'3–5 лет', old:'старше 5 лет' };
+  document.getElementById('derivedAgeText').textContent = labels[cat];
+  badge.classList.remove('hidden');
+  ageSel.value = cat;
+  ageSel.dispatchEvent(new Event('change', { bubbles: true }));
+  btns.forEach(function(b){
+    var match = (b.dataset.age === cat);
+    b.disabled = !match;                      /* R1/V2: невыбранные категории в derived заблокированы нативно */
+    b.setAttribute('aria-disabled', String(!match));
+    b.classList.toggle('is-selected', match);
+  });
 }
 function startHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.add('hint-animate')); }
 function stopHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.remove('hint-animate')); }
