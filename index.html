@@ -200,6 +200,7 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 @media (prefers-reduced-motion:reduce){.age-badge{animation:none}}
  .lb-trigger[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
  .lb-trigger[aria-disabled="true"]:hover{border-color:var(--field-border)}
+ .lb-panel.lb-panel-up{top:auto;bottom:calc(100% + 6px)}
 </style>
 
 <script>
@@ -1161,7 +1162,16 @@ function initListbox(id){
       panel.appendChild(row);
     }
   }
-  function openPanel(){  if (sel.disabled) return; buildOptions(); panel.hidden = false; trig.setAttribute('aria-expanded','true'); panel.focus(); }
+  function openPanel(){
+    if (sel.disabled) return;
+    buildOptions();
+    panel.hidden = false;
+    panel.classList.remove('lb-panel-up');
+    var r = trig.getBoundingClientRect(), h = panel.offsetHeight;
+    if (window.innerHeight - r.bottom < h + 12 && r.top > h + 12) panel.classList.add('lb-panel-up');
+    trig.setAttribute('aria-expanded','true');
+    panel.focus();
+  }
   function closePanel(){ panel.hidden = true; trig.setAttribute('aria-expanded','false'); }
   function choose(val){
     sel.value = val;
