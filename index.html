@@ -198,6 +198,8 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 .dark .age-badge{background:rgba(143,191,127,.12);border-color:rgba(143,191,127,.3)}
 @media (max-width:360px){.age-segments{gap:6px}.age-btn{font-size:.72rem;padding:6px 4px}}
 @media (prefers-reduced-motion:reduce){.age-badge{animation:none}}
+ .lb-trigger[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+ .lb-trigger[aria-disabled="true"]:hover{border-color:var(--field-border)}
 </style>
 
 <script>
@@ -1124,9 +1126,10 @@ function initListbox(id){
   panel.hidden = true;
   wrap.insertBefore(trig, sel);
   wrap.insertBefore(panel, sel);
-  function syncLabel(){
+    function syncLabel(){
     var o = sel.options[sel.selectedIndex];
     lab.textContent = o ? o.textContent : '';
+    trig.setAttribute('aria-disabled', String(sel.disabled));
   }
   function buildOptions(){
     panel.innerHTML = '';
@@ -1253,7 +1256,7 @@ function updateTimer(){
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  buildManualSelects(); loadRates(); loadCars(); updateTimer(); setInterval(updateTimer, 1000);
+    buildManualSelects(); loadRates(); loadCars().then(function(){ if (selectedEngineType && !isManualMode) fillBrandsByType(selectedEngineType); }); updateTimer(); setInterval(updateTimer, 1000);
   initListbox('yearSel');
   initListbox('ageSel');
   initListbox('mCur');
