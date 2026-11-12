@@ -240,10 +240,10 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
   <section class="max-w-3xl mx-auto mb-8 reveal active delay-200">
     <div class="glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <div class="flex items-center gap-3">
-        <svg class="w-6 h-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <svg id="rateNoticeIcon" class="w-6 h-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <div>
-          <div class="font-bold text-sm sm:text-base text-red-500">С 1 января 2027 года ожидается индексация ставок утильсбора</div>
-          <div class="text-xs" style="color:var(--text-muted)">Текущие условия действуют до выхода новой редакции ПП № 1291</div>
+          <div id="rateNoticeTitle" class="font-bold text-sm sm:text-base text-red-500">С 1 января 2027 года ожидается индексация ставок утильсбора</div>
+          <div id="rateNoticeSub" class="text-xs" style="color:var(--text-muted)">Текущие условия действуют до выхода новой редакции ПП № 1291</div>
         </div>
       </div>
          <div id="countdown" class="font-mono font-bold text-lg sm:text-xl whitespace-nowrap" style="color:var(--toggle-active)">
@@ -461,7 +461,7 @@ html.js-ready .reveal.active{opacity:1;transform:translateY(0)}
 
           <div class="flex flex-wrap gap-2 mb-4">
             <span class="trust-chip">📜 ПП РФ №1291 от 26.12.2013</span>
-            <span class="trust-chip">🗓 Ставки актуальны на 2026 г.</span>
+            <span class="trust-chip" id="ratesYearChip">🗓 Ставки актуальны на 2026 г.</span>
             <span class="trust-chip">⚖️ Расчёт по данным ОТТС/СБКТС</span>
           </div>
 
@@ -1241,7 +1241,29 @@ function updateDerivedAge(){
 }
 function startHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.add('hint-animate')); }
 function stopHintAnimation(){ document.querySelectorAll('.engine-btn').forEach(b=>b.classList.remove('hint-animate')); }
+/* ===== П2027: авто-флип года ставок по календарю ===== */
+var _ratesYearApplied = null;
+function applyRatesYearUI(){
+  var is2027 = new Date().getFullYear() >= 2027;
+  if (_ratesYearApplied === is2027) return;
+  _ratesYearApplied = is2027;
+  var ys = document.getElementById('yearSel');
+  if (ys){
+    var o26 = ys.querySelector('option[value="2026"]'), o27 = ys.querySelector('option[value="2027"]');
+    if (o26) o26.textContent = is2027 ? '2026 (прошлые ставки)' : '2026 (текущие ставки)';
+    if (o27) o27.textContent = is2027 ? '2027 (текущие ставки)' : '2027 (+10% индексация)';
+    ys.value = is2027 ? '2027' : '2026';
+    ys._lbSync && ys._lbSync();
+  }
+  var t = document.getElementById('rateNoticeTitle'), s = document.getElementById('rateNoticeSub');
+  var ic = document.getElementById('rateNoticeIcon'), chip = document.getElementById('ratesYearChip');
+  if (t){ t.textContent = is2027 ? 'Расчёт выполняется по ставкам 2027 года' : 'С 1 января 2027 года ожидается индексация ставок утильсбора'; t.style.color = is2027 ? 'var(--toggle-active)' : ''; }
+  if (s) s.textContent = is2027 ? 'Год ввоза по умолчанию — 2027. Ставки 2026 года доступны для сравнения.' : 'Текущие условия действуют до выхода новой редакции ПП № 1291';
+  if (ic) ic.style.color = is2027 ? 'var(--toggle-active)' : '';
+  if (chip) chip.textContent = is2027 ? '🗓 Ставки актуальны на 2027 г.' : '🗓 Ставки актуальны на 2026 г.';
+}
 function updateTimer(){
+  applyRatesYearUI();
   var dist = new Date('2027-01-01T00:00:00+03:00').getTime() - Date.now();
   var cd = document.getElementById('countdown');
   if (dist < 0){ cd.innerHTML = 'Ставки 2027 уже действуют'; return; }
